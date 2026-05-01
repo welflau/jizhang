@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .dining-primary { fill: #e94560; }
+      .dining-secondary { fill: #1a1a2e; }
+      .dining-accent { fill: #0f3460; }
+    </style>
+  </defs>
+  
+  <!-- Plate -->
+  <circle cx="32" cy="36" r="20" class="dining-secondary" opacity="0.2"/>
+  <circle cx="32" cy="36" r="18" fill="none" stroke="#e94560" stroke-width="2"/>
+  
+  <!-- Fork (left) -->
+  <g class="dining-primary">
+    <rect x="18" y="14" width="2" height="16" rx="1"/>
+    <rect x="22" y="14" width="2" height="16" rx="1"/>
+    <rect x="26" y="14" width="2" height="16" rx="1"/>
+    <rect x="18" y="14" width="10" height="4" rx="1"/>
+  </g>
+  
+  <!-- Knife (right) -->
+  <g class="dining-primary">
+    <rect x="36" y="14" width="2" height="20" rx="1"/>
+    <path d="M 35 14 L 39 14 L 39 18 L 37 20 L 35 18 Z"/>
+  </g>
+  
+  <!-- Food on plate -->
+  <g class="dining-accent">
+    <ellipse cx="28" cy="36" rx="4" ry="3"/>
+    <ellipse cx="36" cy="36" rx="4" ry="3"/>
+    <ellipse cx="32" cy="40" rx="3" ry="2"/>
+  </g>
+  
+  <!-- Decorative dots -->
+  <circle cx="32" cy="32" r="1" class="dining-primary"/>
+  <circle cx="28" cy="34" r="0.8" class="dining-primary" opacity="0.6"/>
+  <circle cx="36" cy="34" r="0.8" class="dining-primary" opacity="0.6"/>
+</svg>

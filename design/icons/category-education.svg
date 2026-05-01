@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .education-primary { fill: #e94560; }
+      .education-secondary { fill: #0f3460; }
+      .education-accent { fill: #f1f1f1; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" class="education-secondary" opacity="0.1"/>
+  
+  <!-- Graduation cap -->
+  <g>
+    <!-- Cap base -->
+    <path d="M32 18 L8 28 L32 38 L56 28 Z" class="education-primary"/>
+    
+    <!-- Cap top -->
+    <path d="M32 38 L20 32 L20 42 C20 44 24 48 32 48 C40 48 44 44 44 42 L44 32 Z" class="education-secondary"/>
+    
+    <!-- Tassel -->
+    <line x1="56" y1="28" x2="56" y2="44" stroke="#e94560" stroke-width="2"/>
+    <circle cx="56" cy="46" r="2" class="education-primary"/>
+    
+    <!-- Book pages detail -->
+    <rect x="24" y="34" width="16" height="2" class="education-accent" opacity="0.3"/>
+    <rect x="26" y="38" width="12" height="1" class="education-accent" opacity="0.2"/>
+  </g>
+  
+  <!-- Highlight effect -->
+  <path d="M32 18 L44 24 L32 30 Z" class="education-accent" opacity="0.2"/>
+</svg>

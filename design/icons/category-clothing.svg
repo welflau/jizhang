@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .clothing-primary { fill: #e94560; }
+      .clothing-secondary { fill: #1a1a2e; }
+      .clothing-accent { fill: #0f3460; }
+    </style>
+  </defs>
+  
+  <!-- T-shirt icon -->
+  <g id="clothing-icon">
+    <!-- Body of t-shirt -->
+    <path class="clothing-primary" d="M 20 24 L 20 56 C 20 58 21 60 23 60 L 41 60 C 43 60 44 58 44 56 L 44 24 Z"/>
+    
+    <!-- Sleeves -->
+    <path class="clothing-secondary" d="M 12 18 L 20 24 L 20 32 L 8 28 C 6 27.5 5 25.5 6 23.5 L 10 16 C 11 14 13 13.5 14.5 14.5 Z"/>
+    <path class="clothing-secondary" d="M 52 18 L 44 24 L 44 32 L 56 28 C 58 27.5 59 25.5 58 23.5 L 54 16 C 53 14 51 13.5 49.5 14.5 Z"/>
+    
+    <!-- Collar/Neckline -->
+    <path class="clothing-accent" d="M 24 16 C 24 12 26 8 32 8 C 38 8 40 12 40 16 L 40 20 C 40 22 38 24 36 24 L 28 24 C 26 24 24 22 24 20 Z"/>
+    
+    <!-- Decorative lines -->
+    <line x1="20" y1="36" x2="44" y2="36" stroke="#f1f1f1" stroke-width="1.5" opacity="0.3"/>
+    <line x1="20" y1="44" x2="44" y2="44" stroke="#f1f1f1" stroke-width="1.5" opacity="0.3"/>
+  </g>
+</svg>

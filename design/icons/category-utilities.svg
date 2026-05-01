@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="utilGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="32" cy="32" r="28" fill="url(#utilGrad)" opacity="0.15"/>
+  
+  <!-- Wrench -->
+  <path d="M 42 18 L 38 22 L 42 26 L 46 22 Z M 36 24 L 18 42 Q 16 44 16 46 Q 16 48 18 48 Q 20 48 22 46 L 40 28 Z" 
+        fill="none" stroke="url(#utilGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Screwdriver -->
+  <path d="M 48 16 L 44 20 M 42 22 L 28 36 L 28 40 L 32 40 L 46 26" 
+        fill="none" stroke="url(#utilGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Gear accent -->
+  <circle cx="24" cy="24" r="3" fill="url(#utilGrad)" opacity="0.6"/>
+  <circle cx="40" cy="40" r="2.5" fill="url(#utilGrad)" opacity="0.6"/>
+  
+  <!-- Tool handle details -->
+  <line x1="28" y1="36" x2="32" y2="40" stroke="#e94560" stroke-width="1.5" opacity="0.8"/>
+  <line x1="18" y1="42" x2="22" y2="46" stroke="#e94560" stroke-width="1.5" opacity="0.8"/>
+</svg>

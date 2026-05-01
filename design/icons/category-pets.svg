@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .pets-primary { fill: #e94560; }
+      .pets-secondary { fill: #0f3460; }
+      .pets-accent { fill: #f1f1f1; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" class="pets-secondary" opacity="0.1"/>
+  
+  <!-- Paw print design -->
+  <!-- Main pad -->
+  <ellipse cx="32" cy="36" rx="8" ry="10" class="pets-primary"/>
+  
+  <!-- Top left toe -->
+  <ellipse cx="22" cy="24" rx="4.5" ry="6" class="pets-primary" transform="rotate(-15 22 24)"/>
+  
+  <!-- Top center toe -->
+  <ellipse cx="32" cy="20" rx="4.5" ry="6" class="pets-primary"/>
+  
+  <!-- Top right toe -->
+  <ellipse cx="42" cy="24" rx="4.5" ry="6" class="pets-primary" transform="rotate(15 42 24)"/>
+  
+  <!-- Bottom toe -->
+  <ellipse cx="32" cy="48" rx="4" ry="5" class="pets-primary"/>
+  
+  <!-- Decorative heart accent -->
+  <path d="M 28 14 Q 26 12 24 12 Q 21 12 21 15 Q 21 17 24 19 L 28 22 L 32 19 Q 35 17 35 15 Q 35 12 32 12 Q 30 12 28 14 Z" class="pets-accent" opacity="0.3"/>
+</svg>

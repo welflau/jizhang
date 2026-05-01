@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .salary-primary { fill: #e94560; }
+      .salary-secondary { fill: #0f3460; }
+      .salary-accent { fill: #f1f1f1; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" class="salary-secondary" opacity="0.1"/>
+  
+  <!-- Money bag -->
+  <path class="salary-primary" d="M32 12 L28 16 L36 16 Z"/>
+  <ellipse cx="32" cy="17" rx="5" ry="2" class="salary-primary"/>
+  
+  <!-- Bag body -->
+  <path class="salary-primary" d="M26 17 Q26 42 32 46 Q38 42 38 17 Z"/>
+  
+  <!-- Dollar sign -->
+  <g class="salary-accent">
+    <rect x="31" y="24" width="2" height="16" rx="1"/>
+    <path d="M28 27 Q28 25 32 25 Q36 25 36 27 Q36 29 32 29 L30 29"/>
+    <path d="M36 37 Q36 39 32 39 Q28 39 28 37 Q28 35 32 35 L34 35"/>
+  </g>
+  
+  <!-- Coins -->
+  <circle cx="20" cy="44" r="6" class="salary-secondary"/>
+  <circle cx="20" cy="44" r="4" class="salary-accent" opacity="0.3"/>
+  <text x="20" y="47" font-size="8" text-anchor="middle" fill="#0f3460" font-weight="bold">$</text>
+  
+  <circle cx="44" cy="44" r="6" class="salary-secondary"/>
+  <circle cx="44" cy="44" r="4" class="salary-accent" opacity="0.3"/>
+  <text x="44" y="47" font-size="8" text-anchor="middle" fill="#0f3460" font-weight="bold">$</text>
+</svg>

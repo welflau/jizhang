@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .electronics-primary { fill: #e94560; }
+      .electronics-secondary { fill: #0f3460; }
+      .electronics-accent { fill: #f1f1f1; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" class="electronics-secondary" opacity="0.1"/>
+  
+  <!-- Laptop base -->
+  <rect x="12" y="36" width="40" height="3" rx="1" class="electronics-primary"/>
+  <path d="M 10 36 L 8 40 L 56 40 L 54 36 Z" class="electronics-primary" opacity="0.8"/>
+  
+  <!-- Laptop screen -->
+  <rect x="16" y="18" width="32" height="20" rx="1" class="electronics-secondary"/>
+  <rect x="18" y="20" width="28" height="16" class="electronics-accent" opacity="0.3"/>
+  
+  <!-- Screen content lines -->
+  <line x1="21" y1="24" x2="43" y2="24" stroke="#e94560" stroke-width="1.5" opacity="0.6"/>
+  <line x1="21" y1="28" x2="38" y2="28" stroke="#e94560" stroke-width="1.5" opacity="0.6"/>
+  <line x1="21" y1="32" x2="41" y2="32" stroke="#e94560" stroke-width="1.5" opacity="0.6"/>
+  
+  <!-- Smartphone -->
+  <rect x="42" y="22" width="12" height="18" rx="1.5" class="electronics-primary"/>
+  <rect x="43.5" y="24" width="9" height="13" class="electronics-accent" opacity="0.3"/>
+  <circle cx="48" cy="39" r="1" class="electronics-accent" opacity="0.5"/>
+  
+  <!-- Circuit lines decoration -->
+  <circle cx="14" cy="14" r="2" class="electronics-primary" opacity="0.4"/>
+  <line x1="14" y1="14" x2="20" y2="14" stroke="#e94560" stroke-width="1" opacity="0.4"/>
+  <circle cx="20" cy="14" r="1.5" class="electronics-primary" opacity="0.4"/>
+</svg>

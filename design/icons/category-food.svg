@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .food-primary { fill: #e94560; }
+      .food-secondary { fill: #f1f1f1; }
+      .food-accent { fill: #ff6b81; }
+    </style>
+  </defs>
+  
+  <!-- Plate -->
+  <ellipse cx="32" cy="48" rx="28" ry="6" class="food-secondary" opacity="0.3"/>
+  
+  <!-- Bowl -->
+  <path d="M 12 28 Q 12 38 32 38 Q 52 38 52 28 L 50 24 Q 50 22 32 22 Q 14 22 14 24 Z" class="food-secondary"/>
+  <ellipse cx="32" cy="24" rx="18" ry="4" class="food-primary"/>
+  
+  <!-- Steam -->
+  <path d="M 20 18 Q 18 14 20 10" stroke="#ff6b81" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 28 16 Q 26 12 28 8" stroke="#ff6b81" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 36 16 Q 38 12 36 8" stroke="#ff6b81" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M 44 18 Q 46 14 44 10" stroke="#ff6b81" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Food items in bowl -->
+  <circle cx="26" cy="26" r="3" class="food-accent"/>
+  <circle cx="38" cy="26" r="3" class="food-accent"/>
+  <circle cx="32" cy="30" r="3" class="food-accent"/>
+  
+  <!-- Chopsticks -->
+  <rect x="42" y="14" width="2" height="24" rx="1" class="food-secondary" transform="rotate(25 43 26)"/>
+  <rect x="46" y="16" width="2" height="24" rx="1" class="food-secondary" transform="rotate(30 47 28)"/>
+</svg>

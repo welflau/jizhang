@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .groceries-primary { fill: #2ecc71; }
+      .groceries-secondary { fill: #27ae60; }
+      .groceries-accent { fill: #e74c3c; }
+      .groceries-detail { fill: #f39c12; }
+    </style>
+  </defs>
+  
+  <!-- Shopping basket -->
+  <path class="groceries-primary" d="M12 24 L8 48 C7.5 52 10 56 14 56 L50 56 C54 56 56.5 52 56 48 L52 24 Z"/>
+  
+  <!-- Basket handle -->
+  <path class="groceries-secondary" d="M10 24 L12 20 L52 20 L54 24 Z" fill="none" stroke="#27ae60" stroke-width="2"/>
+  
+  <!-- Basket rim -->
+  <rect class="groceries-secondary" x="8" y="22" width="48" height="4" rx="1"/>
+  
+  <!-- Apple -->
+  <circle class="groceries-accent" cx="24" cy="36" r="6"/>
+  <path class="groceries-secondary" d="M24 30 Q26 28 26 26" fill="none" stroke="#27ae60" stroke-width="1.5" stroke-linecap="round"/>
+  <ellipse class="groceries-secondary" cx="25" cy="26" rx="2" ry="1.5"/>
+  
+  <!-- Carrot -->
+  <path class="groceries-detail" d="M38 32 L42 44 L40 45 L36 33 Z"/>
+  <path class="groceries-detail" d="M42 32 L46 44 L44 45 L40 33 Z"/>
+  <path class="groceries-secondary" d="M38 30 L40 28 L42 30 L44 28 L46 30 L42 32 Z"/>
+  
+  <!-- Bread loaf -->
+  <ellipse class="groceries-detail" cx="32" cy="46" rx="8" ry="5"/>
+  <path class="groceries-secondary" d="M26 44 Q32 40 38 44" fill="none" stroke="#e67e22" stroke-width="1.5"/>
+  <line class="groceries-secondary" x1="28" y1="46" x2="28" y2="48" stroke="#e67e22" stroke-width="1"/>
+  <line class="groceries-secondary" x1="32" y1="46" x2="32" y2="48" stroke="#e67e22" stroke-width="1"/>
+  <line class="groceries-secondary" x1="36" y1="46" x2="36" y2="48" stroke="#e67e22" stroke-width="1"/>
+</svg>

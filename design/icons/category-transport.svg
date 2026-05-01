@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .transport-primary { fill: #e94560; }
+      .transport-secondary { fill: #0f3460; }
+      .transport-accent { fill: #f1f1f1; }
+    </style>
+  </defs>
+  
+  <!-- Car body -->
+  <path class="transport-primary" d="M12 28 L18 20 L46 20 L52 28 L52 42 L12 42 Z"/>
+  
+  <!-- Car windows -->
+  <path class="transport-secondary" d="M20 22 L24 28 L40 28 L44 22 Z"/>
+  
+  <!-- Car wheels -->
+  <circle class="transport-secondary" cx="20" cy="42" r="6"/>
+  <circle class="transport-accent" cx="20" cy="42" r="3"/>
+  <circle class="transport-secondary" cx="44" cy="42" r="6"/>
+  <circle class="transport-accent" cx="44" cy="42" r="3"/>
+  
+  <!-- Car details -->
+  <rect class="transport-accent" x="28" y="34" width="8" height="4" rx="1"/>
+  <line class="transport-accent" x1="32" y1="22" x2="32" y2="28" stroke="#f1f1f1" stroke-width="2"/>
+</svg>
