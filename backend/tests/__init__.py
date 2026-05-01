@@ -1,12 +1,9 @@
-# backend/tests/__init__.py
 """
 Tests package initialization.
-Provides common test utilities and fixtures.
+This file makes the tests directory a Python package.
 """
 
-import sys
-from pathlib import Path
+# This file can be empty or contain shared test fixtures and utilities
+# For now, we'll keep it minimal
 
-# Add backend directory to Python path for imports
-backend_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(backend_dir))
+__version__ = "1.0.0"

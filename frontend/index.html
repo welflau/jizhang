@@ -205,9 +205,47 @@
             margin: 8px 0;
         }
 
+        .backup-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .backup-section h3 {
+            color: var(--text-primary);
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .backup-buttons .btn {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #5f6368;
+        }
+
+        .btn-secondary:hover {
+            background: #3c4043;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .auth-card {
                 padding: 24px;
+            }
+
+            .backup-buttons {
+                flex-direction: column;
             }
         }
     </style>
@@ -263,7 +301,7 @@
             }
 
             if (view === 'dashboard' && user) {
-                return <Dashboard user={user} onLogout={handleLogout} />;
+                return <Dashboard user={user} onLogout={handleLogout} accessToken={tokens.access} />;
             }
 
             if (view === 'register') {
@@ -482,7 +520,7 @@
         }
 
         function PasswordResetForm({ onBack }) {
-            const [step, setStep] = useState('request'); // 'request' | 'verify'
+            const [step, setStep] = useState(1); // 1: request, 2: verify
             const [email, setEmail] = useState('');
             const [code, setCode] = useState('');
             const [newPassword, setNewPassword] = useState('');
@@ -511,7 +549,7 @@
                     }
 
                     setSuccess('Reset code sent to your email');
-                    setStep('verify');
+                    setStep(2);
                 } catch (err) {
                     setError(err.message);
                 } finally {
@@ -540,11 +578,7 @@
                     const response = await fetch(`${API_BASE}/api/auth/password-reset/verify`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email,
-                            code,
-                            new_password: newPassword
-                        })
+                        body: JSON.stringify({ email, code, new_password: newPassword })
                     });
 
                     const data = await response.json();
@@ -553,7 +587,7 @@
                         throw new Error(data.message || data.detail || 'Failed to reset password');
                     }
 
-                    setSuccess('Password reset successful! Redirecting...');
+                    setSuccess('Password reset successful! Redirecting to login...');
                     setTimeout(() => onBack(), 2000);
                 } catch (err) {
                     setError(err.message);
@@ -567,13 +601,13 @@
                     <div className="auth-card">
                         <div className="auth-header">
                             <h1>Reset Password</h1>
-                            <p>{step === 'request' ? 'Enter your email to receive a reset code' : 'Enter the code and your new password'}</p>
+                            <p>{step === 1 ? 'Enter your email to receive a reset code' : 'Enter the code and your new password'}</p>
                         </div>
 
                         {error && <div className="alert alert-error">{error}</div>}
                         {success && <div className="alert alert-success">{success}</div>}
 
-                        {step === 'request' ? (
+                        {step === 1 ? (
                             <form onSubmit={handleRequestReset}>
                                 <div className="form-group">
                                     <label htmlFor="email">Email</label>
@@ -601,7 +635,7 @@
                                         value={code}
                                         onChange={(e) => setCode(e.target.value)}
                                         required
-                                        placeholder="Enter the code from your email"
+                                        placeholder="Enter 6-digit code"
                                     />
                                 </div>
 
@@ -625,7 +659,7 @@
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         required
-                                        placeholder="Confirm your new password"
+                                        placeholder="Confirm your password"
                                     />
                                 </div>
 
@@ -643,24 +677,135 @@
             );
         }
 
-        function Dashboard({ user, onLogout }) {
+        function Dashboard({ user, onLogout, accessToken }) {
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState('');
+            const [loading, setLoading] = useState(false);
+            const fileInputRef = React.useRef(null);
+
+            async function handleBackup() {
+                setError('');
+                setSuccess('');
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/backup/export`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const data = await response.json();
+                        throw new Error(data.message || data.detail || 'Backup failed');
+                    }
+
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    setSuccess('Backup downloaded successfully');
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            async function handleRestore(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                setError('');
+                setSuccess('');
+                setLoading(true);
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const response = await fetch(`${API_BASE}/api/backup/import`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || data.detail || 'Restore failed');
+                    }
+
+                    setSuccess('Data restored successfully');
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                    }
+                }
+            }
+
             return (
                 <div className="app-container">
                     <div className="user-dashboard">
-                        <h2>Welcome!</h2>
+                        <h2>Dashboard</h2>
+                        
                         <div className="user-info">
                             <p><strong>Email:</strong> {user.email}</p>
+                            <p><strong>Status:</strong> Active</p>
                         </div>
-                        <button className="btn" onClick={onLogout}>
+
+                        <button onClick={onLogout} className="btn">
                             Logout
                         </button>
+
+                        <div className="backup-section">
+                            <h3>Data Backup & Restore</h3>
+                            
+                            {error && <div className="alert alert-error">{error}</div>}
+                            {success && <div className="alert alert-success">{success}</div>}
+
+                            <div className="backup-buttons">
+                                <button 
+                                    onClick={handleBackup} 
+                                    className="btn" 
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Processing...' : 'Backup Data'}
+                                </button>
+                                <button 
+                                    onClick={() => fileInputRef.current?.click()} 
+                                    className="btn btn-secondary" 
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Processing...' : 'Restore Data'}
+                                </button>
+                            </div>
+
+                            <input 
+                                ref={fileInputRef}
+                                type="file" 
+                                accept=".json" 
+                                onChange={handleRestore}
+                            />
+                        </div>
                     </div>
                 </div>
             );
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
