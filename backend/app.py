@@ -6,6 +6,7 @@ from backend.database import init_db, get_db_connection
 from backend.api.export import export_bp
 from backend.api.import_data import import_bp
 from backend.api.clear import clear_bp
+from backend.api.bills import bills_bp
 
 # Configure logging
 logging.basicConfig(
@@ -21,6 +22,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.register_blueprint(export_bp)
 app.register_blueprint(import_bp)
 app.register_blueprint(clear_bp)
+app.register_blueprint(bills_bp)
 
 # Initialize database
 init_db()

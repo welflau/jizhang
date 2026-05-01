@@ -192,6 +192,91 @@
       display: none;
     }
     
+    .query-filters {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .filter-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .filter-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--secondary);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--highlight);
+    }
+    
+    .btn-filter {
+      background: #6c5ce7;
+      color: white;
+      padding: 10px 20px;
+    }
+    
+    .btn-filter:hover {
+      background: #5f4dd1;
+      transform: translateY(-2px);
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .pagination button {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .pagination button:hover:not(:disabled) {
+      background: rgba(255,255,255,0.2);
+      transform: none;
+    }
+    
+    .pagination button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    .pagination .page-info {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+    }
+    
     @media (max-width: 768px) {
       h1 {
         font-size: 1.8rem;
@@ -206,6 +291,14 @@
       }
       
       button {
+        width: 100%;
+      }
+      
+      .filter-row {
+        flex-direction: column;
+      }
+      
+      .filter-group {
         width: 100%;
       }
     }
@@ -239,6 +332,39 @@
     
     <div class="records-table">
       <h2 style="margin-bottom: 20px;">📊 最近访问记录</h2>
+      
+      <div class="query-filters">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>开始时间</label>
+            <input type="datetime-local" id="filter-start-time">
+          </div>
+          <div class="filter-group">
+            <label>结束时间</label>
+            <input type="datetime-local" id="filter-end-time">
+          </div>
+          <div class="filter-group">
+            <label>IP地址</label>
+            <input type="text" id="filter-ip" placeholder="输入IP地址">
+          </div>
+          <div class="filter-group">
+            <label>访问路径</label>
+            <input type="text" id="filter-path" placeholder="输入路径">
+          </div>
+          <div class="filter-group">
+            <label>每页显示</label>
+            <select id="filter-limit">
+              <option value="10">10条</option>
+              <option value="20" selected>20条</option>
+              <option value="50">50条</option>
+              <option value="100">100条</option>
+            </select>
+          </div>
+          <button class="btn-filter" onclick="applyFilters()">🔍 查询</button>
+          <button class="btn-secondary" onclick="resetFilters()">🔄 重置</button>
+        </div>
+      </div>
+      
       <table>
         <thead>
           <tr>
@@ -254,6 +380,14 @@
           </tr>
         </tbody>
       </table>
+      
+      <div class="pagination">
+        <button onclick="goToPage(currentPage - 1)" id="btn-prev">上一页</button>
+        <div class="page-info">
+          第 <span id="current-page">1</span> 页，共 <span id="total-pages">1</span> 页
+        </div>
+        <button onclick="goToPage(currentPage + 1)" id="btn-next">下一页</button>
+      </div>
     </div>
   </div>
   
@@ -268,6 +402,10 @@
     document.getElementById("visit-count").textContent = localCount;
     document.getElementById("local-visits").textContent = localCount;
     
+    // Pagination state
+    let currentPage = 1;
+    let totalPages = 1;
+    
     // Show message helper
     function showMessage(text, type = 'success') {
       const msgEl = document.getElementById('message');
@@ -278,14 +416,43 @@
       }, 5000);
     }
     
+    // Build query parameters
+    function buildQueryParams() {
+      const params = new URLSearchParams();
+      
+      const startTime = document.getElementById('filter-start-time').value;
+      const endTime = document.getElementById('filter-end-time').value;
+      const ip = document.getElementById('filter-ip').value.trim();
+      const path = document.getElementById('filter-path').value.trim();
+      const limit = document.getElementById('filter-limit').value;
+      
+      if (startTime) params.append('start_time', startTime);
+      if (endTime) params.append('end_time', endTime);
+      if (ip) params.append('ip', ip);
+      if (path) params.append('path', path);
+      params.append('limit', limit);
+      params.append('page', currentPage);
+      
+      return params;
+    }
+    
     // Load statistics
     async function loadStats() {
       try {
-        const response = await fetch('/api/stats');
+        const params = buildQueryParams();
+        const response = await fetch(`/api/stats?${params}`);
         if (!response.ok) throw new Error('Failed to load stats');
         
         const data = await response.json();
         document.getElementById('total-visits').textContent = data.total_visits;
+        
+        // Update pagination
+        totalPages = data.total_pages || 1;
+        currentPage = data.current_page || 1;
+        document.getElementById('current-page').textContent = currentPage;
+        document.getElementById('total-pages').textContent = totalPages;
+        document.getElementById('btn-prev').disabled = currentPage <= 1;
+        document.getElementById('btn-next').disabled = currentPage >= totalPages;
         
         // Update recent records table
         const tbody = document.getElementById('records-body');
@@ -305,6 +472,30 @@
         console.error('Load stats error:', error);
         showMessage('加载统计数据失败', 'error');
       }
+    }
+    
+    // Apply filters
+    function applyFilters() {
+      currentPage = 1;
+      loadStats();
+    }
+    
+    // Reset filters
+    function resetFilters() {
+      document.getElementById('filter-start-time').value = '';
+      document.getElementById('filter-end-time').value = '';
+      document.getElementById('filter-ip').value = '';
+      document.getElementById('filter-path').value = '';
+      document.getElementById('filter-limit').value = '20';
+      currentPage = 1;
+      loadStats();
+    }
+    
+    // Go to page
+    function goToPage(page) {
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      loadStats();
     }
     
     // Export data
