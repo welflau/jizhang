@@ -1,0 +1,235 @@
+# asset_manifest.yaml — Setup database connection pool and base model
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI Asset List (Backend Service - Logging & Monitoring)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: ### Log Format Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: log_format_template**: Structured log format string
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: Fields: timestamp (ISO8601), level, module, function, message, context
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: Example: "2024-01-15T10:30:45.123Z | INFO | app.core.database | init_pool | Connection pool establis
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: ### Error Message Templates
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: error_msg_db_url_missing**: "DATABASE_URL not found in environment variables. Please set DATABASE_UR
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: error_msg_connection_failed**: "Failed to connect to database: {error_detail}. Check DATABASE_URL an
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: error_msg_pool_exhausted**: "Connection pool exhausted. All {max_connections} connections in use. Re
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: error_msg_query_timeout**: "Query execution timeout after 30s: {query_preview}"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: error_msg_transaction_rollback**: "Transaction rolled back due to error: {exception_type} - {excepti
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: ### Health Check Response Schemas
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: health_response_success**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: ```json
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: {
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: "status": "healthy",
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: "response_time_ms": 45,
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: "pool_size": 10,
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: "active_connections": 3,
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: "timestamp": "2024-01-15T10:30:45.123Z"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: }
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: health_response_failure**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: ```json
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: {
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: "status": "unhealthy",
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: "error": "Connection timeout after 5s",
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: "timestamp": "2024-01-15T10:30:45.123Z"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: }
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: ### Monitoring Metrics (for observability tools)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: metric_pool_size**: Gauge - Current connection pool size
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: metric_active_connections**: Gauge - Number of connections in use
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: metric_idle_connections**: Gauge - Number of idle connections
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: metric_query_duration**: Histogram - Query execution time distribution
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: metric_connection_errors**: Counter - Failed connection attempts
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: metric_transaction_rollbacks**: Counter - Number of rollbacks
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: metric_health_check_duration**: Histogram - Health check response time
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: ### Documentation Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: diagram_connection_lifecycle**: Mermaid diagram showing connection acquisition → use → release flow
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: diagram_error_handling**: Flowchart for exception handling and rollback logic
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: table_env_variables**: Markdown table listing all required environment variables
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: DATABASE_URL (required): PostgreSQL connection string
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: DB_POOL_SIZE (optional, default=10): Connection pool size
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: DB_MAX_OVERFLOW (optional, default=20): Max overflow connections
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: DB_ECHO (optional, default=false): Enable SQL query logging
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_047
+    type: icon
+    description: ### Code Comment Templates
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_048
+    type: icon
+    description: comment_security_warning**: "# SECURITY: Never log DATABASE_URL or connection strings containing cre
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_049
+    type: icon
+    description: comment_performance_note**: "# PERFORMANCE: Connection pool exhaustion indicates need for horizontal
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_050
+    type: icon
+    description: comment_migration_todo**: "# TODO: Integrate Alembic migrations in separate task (see issue #XXX)"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_051
+    type: icon
+    description: ### Example SQL Queries (for testing)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_052
+    type: icon
+    description: query_health_check**: "SELECT 1" (minimal query for liveness check)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_053
+    type: icon
+    description: query_table_exists**: "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'alem
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_054
+    type: icon
+    description: query_connection_count**: "SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_055
+    type: icon
+    description: ### No Visual Assets Required
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_056
+    type: icon
+    description: This is a backend service with no user-facing UI
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_057
+    type: icon
+    description: All "assets" are code templates, log formats, and monitoring schemas
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_058
+    type: icon
+    description: Visual design (colors, fonts, icons) not applicable
+    status: pending  # 待美术Agent确认来源和规格
