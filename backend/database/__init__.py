@@ -1,51 +1,31 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+"""Database initialization and connection management."""
 import os
+import aiosqlite
+from pathlib import Path
 
-# 数据库配置
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@localhost:5432/finance_tracker"
-)
-
-# 创建数据库引擎
-engine = create_engine(
-    DATABASE_URL,
-    pool_size=10,
-    max_overflow=20,
-    pool_pre_ping=True,
-    echo=False
-)
-
-# 创建会话工厂
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# 创建基类
-Base = declarative_base()
+DB_PATH = os.getenv("DB_PATH", "app.db")
 
 
-def get_db():
+async def get_db_connection() -> aiosqlite.Connection:
+    """Get database connection with optimized settings.
+    
+    Returns:
+        aiosqlite.Connection: Configured database connection
     """
-    获取数据库会话的依赖注入函数
-    """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    db = await aiosqlite.connect(DB_PATH)
+    db.row_factory = aiosqlite.Row
+    await db.execute("PRAGMA foreign_keys = ON")
+    await db.execute("PRAGMA busy_timeout = 5000")
+    return db
 
 
-def init_db():
-    """
-    初始化数据库，创建所有表
-    """
-    from backend.database.models import Category
-    Base.metadata.create_all(bind=engine)
-
-
-def drop_db():
-    """
-    删除所有表（仅用于开发环境）
-    """
-    Base.metadata.drop_all(bind=engine)
+async def init_db():
+    """Initialize database and run migrations."""
+    from .migration_runner import run_migrations
+    
+    # Ensure database directory exists
+    db_dir = Path(DB_PATH).parent
+    db_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Run migrations
+    await run_migrations(DB_PATH)
