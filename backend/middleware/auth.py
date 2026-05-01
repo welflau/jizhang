@@ -1,84 +1,87 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from backend.database import get_db
-from backend.models.user import User
 import jwt
 import os
-from datetime import datetime, timedelta
+from typing import Optional
 import logging
 
 logger = logging.getLogger(__name__)
 
+# JWT configuration
+JWT_SECRET = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
+JWT_ALGORITHM = "HS256"
+
 security = HTTPBearer()
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
+class AuthMiddleware:
+    """JWT authentication middleware"""
+    
+    @staticmethod
+    def decode_token(token: str) -> Optional[dict]:
+        """Decode and verify JWT token
+        
+        Args:
+            token: JWT token string
+            
+        Returns:
+            Decoded payload dict or None if invalid
+        """
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            return payload
+        except jwt.ExpiredSignatureError:
+            logger.warning("Token expired")
+            return None
+        except jwt.InvalidTokenError as e:
+            logger.warning(f"Invalid token: {e}")
+            return None
+    
+    @staticmethod
+    def create_token(user_id: int, username: str) -> str:
+        """Create JWT token for user
+        
+        Args:
+            user_id: User ID
+            username: Username
+            
+        Returns:
+            JWT token string
+        """
+        from datetime import datetime, timedelta
+        
+        payload = {
+            "user_id": user_id,
+            "username": username,
+            "exp": datetime.utcnow() + timedelta(days=7)
+        }
+        return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
-def create_access_token(user_id: int) -> str:
-    """Create JWT access token
+async def get_current_user(credentials: HTTPAuthorizationCredentials = security) -> dict:
+    """Dependency to get current authenticated user
     
     Args:
-        user_id: User ID to encode in token
+        credentials: HTTP Authorization credentials
         
     Returns:
-        JWT token string
-    """
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {
-        "sub": str(user_id),
-        "exp": expire
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: AsyncSession = Depends(get_db)
-) -> User:
-    """Get current authenticated user from JWT token
-    
-    Args:
-        credentials: HTTP Authorization header with Bearer token
-        db: Database session
-        
-    Returns:
-        Current user object
+        User payload dict with user_id and username
         
     Raises:
-        HTTPException 401: Invalid or expired token, or user not found
+        HTTPException: If token is invalid or missing
     """
     token = credentials.credentials
+    payload = AuthMiddleware.decode_token(token)
     
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = int(payload.get("sub"))
-        if not user_id:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="invalid token payload"
-            )
-    except jwt.ExpiredSignatureError:
+    if not payload:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="token expired"
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"}
         )
-    except jwt.InvalidTokenError as e:
-        logger.warning(f"Invalid token: {e}")
+    
+    if "user_id" not in payload:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="invalid token"
+            detail="Invalid token payload"
         )
     
-    # Fetch user from database
-    result = await db.execute(select(User).where(User.id == user_id))
-    user = result.scalar_one_or_none()
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="user not found"
-        )
-    
-    return user
+    return payload

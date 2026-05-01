@@ -1,228 +1,202 @@
 # 开发笔记 — 用户信息更新 API 开发
 
-> 2026-05-02 01:07 | LLM
+> 2026-05-02 01:08 | LLM
 
 ## 产出文件
-- [backend/models/user.py](/app#repo?file=backend/models/user.py) (1922 chars)
-- [backend/schemas/user.py](/app#repo?file=backend/schemas/user.py) (2475 chars)
-- [backend/services/user_service.py](/app#repo?file=backend/services/user_service.py) (5059 chars)
-- [backend/controllers/user_controller.py](/app#repo?file=backend/controllers/user_controller.py) (2115 chars)
-- [backend/middleware/auth.py](/app#repo?file=backend/middleware/auth.py) (2468 chars)
-- [backend/main.py](/app#repo?file=backend/main.py) (1609 chars)
-- [backend/database.py](/app#repo?file=backend/database.py) (707 chars)
-- [tests/test_user_service.py](/app#repo?file=tests/test_user_service.py) (5464 chars)
-- [requirements.txt](/app#repo?file=requirements.txt) (222 chars)
-- [README.md](/app#repo?file=README.md) (3918 chars)
+- [backend/models/user.py](/app#repo?file=backend/models/user.py) (3602 chars)
+- [backend/services/user_service.py](/app#repo?file=backend/services/user_service.py) (5327 chars)
+- [backend/middleware/auth.py](/app#repo?file=backend/middleware/auth.py) (2467 chars)
+- [backend/routes/user_routes.py](/app#repo?file=backend/routes/user_routes.py) (3022 chars)
+- [backend/main.py](/app#repo?file=backend/main.py) (1617 chars)
+- [backend/tests/test_user_routes.py](/app#repo?file=backend/tests/test_user_routes.py) (8425 chars)
+- [backend/requirements.txt](/app#repo?file=backend/requirements.txt) (178 chars)
+- [backend/init_db.py](/app#repo?file=backend/init_db.py) (1466 chars)
+- [README.md](/app#repo?file=README.md) (6020 chars)
 
-## 自测: 自测 5/6 通过 ⚠️
+## 自测: 自测 6/6 通过 ✅
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
-| 文件产出 | ✅ | 10 个文件 |
-| 入口文件 | ❌ | 缺少 |
+| 文件产出 | ✅ | 9 个文件 |
+| 入口文件 | ✅ | 存在 |
 | 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |
-| 磁盘落地 | ✅ | 10 个文件已落盘 |
+| 磁盘落地 | ✅ | 9 个文件已落盘 |
 
 ## 代码变更 (Diff)
 
-### backend/models/user.py (新建, 1922 chars)
+### backend/models/user.py (新建, 3602 chars)
 ```
-+ from sqlalchemy import Column, Integer, String, DateTime, Text
-+ from sqlalchemy.sql import func
-+ from backend.database import Base
-+ import json
-+ 
-+ class User(Base):
-+     """User model with profile and preferences support"""
-+     __tablename__ = "users"
-+ 
-+     id = Column(Integer, primary_key=True, index=True)
-+     username = Column(String(50), unique=True, nullable=False, index=True)
-+     email = Column(String(100), unique=True, nullable=False, index=True)
-+     password_hash = Column(String(255), nullable=False)
-+     nickname = Column(String(100), nullable=True)
-+     avatar_url = Column(String(500), nullable=True)
-+     preferences = Column(Text, nullable=True, default="{}")
-+     created_at = Column(DateTime(timezone=True), server_default=func.now())
-+     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-+ 
-+     def get_preferences(self) -> dict:
-+ ... (更多)
-```
-
-### backend/schemas/user.py (新建, 2475 chars)
-```
-+ from pydantic import BaseModel, Field, field_validator
-+ from typing import Optional, Dict, Any
++ from datetime import datetime
++ from typing import Optional
++ from pydantic import BaseModel, Field, validator
 + import re
 + 
-+ class UpdateUserInfoRequest(BaseModel):
-+     """Request schema for updating user information"""
-+     nickname: Optional[str] = Field(None, min_length=1, max_length=100, description="User nickname")
-+     avatar_url: Optional[str] = Field(None, max_length=500, description="Avatar URL")
-+     current_password: Optional[str] = Field(None, min_length=6, description="Current password for verification")
-+     new_password: Optional[str] = Field(None, min_length=6, max_length=128, description="New password")
-+     preferences: Optional[Dict[str, Any]] = Field(None, description="User preferences as JSON object")
++ class UserPreferences(BaseModel):
++     """User preference settings"""
++     theme: str = Field(default="light", description="UI theme: light/dark")
++     language: str = Field(default="en", description="Interface language")
++     notifications_enabled: bool = Field(default=True, description="Enable notifications")
++     email_notifications: bool = Field(default=True, description="Enable email notifications")
 + 
-+     @field_validator("nickname")
-+     @classmethod
-+     def validate_nickname(cls, v: Optional[str]) -> Optional[str]:
-+         if v is not None:
-+             v = v.strip()
-+             if not v:
-+                 raise ValueError("nickname cannot be empty or whitespace only")
-+             if len(v) > 100:
++     class Config:
++         json_schema_extra = {
++             "example": {
++                 "theme": "dark",
++                 "language": "zh",
++                 "notifications_enabled": True,
++                 "email_notifications": False
++             }
 + ... (更多)
 ```
 
-### backend/services/user_service.py (新建, 5059 chars)
+### backend/services/user_service.py (新建, 5327 chars)
 ```
-+ from sqlalchemy.ext.asyncio import AsyncSession
-+ from sqlalchemy import select
-+ from backend.models.user import User
-+ from backend.schemas.user import UpdateUserInfoRequest
-+ from fastapi import HTTPException
++ import aiosqlite
 + import bcrypt
++ import json
++ from datetime import datetime
++ from typing import Optional, Dict, Any
++ from fastapi import HTTPException
 + import logging
 + 
 + logger = logging.getLogger(__name__)
 + 
 + class UserService:
-+     """Service layer for user operations"""
-+ 
-+     @staticmethod
-+     async def get_user_by_id(db: AsyncSession, user_id: int) -> User:
++     """User service for database operations"""
++     
++     def __init__(self, db_path: str = "app.db"):
++         self.db_path = db_path
++     
++     async def get_user_by_id(self, user_id: int) -> Optional[Dict[str, Any]]:
 +         """Get user by ID
 +         
 +         Args:
-+             db: Database session
-+             user_id: User ID
 + ... (更多)
 ```
 
-### backend/controllers/user_controller.py (新建, 2115 chars)
+### backend/middleware/auth.py (新建, 2467 chars)
 ```
-+ from fastapi import APIRouter, Depends, HTTPException
-+ from sqlalchemy.ext.asyncio import AsyncSession
-+ from backend.database import get_db
-+ from backend.schemas.user import UpdateUserInfoRequest, UserResponse
-+ from backend.services.user_service import UserService
-+ from backend.middleware.auth import get_current_user
-+ from backend.models.user import User
-+ import logging
-+ 
-+ logger = logging.getLogger(__name__)
-+ 
-+ router = APIRouter(prefix="/api/users", tags=["users"])
-+ 
-+ @router.put("/me", response_model=UserResponse)
-+ async def update_user_info(
-+     update_data: UpdateUserInfoRequest,
-+     current_user: User = Depends(get_current_user),
-+     db: AsyncSession = Depends(get_db)
-+ ):
-+     """Update current user information
-+ ... (更多)
-```
-
-### backend/middleware/auth.py (新建, 2468 chars)
-```
-+ from fastapi import Depends, HTTPException, status
++ from fastapi import Request, HTTPException, status
 + from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-+ from sqlalchemy.ext.asyncio import AsyncSession
-+ from sqlalchemy import select
-+ from backend.database import get_db
-+ from backend.models.user import User
 + import jwt
 + import os
-+ from datetime import datetime, timedelta
++ from typing import Optional
 + import logging
 + 
 + logger = logging.getLogger(__name__)
++ 
++ # JWT configuration
++ JWT_SECRET = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
++ JWT_ALGORITHM = "HS256"
 + 
 + security = HTTPBearer()
 + 
-+ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
-+ ALGORITHM = "HS256"
-+ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
-+ 
-+ def create_access_token(user_id: int) -> str:
++ class AuthMiddleware:
++     """JWT authentication middleware"""
++     
++     @staticmethod
++     def decode_token(token: str) -> Optional[dict]:
 + ... (更多)
 ```
 
-### backend/main.py (新建, 1609 chars)
+### backend/routes/user_routes.py (新建, 3022 chars)
 ```
-+ from fastapi import FastAPI
-+ from fastapi.middleware.cors import CORSMiddleware
++ from fastapi import APIRouter, Depends, HTTPException, status
++ from backend.models.user import UserUpdateRequest, UserResponse
++ from backend.services.user_service import UserService
++ from backend.middleware.auth import get_current_user
++ import logging
++ 
++ logger = logging.getLogger(__name__)
++ 
++ router = APIRouter(prefix="/api/user", tags=["user"])
++ user_service = UserService()
++ 
++ @router.get("/profile", response_model=UserResponse)
++ async def get_profile(current_user: dict = Depends(get_current_user)):
++     """Get current user profile
++     
++     Args:
++         current_user: Authenticated user from JWT token
++         
++     Returns:
++         User profile data
++ ... (更多)
+```
+
+### backend/main.py (新建, 1617 chars)
+```
++ from fastapi import FastAPI, Request
 + from fastapi.responses import JSONResponse
-+ from backend.database import engine, Base
-+ from backend.controllers import user_controller
++ from fastapi.middleware.cors import CORSMiddleware
++ from backend.routes import user_routes
 + import logging
 + import os
 + 
 + # Configure logging
 + logging.basicConfig(
 +     level=logging.INFO,
-+     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
++     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 + )
 + logger = logging.getLogger(__name__)
 + 
 + app = FastAPI(
-+     title="User Management API",
-+     description="API for user information management with authentication",
++     title="User Profile API",
++     description="API for user profile management with authentication",
 +     version="1.0.0"
 + )
-+ ... (更多)
-```
-
-### backend/database.py (新建, 707 chars)
-```
-+ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-+ from sqlalchemy.orm import declarative_base
-+ import os
-+ 
-+ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./app.db")
-+ 
-+ engine = create_async_engine(
-+     DATABASE_URL,
-+     echo=False,
-+     connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
-+ )
-+ 
-+ AsyncSessionLocal = async_sessionmaker(
-+     engine,
-+     class_=AsyncSession,
-+     expire_on_commit=False
-+ )
-+ 
-+ Base = declarative_base()
 + 
 + ... (更多)
 ```
 
-### tests/test_user_service.py (新建, 5464 chars)
+### backend/tests/test_user_routes.py (新建, 8425 chars)
 ```
 + import pytest
-+ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-+ from backend.models.user import User
-+ from backend.services.user_service import UserService
-+ from backend.schemas.user import UpdateUserInfoRequest
-+ from backend.database import Base
-+ from fastapi import HTTPException
++ from fastapi.testclient import TestClient
++ from backend.main import app
++ from backend.middleware.auth import AuthMiddleware
++ import aiosqlite
 + import bcrypt
++ import json
++ import os
 + 
-+ # Test database setup
-+ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
++ client = TestClient(app)
 + 
-+ @pytest.fixture
-+ async def db_session():
-+     """Create test database session"""
-+     engine = create_async_engine(TEST_DATABASE_URL, echo=False)
-+     async with engine.begin() as conn:
-+         await conn.run_sync(Base.metadata.create_all)
++ # Test database path
++ TEST_DB = "test_app.db"
++ 
++ @pytest.fixture(scope="module")
++ async def setup_test_db():
++     """Setup test database with sample user"""
++     # Remove existing test db
++     if os.path.exists(TEST_DB):
++         os.remove(TEST_DB)
++ ... (更多)
+```
+
+### backend/init_db.py (新建, 1466 chars)
+```
++ import asyncio
++ import aiosqlite
++ import os
++ 
++ DB_PATH = "app.db"
++ 
++ async def init_database():
++     """Initialize database schema"""
++     # Remove existing db for fresh start (only for development)
++     if os.path.exists(DB_PATH):
++         print(f"Removing existing database: {DB_PATH}")
++         os.remove(DB_PATH)
 +     
-+     AsyncTestSession = async_sessionmaker(
++     async with aiosqlite.connect(DB_PATH) as db:
++         # Enable foreign keys
++         await db.execute("PRAGMA foreign_keys = ON")
++         
++         # Create users table
++         await db.execute("""
++             CREATE TABLE IF NOT EXISTS users (
 + ... (更多)
 ```

@@ -1,157 +1,259 @@
-# User Information Update API
+# User Profile Update API
+
+## Overview
+
+FastAPI-based backend service for user profile management with JWT authentication.
 
 ## Features
 
-Complete user profile management system with:
+- ✅ JWT authentication middleware
+- ✅ User profile retrieval (GET /api/user/profile)
+- ✅ User profile update (PATCH /api/user/profile)
+  - Nickname update
+  - Avatar URL update (with validation)
+  - Password change (with current password verification)
+  - User preferences (theme, language, notifications)
+- ✅ Password security (bcrypt hashing with salt rounds=10)
+- ✅ Input validation (Pydantic v2 schemas)
+- ✅ Comprehensive test coverage
 
-- **Nickname Update**: Change display name (1-100 characters)
-- **Avatar Management**: Update profile picture URL
-- **Password Change**: Secure password update with current password verification
-  - Minimum 6 characters
-  - Must contain at least one letter and one number
-  - Encrypted with bcrypt
-- **Preferences Storage**: Persist user settings as JSON
-  - Automatic merge with existing preferences
-  - Supports any JSON-serializable data
+## Tech Stack
+
+- **Framework**: FastAPI 0.104+
+- **Database**: SQLite (async via aiosqlite)
+- **Authentication**: JWT (PyJWT)
+- **Password Hashing**: bcrypt
+- **Validation**: Pydantic v2
+- **Testing**: pytest + pytest-asyncio
+
+## Project Structure
+
+```
+backend/
+├── main.py                 # FastAPI app entry point
+├── models/
+│   └── user.py            # Pydantic schemas
+├── services/
+│   └── user_service.py    # Database operations
+├── routes/
+│   └── user_routes.py     # API endpoints
+├── middleware/
+│   └── auth.py            # JWT authentication
+├── tests/
+│   └── test_user_routes.py # Unit tests
+├── init_db.py             # Database initialization
+└── requirements.txt       # Python dependencies
+```
+
+## Setup
+
+### 1. Install Dependencies
+
+```bash
+pip install -r backend/requirements.txt
+```
+
+### 2. Initialize Database
+
+```bash
+python backend/init_db.py
+```
+
+This creates `app.db` with the `users` table.
+
+### 3. Set Environment Variables
+
+```bash
+export JWT_SECRET="your-secret-key-change-in-production"
+export PORT=8080
+```
+
+### 4. Run Server
+
+```bash
+python backend/main.py
+```
+
+Or with uvicorn directly:
+
+```bash
+uvicorn backend.main:app --host 0.0.0.0 --port 8080 --reload
+```
 
 ## API Endpoints
 
-### Update User Information
+### GET /api/user/profile
 
-```http
-PUT /api/users/me
-Authorization: Bearer <jwt_token>
-Content-Type: application/json
+Get current user profile.
 
+**Headers**:
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Response** (200):
+```json
 {
-  "nickname": "New Nickname",
-  "avatar_url": "https://example.com/avatar.jpg",
+  "id": 1,
+  "username": "john_doe",
+  "email": "john@example.com",
+  "nickname": "JohnDoe",
+  "avatar": "https://example.com/avatar.jpg",
+  "preferences": {
+    "theme": "dark",
+    "language": "en",
+    "notifications_enabled": true
+  },
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-02T00:00:00Z"
+}
+```
+
+### PATCH /api/user/profile
+
+Update current user profile.
+
+**Headers**:
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Request Body** (all fields optional):
+```json
+{
+  "nickname": "NewNickname",
+  "avatar": "https://example.com/new-avatar.jpg",
   "current_password": "OldPass123",
   "new_password": "NewPass456",
   "preferences": {
     "theme": "dark",
-    "language": "en",
-    "notifications": true
+    "language": "zh",
+    "notifications_enabled": false,
+    "email_notifications": true
   }
 }
 ```
 
-**Response:**
+**Validation Rules**:
+- `nickname`: 2-50 characters
+- `avatar`: Valid HTTP/HTTPS URL
+- `new_password`: Min 8 chars, must contain uppercase, lowercase, and digit
+- `current_password`: Required when changing password
 
+**Response** (200):
 ```json
 {
   "id": 1,
-  "username": "testuser",
-  "email": "test@example.com",
-  "nickname": "New Nickname",
-  "avatar_url": "https://example.com/avatar.jpg",
-  "preferences": {
-    "theme": "dark",
-    "language": "en",
-    "notifications": true
-  },
-  "created_at": "2024-01-01T00:00:00",
-  "updated_at": "2024-01-02T12:30:00"
+  "username": "john_doe",
+  "email": "john@example.com",
+  "nickname": "NewNickname",
+  "avatar": "https://example.com/new-avatar.jpg",
+  "preferences": {"theme": "dark", "language": "zh"},
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-02T10:30:00Z"
 }
 ```
 
-### Get Current User
+**Error Responses**:
+- `400`: Invalid request data (e.g., missing current_password when changing password)
+- `401`: Invalid/expired token or incorrect current password
+- `404`: User not found
+- `422`: Validation error (weak password, invalid URL, etc.)
 
-```http
-GET /api/users/me
-Authorization: Bearer <jwt_token>
+## Testing
+
+Run all tests:
+
+```bash
+pytest backend/tests/ -v
 ```
 
-## Security
+Run specific test:
 
-- **Authentication Required**: All endpoints require valid JWT token
-- **Authorization**: Users can only update their own information
-- **Password Verification**: Current password must be provided when changing password
-- **Password Encryption**: All passwords hashed with bcrypt (cost factor 12)
-- **Input Validation**: Pydantic schemas validate all input data
+```bash
+pytest backend/tests/test_user_routes.py::test_update_profile_password_success -v
+```
+
+**Test Coverage**:
+- ✅ GET profile with valid token
+- ✅ GET profile unauthorized (no token)
+- ✅ GET profile with invalid token
+- ✅ PATCH update nickname
+- ✅ PATCH update avatar (valid URL)
+- ✅ PATCH update avatar (invalid URL)
+- ✅ PATCH change password (correct current password)
+- ✅ PATCH change password (wrong current password)
+- ✅ PATCH change password (missing current password)
+- ✅ PATCH weak password validation
+- ✅ PATCH update preferences
+- ✅ PATCH update multiple fields at once
+
+## Security Features
+
+1. **Password Hashing**: bcrypt with 10 salt rounds
+2. **JWT Authentication**: 7-day token expiration
+3. **Input Validation**: Pydantic schemas with regex patterns
+4. **SQL Injection Prevention**: Parameterized queries via aiosqlite
+5. **Sensitive Data Protection**: Password hash never exposed in API responses
+6. **CORS**: Configurable origin whitelist (currently allows all for development)
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `JWT_SECRET` | `your-secret-key-change-in-production` | JWT signing secret |
+| `PORT` | `8080` | Server port |
+
+⚠️ **Production Checklist**:
+- [ ] Change `JWT_SECRET` to a strong random value
+- [ ] Configure CORS `allow_origins` to specific domains
+- [ ] Use HTTPS in production
+- [ ] Set up proper logging and monitoring
+- [ ] Use environment-specific `.env` files (never commit secrets)
 
 ## Database Schema
 
 ```sql
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    nickname VARCHAR(100),
-    avatar_url VARCHAR(500),
-    preferences TEXT,  -- JSON string
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    nickname TEXT,
+    avatar TEXT,
+    preferences TEXT DEFAULT '{}',  -- JSON string
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_email ON users(email);
 ```
 
-## Installation
+## Troubleshooting
+
+### Database Locked Error
+
+If you see `database is locked` errors:
+
+```python
+# In user_service.py, increase timeout:
+async with aiosqlite.connect(self.db_path, timeout=10.0) as db:
+    ...
+```
+
+### Token Expired
+
+Generate a new token using `AuthMiddleware.create_token(user_id, username)`.
+
+### Test Database Conflicts
+
+Tests use `test_app.db`. If tests fail, manually delete it:
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Set environment variables
-export JWT_SECRET_KEY="your-secret-key-change-in-production"
-export DATABASE_URL="sqlite+aiosqlite:///./app.db"
-
-# Run server
-python backend/main.py
+rm test_app.db
 ```
 
-## Testing
+## License
 
-```bash
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage
-pytest tests/ --cov=backend --cov-report=html
-```
-
-## Architecture
-
-- **Controller Layer** (`user_controller.py`): HTTP request handling and response formatting
-- **Service Layer** (`user_service.py`): Business logic and data validation
-- **Model Layer** (`user.py`): SQLAlchemy ORM models
-- **Schema Layer** (`user.py` in schemas): Pydantic request/response validation
-- **Middleware** (`auth.py`): JWT authentication and authorization
-
-## Error Handling
-
-- `400 Bad Request`: Validation error or incorrect current password
-- `401 Unauthorized`: Missing or invalid JWT token
-- `404 Not Found`: User not found
-- `500 Internal Server Error`: Unexpected server error (logged with full traceback)
-
-## Validation Rules
-
-### Nickname
-- Length: 1-100 characters
-- Cannot be empty or whitespace only
-- Automatically trimmed
-
-### Avatar URL
-- Must start with `http://`, `https://`, or `/`
-- Max length: 500 characters
-
-### Password
-- Minimum 6 characters
-- Maximum 128 characters
-- Must contain at least one letter
-- Must contain at least one number
-
-### Preferences
-- Must be valid JSON object
-- Automatically merged with existing preferences
-- No size limit (reasonable use expected)
-
-## Notes
-
-- All fields in update request are optional
-- Unchanged fields are preserved
-- Preferences are merged (not replaced) with existing values
-- Password change requires `current_password` for security
-- All timestamps in ISO 8601 format
-- Database uses async SQLAlchemy with aiosqlite
+MIT
