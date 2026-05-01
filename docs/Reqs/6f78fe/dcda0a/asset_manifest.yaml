@@ -2,8 +2,88 @@
 # 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
 # status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: placeholder
+  - id: user_circle
     type: icon
-    description: 待补充
-    source_hint: iconify
+    description: User profile avatar placeholder icon 48px outline
+    source_hint: heroicons
+    status: pending
+  - id: camera
+    type: icon
+    description: Camera icon for avatar upload overlay 32px outline
+    source_hint: heroicons
+    status: pending
+  - id: eye
+    type: icon
+    description: Show password visibility icon 20px outline
+    source_hint: heroicons
+    status: pending
+  - id: eye_slash
+    type: icon
+    description: Hide password visibility icon 20px outline
+    source_hint: heroicons
+    status: pending
+  - id: check_circle
+    type: icon
+    description: Success checkmark icon 24px filled
+    source_hint: heroicons
+    status: pending
+  - id: x_circle
+    type: icon
+    description: Error alert icon 24px filled
+    source_hint: heroicons
+    status: pending
+  - id: check
+    type: icon
+    description: Requirement met checkmark 16px outline
+    source_hint: heroicons
+    status: pending
+  - id: circle
+    type: icon
+    description: Requirement unchecked circle 16px outline
+    source_hint: heroicons
+    status: pending
+  - id: chevron_down
+    type: icon
+    description: Dropdown select chevron 20px outline
+    source_hint: heroicons
+    status: pending
+  - id: x_mark
+    type: icon
+    description: Toast close button icon 20px outline
+    source_hint: heroicons
+    status: pending
+  - id: spinner
+    type: icon
+    description: Loading spinner animation 20px/48px
+    source_hint: heroicons
+    status: pending
+  - id: lock_closed
+    type: icon
+    description: Password field icon 20px outline
+    source_hint: heroicons
+    status: pending
+  - id: pencil
+    type: icon
+    description: Edit nickname icon 16px outline
+    source_hint: heroicons
+    status: pending
+  - id: globe
+    type: icon
+    description: Currency/language preference icon 20px outline
+    source_hint: heroicons
+    status: pending
+  - id: upload_placeholder
+    type: illustration
+    description: Avatar upload empty state illustration 96x96 minimal line art
+    source_hint: undraw
+    status: pending
+  - id: password_security
+    type: illustration
+    description: Password strength visual metaphor 200x150
+    source_hint: undraw
+    status: pending
+  - id: settings_success
+    type: illustration
+    description: Settings saved confirmation illustration 240x180
+    source_hint: undraw
     status: pending

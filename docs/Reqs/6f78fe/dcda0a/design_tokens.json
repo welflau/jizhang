@@ -1,16 +1,68 @@
 {
   "colors": {
     "primary": "#4F46E5",
-    "bg": "#F9FAFB",
-    "text": "#111827"
+    "primary_hover": "#4338CA",
+    "primary_disabled": "#A5B4FC",
+    "success": "#10B981",
+    "error": "#EF4444",
+    "warning": "#F59E0B",
+    "bg_primary": "#FFFFFF",
+    "bg_secondary": "#F9FAFB",
+    "bg_tertiary": "#F3F4F6",
+    "bg_overlay": "rgba(0, 0, 0, 0.5)",
+    "text_primary": "#111827",
+    "text_secondary": "#6B7280",
+    "text_disabled": "#9CA3AF",
+    "text_inverse": "#FFFFFF",
+    "border_default": "#E5E7EB",
+    "border_focus": "#4F46E5",
+    "border_error": "#EF4444",
+    "dark_bg_primary": "#1F2937",
+    "dark_bg_secondary": "#111827",
+    "dark_text_primary": "#F9FAFB",
+    "dark_text_secondary": "#D1D5DB",
+    "dark_border_default": "#374151"
   },
   "typography": {
-    "base": "14px"
+    "font_family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    "font_size_xs": "12px",
+    "font_size_sm": "14px",
+    "font_size_base": "16px",
+    "font_size_lg": "18px",
+    "font_size_xl": "20px",
+    "font_size_2xl": "24px",
+    "font_weight_normal": "400",
+    "font_weight_medium": "500",
+    "font_weight_semibold": "600",
+    "font_weight_bold": "700",
+    "line_height_tight": "1.25",
+    "line_height_normal": "1.5",
+    "line_height_relaxed": "1.75"
   },
   "spacing": {
-    "md": "16px"
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px",
+    "2xl": "48px"
   },
   "radius": {
-    "md": "8px"
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+  },
+  "transition": {
+    "fast": "150ms ease-in-out",
+    "base": "200ms ease-in-out",
+    "slow": "300ms ease-in-out"
   }
 }
