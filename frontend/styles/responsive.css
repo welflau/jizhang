@@ -1,46 +1,47 @@
-/* ===================================
-   Responsive Layout System
-   =================================== */
+/* Responsive Layout Breakpoints and Grid System */
 
-/* CSS Variables for Breakpoints */
+/* ==================== Breakpoint Variables ==================== */
 :root {
+  /* Breakpoint values */
   --breakpoint-mobile: 768px;
   --breakpoint-tablet: 1024px;
-  --breakpoint-desktop: 1024px;
   
-  /* Container Max Widths */
+  /* Container max widths */
   --container-mobile: 100%;
   --container-tablet: 720px;
   --container-desktop: 1200px;
-  --container-wide: 1400px;
   
-  /* Grid Gutters */
+  /* Grid gutters */
   --gutter-mobile: 16px;
   --gutter-tablet: 24px;
   --gutter-desktop: 32px;
   
-  /* Spacing Scale */
+  /* Spacing scale */
   --spacing-xs: 8px;
   --spacing-sm: 16px;
   --spacing-md: 24px;
   --spacing-lg: 32px;
   --spacing-xl: 48px;
   
-  /* Typography Scale */
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 30px;
-  --font-size-4xl: 36px;
+  /* Font sizes responsive */
+  --font-size-h1-mobile: 24px;
+  --font-size-h1-tablet: 28px;
+  --font-size-h1-desktop: 32px;
+  
+  --font-size-h2-mobile: 20px;
+  --font-size-h2-tablet: 22px;
+  --font-size-h2-desktop: 24px;
+  
+  --font-size-h3-mobile: 18px;
+  --font-size-h3-tablet: 20px;
+  --font-size-h3-desktop: 20px;
+  
+  --font-size-body-mobile: 14px;
+  --font-size-body-tablet: 14px;
+  --font-size-body-desktop: 16px;
 }
 
-/* ===================================
-   Container System
-   =================================== */
-
+/* ==================== Base Responsive Container ==================== */
 .container {
   width: 100%;
   margin-left: auto;
@@ -55,250 +56,173 @@
   padding-right: var(--gutter-mobile);
 }
 
-/* ===================================
-   Responsive Grid System
-   =================================== */
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: calc(var(--gutter-mobile) / -2);
-  margin-right: calc(var(--gutter-mobile) / -2);
+/* ==================== Mobile First Base Styles (<768px) ==================== */
+/* Default styles for mobile devices */
+body {
+  font-size: var(--font-size-body-mobile);
 }
 
-.col {
-  flex: 1;
-  padding-left: calc(var(--gutter-mobile) / 2);
-  padding-right: calc(var(--gutter-mobile) / 2);
+h1 {
+  font-size: var(--font-size-h1-mobile);
+  line-height: 1.3;
 }
 
-/* Column Widths - Mobile First */
-.col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-.col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-.col-3 { flex: 0 0 25%; max-width: 25%; }
-.col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-.col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-.col-6 { flex: 0 0 50%; max-width: 50%; }
-.col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-.col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-.col-9 { flex: 0 0 75%; max-width: 75%; }
-.col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-.col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
-.col-12 { flex: 0 0 100%; max-width: 100%; }
-
-/* ===================================
-   Responsive Utilities
-   =================================== */
-
-/* Display Utilities */
-.d-none { display: none !important; }
-.d-block { display: block !important; }
-.d-flex { display: flex !important; }
-.d-inline { display: inline !important; }
-.d-inline-block { display: inline-block !important; }
-
-/* Text Alignment */
-.text-left { text-align: left !important; }
-.text-center { text-align: center !important; }
-.text-right { text-align: right !important; }
-
-/* Spacing Utilities */
-.m-0 { margin: 0 !important; }
-.mt-0 { margin-top: 0 !important; }
-.mb-0 { margin-bottom: 0 !important; }
-.ml-0 { margin-left: 0 !important; }
-.mr-0 { margin-right: 0 !important; }
-
-.p-0 { padding: 0 !important; }
-.pt-0 { padding-top: 0 !important; }
-.pb-0 { padding-bottom: 0 !important; }
-.pl-0 { padding-left: 0 !important; }
-.pr-0 { padding-right: 0 !important; }
-
-/* ===================================
-   Mobile Styles (< 768px)
-   =================================== */
-
-@media (max-width: 767px) {
-  :root {
-    --font-size-base: 14px;
-    --font-size-lg: 16px;
-    --font-size-xl: 18px;
-    --font-size-2xl: 20px;
-    --font-size-3xl: 24px;
-    --font-size-4xl: 28px;
-  }
-  
-  .container {
-    max-width: var(--container-mobile);
-    padding-left: var(--gutter-mobile);
-    padding-right: var(--gutter-mobile);
-  }
-  
-  .row {
-    margin-left: calc(var(--gutter-mobile) / -2);
-    margin-right: calc(var(--gutter-mobile) / -2);
-  }
-  
-  /* Mobile Column Overrides */
-  .col-mobile-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-  .col-mobile-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-  .col-mobile-3 { flex: 0 0 25%; max-width: 25%; }
-  .col-mobile-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-  .col-mobile-6 { flex: 0 0 50%; max-width: 50%; }
-  .col-mobile-12 { flex: 0 0 100%; max-width: 100%; }
-  
-  /* Mobile Display Utilities */
-  .d-mobile-none { display: none !important; }
-  .d-mobile-block { display: block !important; }
-  .d-mobile-flex { display: flex !important; }
-  
-  /* Mobile Text Alignment */
-  .text-mobile-left { text-align: left !important; }
-  .text-mobile-center { text-align: center !important; }
-  .text-mobile-right { text-align: right !important; }
-  
-  /* Mobile Spacing */
-  .m-mobile-0 { margin: 0 !important; }
-  .mt-mobile-1 { margin-top: var(--spacing-xs) !important; }
-  .mt-mobile-2 { margin-top: var(--spacing-sm) !important; }
-  .mt-mobile-3 { margin-top: var(--spacing-md) !important; }
-  .mb-mobile-1 { margin-bottom: var(--spacing-xs) !important; }
-  .mb-mobile-2 { margin-bottom: var(--spacing-sm) !important; }
-  .mb-mobile-3 { margin-bottom: var(--spacing-md) !important; }
-  
-  .p-mobile-0 { padding: 0 !important; }
-  .p-mobile-1 { padding: var(--spacing-xs) !important; }
-  .p-mobile-2 { padding: var(--spacing-sm) !important; }
-  .p-mobile-3 { padding: var(--spacing-md) !important; }
+h2 {
+  font-size: var(--font-size-h2-mobile);
+  line-height: 1.4;
 }
 
-/* ===================================
-   Tablet Styles (768px - 1023px)
-   =================================== */
+h3 {
+  font-size: var(--font-size-h3-mobile);
+  line-height: 1.4;
+}
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  :root {
-    --font-size-base: 15px;
-    --font-size-lg: 17px;
-    --font-size-xl: 19px;
-    --font-size-2xl: 22px;
-    --font-size-3xl: 28px;
-    --font-size-4xl: 32px;
-  }
-  
+/* Mobile navigation adjustments */
+.mobile-only {
+  display: block;
+}
+
+.tablet-only,
+.desktop-only {
+  display: none;
+}
+
+/* Mobile spacing utilities */
+.section-padding-mobile {
+  padding: var(--spacing-md) 0;
+}
+
+.card-mobile {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* ==================== Tablet Styles (768px - 1023px) ==================== */
+@media screen and (min-width: 768px) {
+  /* Container adjustments */
   .container {
     max-width: var(--container-tablet);
     padding-left: var(--gutter-tablet);
     padding-right: var(--gutter-tablet);
   }
   
-  .row {
-    margin-left: calc(var(--gutter-tablet) / -2);
-    margin-right: calc(var(--gutter-tablet) / -2);
+  .container-fluid {
+    padding-left: var(--gutter-tablet);
+    padding-right: var(--gutter-tablet);
   }
   
-  .col {
-    padding-left: calc(var(--gutter-tablet) / 2);
-    padding-right: calc(var(--gutter-tablet) / 2);
+  /* Typography adjustments */
+  body {
+    font-size: var(--font-size-body-tablet);
   }
   
-  /* Tablet Column Overrides */
-  .col-tablet-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-  .col-tablet-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-  .col-tablet-3 { flex: 0 0 25%; max-width: 25%; }
-  .col-tablet-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-  .col-tablet-6 { flex: 0 0 50%; max-width: 50%; }
-  .col-tablet-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-  .col-tablet-12 { flex: 0 0 100%; max-width: 100%; }
+  h1 {
+    font-size: var(--font-size-h1-tablet);
+  }
   
-  /* Tablet Display Utilities */
-  .d-tablet-none { display: none !important; }
-  .d-tablet-block { display: block !important; }
-  .d-tablet-flex { display: flex !important; }
+  h2 {
+    font-size: var(--font-size-h2-tablet);
+  }
   
-  /* Tablet Text Alignment */
-  .text-tablet-left { text-align: left !important; }
-  .text-tablet-center { text-align: center !important; }
-  .text-tablet-right { text-align: right !important; }
+  h3 {
+    font-size: var(--font-size-h3-tablet);
+  }
   
-  /* Tablet Spacing */
-  .m-tablet-0 { margin: 0 !important; }
-  .mt-tablet-2 { margin-top: var(--spacing-sm) !important; }
-  .mt-tablet-3 { margin-top: var(--spacing-md) !important; }
-  .mt-tablet-4 { margin-top: var(--spacing-lg) !important; }
-  .mb-tablet-2 { margin-bottom: var(--spacing-sm) !important; }
-  .mb-tablet-3 { margin-bottom: var(--spacing-md) !important; }
-  .mb-tablet-4 { margin-bottom: var(--spacing-lg) !important; }
+  /* Visibility utilities */
+  .mobile-only {
+    display: none;
+  }
   
-  .p-tablet-2 { padding: var(--spacing-sm) !important; }
-  .p-tablet-3 { padding: var(--spacing-md) !important; }
-  .p-tablet-4 { padding: var(--spacing-lg) !important; }
+  .tablet-only {
+    display: block;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+  
+  /* Tablet spacing */
+  .section-padding-tablet {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .card-tablet {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Tablet grid adjustments */
+  .tablet-two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gutter-tablet);
+  }
 }
 
-/* ===================================
-   Desktop Styles (>= 1024px)
-   =================================== */
-
-@media (min-width: 1024px) {
+/* ==================== Desktop Styles (>=1024px) ==================== */
+@media screen and (min-width: 1024px) {
+  /* Container adjustments */
   .container {
     max-width: var(--container-desktop);
     padding-left: var(--gutter-desktop);
     padding-right: var(--gutter-desktop);
   }
   
-  .row {
-    margin-left: calc(var(--gutter-desktop) / -2);
-    margin-right: calc(var(--gutter-desktop) / -2);
+  .container-fluid {
+    padding-left: var(--gutter-desktop);
+    padding-right: var(--gutter-desktop);
   }
   
-  .col {
-    padding-left: calc(var(--gutter-desktop) / 2);
-    padding-right: calc(var(--gutter-desktop) / 2);
+  /* Typography adjustments */
+  body {
+    font-size: var(--font-size-body-desktop);
   }
   
-  /* Desktop Column Overrides */
-  .col-desktop-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-  .col-desktop-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-  .col-desktop-3 { flex: 0 0 25%; max-width: 25%; }
-  .col-desktop-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-  .col-desktop-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-  .col-desktop-6 { flex: 0 0 50%; max-width: 50%; }
-  .col-desktop-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-  .col-desktop-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-  .col-desktop-9 { flex: 0 0 75%; max-width: 75%; }
-  .col-desktop-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-  .col-desktop-12 { flex: 0 0 100%; max-width: 100%; }
+  h1 {
+    font-size: var(--font-size-h1-desktop);
+  }
   
-  /* Desktop Display Utilities */
-  .d-desktop-none { display: none !important; }
-  .d-desktop-block { display: block !important; }
-  .d-desktop-flex { display: flex !important; }
+  h2 {
+    font-size: var(--font-size-h2-desktop);
+  }
   
-  /* Desktop Text Alignment */
-  .text-desktop-left { text-align: left !important; }
-  .text-desktop-center { text-align: center !important; }
-  .text-desktop-right { text-align: right !important; }
+  h3 {
+    font-size: var(--font-size-h3-desktop);
+  }
   
-  /* Desktop Spacing */
-  .m-desktop-0 { margin: 0 !important; }
-  .mt-desktop-3 { margin-top: var(--spacing-md) !important; }
-  .mt-desktop-4 { margin-top: var(--spacing-lg) !important; }
-  .mt-desktop-5 { margin-top: var(--spacing-xl) !important; }
-  .mb-desktop-3 { margin-bottom: var(--spacing-md) !important; }
-  .mb-desktop-4 { margin-bottom: var(--spacing-lg) !important; }
-  .mb-desktop-5 { margin-bottom: var(--spacing-xl) !important; }
+  /* Visibility utilities */
+  .mobile-only,
+  .tablet-only {
+    display: none;
+  }
   
-  .p-desktop-3 { padding: var(--spacing-md) !important; }
-  .p-desktop-4 { padding: var(--spacing-lg) !important; }
-  .p-desktop-5 { padding: var(--spacing-xl) !important; }
+  .desktop-only {
+    display: block;
+  }
+  
+  /* Desktop spacing */
+  .section-padding-desktop {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  .card-desktop {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  /* Desktop grid adjustments */
+  .desktop-three-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gutter-desktop);
+  }
+  
+  .desktop-four-columns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gutter-desktop);
+  }
 }
 
-/* ===================================
-   Ant Design Grid System Override
-   =================================== */
-
-/* Customize Ant Design breakpoints to match our system */
+/* ==================== Ant Design Grid System Overrides ==================== */
+/* Customize Ant Design's responsive grid */
 .ant-row {
   margin-left: calc(var(--gutter-mobile) / -2);
   margin-right: calc(var(--gutter-mobile) / -2);
@@ -309,7 +233,7 @@
   padding-right: calc(var(--gutter-mobile) / 2);
 }
 
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
   .ant-row {
     margin-left: calc(var(--gutter-tablet) / -2);
     margin-right: calc(var(--gutter-tablet) / -2);
@@ -321,7 +245,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media screen and (min-width: 1024px) {
   .ant-row {
     margin-left: calc(var(--gutter-desktop) / -2);
     margin-right: calc(var(--gutter-desktop) / -2);
@@ -333,67 +257,176 @@
   }
 }
 
-/* ===================================
-   Responsive Typography
-   =================================== */
+/* ==================== Responsive Utility Classes ==================== */
+/* Display utilities */
+.d-mobile-block { display: block; }
+.d-mobile-none { display: none; }
+.d-mobile-flex { display: flex; }
+.d-mobile-grid { display: grid; }
 
-.h1, h1 { font-size: var(--font-size-4xl); line-height: 1.2; }
-.h2, h2 { font-size: var(--font-size-3xl); line-height: 1.3; }
-.h3, h3 { font-size: var(--font-size-2xl); line-height: 1.4; }
-.h4, h4 { font-size: var(--font-size-xl); line-height: 1.5; }
-.h5, h5 { font-size: var(--font-size-lg); line-height: 1.5; }
-.h6, h6 { font-size: var(--font-size-base); line-height: 1.5; }
-
-.text-xs { font-size: var(--font-size-xs); }
-.text-sm { font-size: var(--font-size-sm); }
-.text-base { font-size: var(--font-size-base); }
-.text-lg { font-size: var(--font-size-lg); }
-.text-xl { font-size: var(--font-size-xl); }
-
-/* ===================================
-   Flexbox Utilities
-   =================================== */
-
-.flex-row { flex-direction: row; }
-.flex-column { flex-direction: column; }
-.flex-wrap { flex-wrap: wrap; }
-.flex-nowrap { flex-wrap: nowrap; }
-
-.justify-start { justify-content: flex-start; }
-.justify-center { justify-content: center; }
-.justify-end { justify-content: flex-end; }
-.justify-between { justify-content: space-between; }
-.justify-around { justify-content: space-around; }
-
-.align-start { align-items: flex-start; }
-.align-center { align-items: center; }
-.align-end { align-items: flex-end; }
-.align-stretch { align-items: stretch; }
-
-/* ===================================
-   Responsive Images
-   =================================== */
-
-.img-fluid {
-  max-width: 100%;
-  height: auto;
-  display: block;
+@media screen and (min-width: 768px) {
+  .d-tablet-block { display: block; }
+  .d-tablet-none { display: none; }
+  .d-tablet-flex { display: flex; }
+  .d-tablet-grid { display: grid; }
 }
 
-.img-responsive {
+@media screen and (min-width: 1024px) {
+  .d-desktop-block { display: block; }
+  .d-desktop-none { display: none; }
+  .d-desktop-flex { display: flex; }
+  .d-desktop-grid { display: grid; }
+}
+
+/* Flex utilities */
+.flex-mobile-column {
+  flex-direction: column;
+}
+
+@media screen and (min-width: 768px) {
+  .flex-tablet-row {
+    flex-direction: row;
+  }
+  
+  .flex-tablet-column {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .flex-desktop-row {
+    flex-direction: row;
+  }
+  
+  .flex-desktop-column {
+    flex-direction: column;
+  }
+}
+
+/* Text alignment utilities */
+.text-mobile-center { text-align: center; }
+.text-mobile-left { text-align: left; }
+.text-mobile-right { text-align: right; }
+
+@media screen and (min-width: 768px) {
+  .text-tablet-center { text-align: center; }
+  .text-tablet-left { text-align: left; }
+  .text-tablet-right { text-align: right; }
+}
+
+@media screen and (min-width: 1024px) {
+  .text-desktop-center { text-align: center; }
+  .text-desktop-left { text-align: left; }
+  .text-desktop-right { text-align: right; }
+}
+
+/* Spacing utilities */
+.m-mobile-0 { margin: 0; }
+.m-mobile-1 { margin: var(--spacing-xs); }
+.m-mobile-2 { margin: var(--spacing-sm); }
+.m-mobile-3 { margin: var(--spacing-md); }
+
+.p-mobile-0 { padding: 0; }
+.p-mobile-1 { padding: var(--spacing-xs); }
+.p-mobile-2 { padding: var(--spacing-sm); }
+.p-mobile-3 { padding: var(--spacing-md); }
+
+@media screen and (min-width: 768px) {
+  .m-tablet-0 { margin: 0; }
+  .m-tablet-1 { margin: var(--spacing-xs); }
+  .m-tablet-2 { margin: var(--spacing-sm); }
+  .m-tablet-3 { margin: var(--spacing-md); }
+  .m-tablet-4 { margin: var(--spacing-lg); }
+  
+  .p-tablet-0 { padding: 0; }
+  .p-tablet-1 { padding: var(--spacing-xs); }
+  .p-tablet-2 { padding: var(--spacing-sm); }
+  .p-tablet-3 { padding: var(--spacing-md); }
+  .p-tablet-4 { padding: var(--spacing-lg); }
+}
+
+@media screen and (min-width: 1024px) {
+  .m-desktop-0 { margin: 0; }
+  .m-desktop-1 { margin: var(--spacing-xs); }
+  .m-desktop-2 { margin: var(--spacing-sm); }
+  .m-desktop-3 { margin: var(--spacing-md); }
+  .m-desktop-4 { margin: var(--spacing-lg); }
+  .m-desktop-5 { margin: var(--spacing-xl); }
+  
+  .p-desktop-0 { padding: 0; }
+  .p-desktop-1 { padding: var(--spacing-xs); }
+  .p-desktop-2 { padding: var(--spacing-sm); }
+  .p-desktop-3 { padding: var(--spacing-md); }
+  .p-desktop-4 { padding: var(--spacing-lg); }
+  .p-desktop-5 { padding: var(--spacing-xl); }
+}
+
+/* ==================== Responsive Component Adjustments ==================== */
+/* Cards */
+.responsive-card {
+  margin-bottom: var(--spacing-sm);
+}
+
+@media screen and (min-width: 768px) {
+  .responsive-card {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .responsive-card {
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+/* Buttons */
+.responsive-button {
   width: 100%;
-  height: auto;
+  padding: var(--spacing-sm);
 }
 
-/* ===================================
-   Print Styles
-   =================================== */
+@media screen and (min-width: 768px) {
+  .responsive-button {
+    width: auto;
+    min-width: 120px;
+  }
+}
 
+/* Forms */
+.responsive-form-item {
+  margin-bottom: var(--spacing-sm);
+}
+
+@media screen and (min-width: 768px) {
+  .responsive-form-item {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* Tables */
+.responsive-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media screen and (min-width: 1024px) {
+  .responsive-table {
+    overflow-x: visible;
+  }
+}
+
+/* ==================== Print Styles ==================== */
 @media print {
-  .d-print-none { display: none !important; }
-  .d-print-block { display: block !important; }
+  .no-print {
+    display: none !important;
+  }
   
   .container {
     max-width: 100%;
+    padding: 0;
+  }
+  
+  body {
+    font-size: 12pt;
   }
 }

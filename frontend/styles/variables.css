@@ -1,0 +1,222 @@
+:root {
+  /* ==================== Breakpoints ==================== */
+  --breakpoint-mobile: 768px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-desktop: 1024px;
+
+  /* ==================== Container Widths ==================== */
+  --container-mobile: 100%;
+  --container-tablet: 720px;
+  --container-desktop: 1200px;
+  --container-max-width: 1400px;
+
+  /* ==================== Grid System ==================== */
+  --grid-columns: 12;
+  --grid-gutter-mobile: 16px;
+  --grid-gutter-tablet: 24px;
+  --grid-gutter-desktop: 32px;
+
+  /* ==================== Spacing Scale ==================== */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-xxxl: 64px;
+
+  /* ==================== Font Sizes ==================== */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
+  --font-size-xxxl: 32px;
+
+  /* Responsive Font Sizes */
+  --font-size-h1-mobile: 24px;
+  --font-size-h1-tablet: 28px;
+  --font-size-h1-desktop: 32px;
+
+  --font-size-h2-mobile: 20px;
+  --font-size-h2-tablet: 22px;
+  --font-size-h2-desktop: 24px;
+
+  --font-size-h3-mobile: 18px;
+  --font-size-h3-tablet: 20px;
+  --font-size-h3-desktop: 20px;
+
+  /* ==================== Line Heights ==================== */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ==================== Colors ==================== */
+  --color-primary: #1890ff;
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-error: #ff4d4f;
+  --color-info: #1890ff;
+
+  --color-text-primary: rgba(0, 0, 0, 0.85);
+  --color-text-secondary: rgba(0, 0, 0, 0.65);
+  --color-text-tertiary: rgba(0, 0, 0, 0.45);
+  --color-text-disabled: rgba(0, 0, 0, 0.25);
+
+  --color-border: #d9d9d9;
+  --color-border-light: #f0f0f0;
+  --color-background: #ffffff;
+  --color-background-light: #fafafa;
+  --color-background-dark: #f5f5f5;
+
+  /* ==================== Shadows ==================== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* ==================== Border Radius ==================== */
+  --border-radius-sm: 2px;
+  --border-radius-base: 4px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-radius-round: 50%;
+
+  /* ==================== Transitions ==================== */
+  --transition-fast: 0.15s;
+  --transition-base: 0.3s;
+  --transition-slow: 0.5s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ==================== Z-Index Scale ==================== */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+
+  /* ==================== Layout Dimensions ==================== */
+  --header-height-mobile: 56px;
+  --header-height-tablet: 64px;
+  --header-height-desktop: 64px;
+
+  --sidebar-width-mobile: 0;
+  --sidebar-width-tablet: 200px;
+  --sidebar-width-desktop: 250px;
+
+  --footer-height: 64px;
+
+  /* ==================== Content Padding ==================== */
+  --content-padding-mobile: 16px;
+  --content-padding-tablet: 24px;
+  --content-padding-desktop: 32px;
+
+  /* ==================== Card Spacing ==================== */
+  --card-padding-mobile: 16px;
+  --card-padding-tablet: 20px;
+  --card-padding-desktop: 24px;
+
+  /* ==================== Form Elements ==================== */
+  --input-height-sm: 24px;
+  --input-height-base: 32px;
+  --input-height-lg: 40px;
+
+  --button-height-sm: 24px;
+  --button-height-base: 32px;
+  --button-height-lg: 40px;
+
+  /* ==================== Ant Design Grid Overrides ==================== */
+  --ant-grid-gutter: var(--grid-gutter-mobile);
+}
+
+/* ==================== Tablet Breakpoint ==================== */
+@media (min-width: 768px) {
+  :root {
+    --ant-grid-gutter: var(--grid-gutter-tablet);
+  }
+}
+
+/* ==================== Desktop Breakpoint ==================== */
+@media (min-width: 1024px) {
+  :root {
+    --ant-grid-gutter: var(--grid-gutter-desktop);
+  }
+}
+
+/* ==================== Utility Classes for Responsive Display ==================== */
+.mobile-only {
+  display: block;
+}
+
+.tablet-only,
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+
+  .tablet-only {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tablet-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* ==================== Container Utility Classes ==================== */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--content-padding-mobile);
+  padding-right: var(--content-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--container-tablet);
+    padding-left: var(--content-padding-tablet);
+    padding-right: var(--content-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--container-desktop);
+    padding-left: var(--content-padding-desktop);
+    padding-right: var(--content-padding-desktop);
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding-left: var(--content-padding-mobile);
+  padding-right: var(--content-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .container-fluid {
+    padding-left: var(--content-padding-tablet);
+    padding-right: var(--content-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-fluid {
+    padding-left: var(--content-padding-desktop);
+    padding-right: var(--content-padding-desktop);
+  }
+}
