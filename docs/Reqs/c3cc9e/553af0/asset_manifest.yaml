@@ -1,0 +1,69 @@
+# asset_manifest.yaml — Create unified response format and exception handler middleware
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: check_circle
+    type: icon
+    description: Success status icon 24px outline
+    source_hint: iconify:heroicons-outline:check-circle
+    status: pending
+  - id: x_circle
+    type: icon
+    description: Error status icon 24px outline
+    source_hint: iconify:heroicons-outline:x-circle
+    status: pending
+  - id: exclamation_triangle
+    type: icon
+    description: Warning status icon 24px outline
+    source_hint: iconify:heroicons-outline:exclamation-triangle
+    status: pending
+  - id: information_circle
+    type: icon
+    description: Info status icon 24px outline
+    source_hint: iconify:heroicons-outline:information-circle
+    status: pending
+  - id: clipboard_copy
+    type: icon
+    description: Copy to clipboard icon 20px outline
+    source_hint: iconify:heroicons-outline:clipboard-copy
+    status: pending
+  - id: code_bracket
+    type: icon
+    description: Code/JSON indicator icon 20px outline
+    source_hint: iconify:heroicons-outline:code-bracket
+    status: pending
+  - id: shield_exclamation
+    type: icon
+    description: Exception/security icon 20px outline
+    source_hint: iconify:heroicons-outline:shield-exclamation
+    status: pending
+  - id: check_small
+    type: icon
+    description: Small success checkmark 16px solid
+    source_hint: iconify:heroicons-solid:check
+    status: pending
+  - id: x_small
+    type: icon
+    description: Small error cross 16px solid
+    source_hint: iconify:heroicons-solid:x
+    status: pending
+  - id: exclamation_small
+    type: icon
+    description: Small warning exclamation 16px solid
+    source_hint: iconify:heroicons-solid:exclamation
+    status: pending
+  - id: api_response_success
+    type: illustration
+    description: API success response illustration 300x200, showing data flow with checkmark
+    source_hint: ai_generate (style: minimalist line art, colors: success green accent)
+    status: pending
+  - id: api_response_error
+    type: illustration
+    description: API error response illustration 300x200, showing broken connection with alert symbol
+    source_hint: ai_generate (style: minimalist line art, colors: error red accent)
+    status: pending
+  - id: middleware_flow
+    type: illustration
+    description: Middleware pipeline diagram 400x250, showing request/response flow through exception handler
+    source_hint: ai_generate (style: technical diagram, colors: info blue and neutral gray)
+    status: pending
