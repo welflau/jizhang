@@ -1,0 +1,94 @@
+# asset_manifest.yaml — Create budgets table schema and migration
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: database_icon
+    type: icon
+    description: Database symbol for schema visualization header, 24px outline
+    source_hint: iconify:mdi:database
+    status: pending
+  - id: table_icon
+    type: icon
+    description: Table/grid icon for table structure display, 24px outline
+    source_hint: iconify:mdi:table
+    status: pending
+  - id: key_primary
+    type: icon
+    description: Key icon for primary key indicator, 20px outline
+    source_hint: iconify:mdi:key
+    status: pending
+  - id: link_variant
+    type: icon
+    description: Link icon for foreign key indicator, 20px outline
+    source_hint: iconify:mdi:link-variant
+    status: pending
+  - id: index_icon
+    type: icon
+    description: Index/bookmark icon for index section, 20px outline
+    source_hint: iconify:mdi:bookmark-multiple
+    status: pending
+  - id: check_circle
+    type: icon
+    description: Success checkmark for migration status, 20px filled
+    source_hint: iconify:mdi:check-circle
+    status: pending
+  - id: clock_outline
+    type: icon
+    description: Pending clock icon for migration status, 20px outline
+    source_hint: iconify:mdi:clock-outline
+    status: pending
+  - id: alert_circle
+    type: icon
+    description: Error alert icon for migration status, 20px filled
+    source_hint: iconify:mdi:alert-circle
+    status: pending
+  - id: arrow_up
+    type: icon
+    description: Upgrade/up arrow for migration upgrade button, 20px outline
+    source_hint: iconify:mdi:arrow-up
+    status: pending
+  - id: arrow_down
+    type: icon
+    description: Rollback/down arrow for migration rollback button, 20px outline
+    source_hint: iconify:mdi:arrow-down
+    status: pending
+  - id: loading_spinner
+    type: icon
+    description: Loading spinner for button loading state, 16px animated
+    source_hint: iconify:mdi:loading
+    status: pending
+  - id: close_icon
+    type: icon
+    description: Close icon for toast notification dismiss, 16px outline
+    source_hint: iconify:mdi:close
+    status: pending
+  - id: information
+    type: icon
+    description: Info icon for constraint tooltips, 16px outline
+    source_hint: iconify:mdi:information-outline
+    status: pending
+  - id: empty_state_database
+    type: icon
+    description: Empty state illustration showing empty database/table concept, 240x180px, flat style with primary color accent
+    source_hint: ai_generate
+    status: pending
+  - id: migration_success
+    type: icon
+    description: Success illustration for completed migration, 200x200px, celebratory style with checkmark
+    source_hint: ai_generate
+    status: pending
+  - id: schema_diagram
+    type: icon
+    description: Abstract schema/ERD diagram illustration for header decoration, 400x120px, minimalist line art
+    source_hint: ai_generate
+    status: pending
+  - id: constraint_badge_bg
+    type: icon
+    description: Subtle gradient background for constraint badges, 32x16px, exportable as CSS gradient
+    source_hint: design_tool
+    status: pending
+  - id: index_pattern
+    type: icon
+    description: Subtle diagonal stripe pattern for index section background, 8x8px tileable
+    source_hint: design_tool
+    status: pending
