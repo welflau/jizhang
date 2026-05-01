@@ -18,7 +18,7 @@ class Transaction(Base):
     id = Column(Integer, primary_key=True, index=True, comment="交易记录ID")
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, comment="用户ID")
     type = Column(SQLEnum(TransactionType), nullable=False, comment="交易类型：income收入/expense支出")
-    amount = Column(Numeric(15, 2), nullable=False, comment="金额")
+    amount = Column(Numeric(precision=15, scale=2), nullable=False, comment="金额")
     category_id = Column(Integer, ForeignKey("categories.id", ondelete="SET NULL"), nullable=True, comment="分类ID")
     date = Column(DateTime, nullable=False, default=datetime.utcnow, comment="交易日期")
     note = Column(String(500), nullable=True, comment="备注说明")
@@ -32,11 +32,11 @@ class Transaction(Base):
 
     # 创建复合索引优化查询性能
     __table_args__ = (
-        Index('idx_user_date', 'user_id', 'date'),  # 用户+日期索引，优化按日期查询
-        Index('idx_user_type', 'user_id', 'type'),  # 用户+类型索引，优化按类型筛选
-        Index('idx_user_category', 'user_id', 'category_id'),  # 用户+分类索引，优化按分类查询
-        Index('idx_date', 'date'),  # 日期索引，优化日期范围查询
-        Index('idx_created_at', 'created_at'),  # 创建时间索引
+        Index('idx_user_date', 'user_id', 'date'),
+        Index('idx_user_type', 'user_id', 'type'),
+        Index('idx_user_category', 'user_id', 'category_id'),
+        Index('idx_user_type_date', 'user_id', 'type', 'date'),
+        Index('idx_date', 'date'),
         {'comment': '收支记录表'}
     )
 
@@ -58,17 +58,3 @@ class Transaction(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }
-
-    @classmethod
-    def validate_amount(cls, amount):
-        """验证金额是否有效"""
-        if amount is None or amount <= 0:
-            raise ValueError("金额必须大于0")
-        return True
-
-    @classmethod
-    def validate_type(cls, transaction_type):
-        """验证交易类型是否有效"""
-        if transaction_type not in [TransactionType.INCOME.value, TransactionType.EXPENSE.value]:
-            raise ValueError(f"交易类型必须是 {TransactionType.INCOME.value} 或 {TransactionType.EXPENSE.value}")
-        return True

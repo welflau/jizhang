@@ -12,7 +12,9 @@
 无
 
 ## 审查的代码
-- backend/models.py
-- backend/database.py
-- backend/requirements.txt
+- models/__init__.py
+- models/user.py
+- models/category.py
+- models/payment_method.py
+- models/transaction.py
 - docs/Reqs/cd352d/272fd1/dev-notes.md
