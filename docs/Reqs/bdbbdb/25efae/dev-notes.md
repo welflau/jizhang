@@ -1,71 +1,82 @@
 # 开发笔记 — Design category icon set and color palette
 
-> 2026-05-02 01:12 | LLM
+> 2026-05-02 01:20 | LLM
 
 ## 产出文件
-- [design/icons/category-food.svg](/app#repo?file=design/icons/category-food.svg) (379 chars)
-- [design/icons/category-transport.svg](/app#repo?file=design/icons/category-transport.svg) (344 chars)
-- [design/icons/category-shopping.svg](/app#repo?file=design/icons/category-shopping.svg) (310 chars)
-- [design/icons/category-entertainment.svg](/app#repo?file=design/icons/category-entertainment.svg) (206 chars)
-- [design/icons/category-health.svg](/app#repo?file=design/icons/category-health.svg) (205 chars)
-- [design/icons/category-education.svg](/app#repo?file=design/icons/category-education.svg) (288 chars)
-- [design/icons/category-housing.svg](/app#repo?file=design/icons/category-housing.svg) (271 chars)
-- [design/icons/category-utilities.svg](/app#repo?file=design/icons/category-utilities.svg) (220 chars)
-- [design/icons/category-communication.svg](/app#repo?file=design/icons/category-communication.svg) (241 chars)
-- [design/icons/category-insurance.svg](/app#repo?file=design/icons/category-insurance.svg) (223 chars)
-- [design/icons/category-travel.svg](/app#repo?file=design/icons/category-travel.svg) (399 chars)
-- [design/icons/category-personal-care.svg](/app#repo?file=design/icons/category-personal-care.svg) (299 chars)
-- [design/icons/category-pets.svg](/app#repo?file=design/icons/category-pets.svg) (390 chars)
-- [design/icons/category-gifts.svg](/app#repo?file=design/icons/category-gifts.svg) (411 chars)
-- [design/icons/category-subscriptions.svg](/app#repo?file=design/icons/category-subscriptions.svg) (281 chars)
-- [design/icons/category-taxes.svg](/app#repo?file=design/icons/category-taxes.svg) (270 chars)
-- [design/icons/category-investments.svg](/app#repo?file=design/icons/category-investments.svg) (288 chars)
-- [design/icons/category-charity.svg](/app#repo?file=design/icons/category-charity.svg) (316 chars)
-- [design/icons/category-business.svg](/app#repo?file=design/icons/category-business.svg) (281 chars)
-- [design/icons/category-fees.svg](/app#repo?file=design/icons/category-fees.svg) (286 chars)
-- [design/icons/category-other.svg](/app#repo?file=design/icons/category-other.svg) (266 chars)
-- [design/icons/category-income.svg](/app#repo?file=design/icons/category-income.svg) (256 chars)
-- [design/icons/category-savings.svg](/app#repo?file=design/icons/category-savings.svg) (270 chars)
-- [design/icons/category-debt.svg](/app#repo?file=design/icons/category-debt.svg) (248 chars)
-- [design/icon-system.md](/app#repo?file=design/icon-system.md) (3811 chars)
-- [design/color-scheme.json](/app#repo?file=design/color-scheme.json) (4353 chars)
-- [design/usage-guide.md](/app#repo?file=design/usage-guide.md) (8091 chars)
+- [icons/home.svg](/app#repo?file=icons/home.svg) (287 chars)
+- [icons/settings.svg](/app#repo?file=icons/settings.svg) (340 chars)
+- [icons/user.svg](/app#repo?file=icons/user.svg) (268 chars)
+- [icons/search.svg](/app#repo?file=icons/search.svg) (230 chars)
+- [icons/cart.svg](/app#repo?file=icons/cart.svg) (310 chars)
+- [icons/notification.svg](/app#repo?file=icons/notification.svg) (276 chars)
+- [icons/menu.svg](/app#repo?file=icons/menu.svg) (304 chars)
+- [icons/close.svg](/app#repo?file=icons/close.svg) (257 chars)
+- [icons/edit.svg](/app#repo?file=icons/edit.svg) (347 chars)
+- [icons/delete.svg](/app#repo?file=icons/delete.svg) (406 chars)
+- [icons/add.svg](/app#repo?file=icons/add.svg) (259 chars)
+- [icons/filter.svg](/app#repo?file=icons/filter.svg) (231 chars)
+- [icons/download.svg](/app#repo?file=icons/download.svg) (324 chars)
+- [icons/upload.svg](/app#repo?file=icons/upload.svg) (299 chars)
+- [icons/share.svg](/app#repo?file=icons/share.svg) (370 chars)
+- [icons/heart.svg](/app#repo?file=icons/heart.svg) (322 chars)
+- [icons/star.svg](/app#repo?file=icons/star.svg) (314 chars)
+- [icons/calendar.svg](/app#repo?file=icons/calendar.svg) (343 chars)
+- [icons/message.svg](/app#repo?file=icons/message.svg) (241 chars)
+- [icons/help.svg](/app#repo?file=icons/help.svg) (296 chars)
+- [icons/category.svg](/app#repo?file=icons/category.svg) (11629 chars)
+- [icons/budget.svg](/app#repo?file=icons/budget.svg) (450 chars)
+- [icons/chart.svg](/app#repo?file=icons/chart.svg) (288 chars)
+- [icons/export.svg](/app#repo?file=icons/export.svg) (324 chars)
+- [design-system.md](/app#repo?file=design-system.md) (16930 chars)
+- [icon-preview.html](/app#repo?file=icon-preview.html) (22231 chars)
 
 ## 自测: 自测 5/6 通过 ⚠️
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
-| 文件产出 | ✅ | 27 个文件 |
+| 文件产出 | ✅ | 26 个文件 |
 | 入口文件 | ❌ | 缺少 |
 | 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |
-| 磁盘落地 | ✅ | 27 个文件已落盘 |
+| 磁盘落地 | ✅ | 26 个文件已落盘 |
 
 ## 代码变更 (Diff)
 
-### design/icons/category-food.svg (新建, 379 chars)
+### icons/home.svg (新建, 287 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
-+   <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
-+   <line x1="6" y1="1" x2="6" y2="4"/>
-+   <line x1="10" y1="1" x2="10" y2="4"/>
-+   <line x1="14" y1="1" x2="14" y2="4"/>
++   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
++   <polyline points="9 22 9 12 15 12 15 22"></polyline>
 + </svg>
 ```
 
-### design/icons/category-transport.svg (新建, 344 chars)
+### icons/settings.svg (新建, 340 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <rect x="1" y="3" width="15" height="13"/>
-+   <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-+   <circle cx="5.5" cy="18.5" r="2.5"/>
-+   <circle cx="18.5" cy="18.5" r="2.5"/>
++   <circle cx="12" cy="12" r="3"/>
++   <path d="M12 1v6m0 6v6m9-9h-6m-6 0H3"/>
++   <path d="M19.07 4.93l-4.24 4.24m-5.66 5.66L4.93 19.07m14.14 0l-4.24-4.24m-5.66-5.66L4.93 4.93"/>
 + </svg>
 ```
 
-### design/icons/category-shopping.svg (新建, 310 chars)
+### icons/user.svg (新建, 268 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
++   <circle cx="12" cy="7" r="4"></circle>
++ </svg>
+```
+
+### icons/search.svg (新建, 230 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <circle cx="11" cy="11" r="8"/>
++   <path d="m21 21-4.35-4.35"/>
++ </svg>
+```
+
+### icons/cart.svg (新建, 310 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 +   <circle cx="9" cy="21" r="1"/>
@@ -74,200 +85,211 @@
 + </svg>
 ```
 
-### design/icons/category-entertainment.svg (新建, 206 chars)
+### icons/notification.svg (新建, 276 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <polygon points="5 3 19 12 5 21 5 3"/>
++   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
++   <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
 + </svg>
 ```
 
-### design/icons/category-health.svg (新建, 205 chars)
+### icons/menu.svg (新建, 304 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
++   <line x1="3" y1="12" x2="21" y2="12"></line>
++   <line x1="3" y1="6" x2="21" y2="6"></line>
++   <line x1="3" y1="18" x2="21" y2="18"></line>
 + </svg>
 ```
 
-### design/icons/category-education.svg (新建, 288 chars)
+### icons/close.svg (新建, 257 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-+   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
++   <line x1="18" y1="6" x2="6" y2="18"></line>
++   <line x1="6" y1="6" x2="18" y2="18"></line>
 + </svg>
 ```
 
-### design/icons/category-housing.svg (新建, 271 chars)
+### icons/edit.svg (新建, 347 chars)
 ```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-+   <polyline points="9 22 9 12 15 12 15 22"/>
++ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
++     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
 + </svg>
 ```
 
-### design/icons/category-utilities.svg (新建, 220 chars)
+### icons/delete.svg (新建, 406 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
++   <polyline points="3 6 5 6 21 6"></polyline>
++   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
++   <line x1="10" y1="11" x2="10" y2="17"></line>
++   <line x1="14" y1="11" x2="14" y2="17"></line>
 + </svg>
 ```
 
-### design/icons/category-communication.svg (新建, 241 chars)
+### icons/add.svg (新建, 259 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <line x1="12" y1="5" x2="12" y2="19"></line>
++   <line x1="5" y1="12" x2="19" y2="12"></line>
++ </svg>
+```
+
+### icons/filter.svg (新建, 231 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
++ </svg>
+```
+
+### icons/download.svg (新建, 324 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
++   <polyline points="7 10 12 15 17 10"></polyline>
++   <line x1="12" y1="15" x2="12" y2="3"></line>
++ </svg>
+```
+
+### icons/upload.svg (新建, 299 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
++   <polyline points="17 8 12 3 7 8"/>
++   <line x1="12" y1="3" x2="12" y2="15"/>
++ </svg>
+```
+
+### icons/share.svg (新建, 370 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <circle cx="18" cy="5" r="3"/>
++   <circle cx="6" cy="12" r="3"/>
++   <circle cx="18" cy="19" r="3"/>
++   <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
++   <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
++ </svg>
+```
+
+### icons/heart.svg (新建, 322 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
++ </svg>
+```
+
+### icons/star.svg (新建, 314 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#e94560" stroke="#e94560"/>
++ </svg>
+```
+
+### icons/calendar.svg (新建, 343 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
++   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
++   <line x1="16" y1="2" x2="16" y2="6"/>
++   <line x1="8" y1="2" x2="8" y2="6"/>
++   <line x1="3" y1="10" x2="21" y2="10"/>
++ </svg>
+```
+
+### icons/message.svg (新建, 241 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 +   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
 + </svg>
 ```
 
-### design/icons/category-insurance.svg (新建, 223 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-+ </svg>
-```
-
-### design/icons/category-travel.svg (新建, 399 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-+   <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-+   <line x1="12" y1="22.08" x2="12" y2="12"/>
-+ </svg>
-```
-
-### design/icons/category-personal-care.svg (新建, 299 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-+   <line x1="7" y1="7" x2="7.01" y2="7"/>
-+ </svg>
-```
-
-### design/icons/category-pets.svg (新建, 390 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <circle cx="11" cy="4" r="2"/>
-+   <circle cx="18" cy="8" r="2"/>
-+   <circle cx="20" cy="16" r="2"/>
-+   <circle cx="9" cy="10" r="2"/>
-+   <circle cx="15" cy="14" r="2"/>
-+   <path d="M9 18c.64 2.64 2.08 4 3.5 4s2.86-1.36 3.5-4"/>
-+ </svg>
-```
-
-### design/icons/category-gifts.svg (新建, 411 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <polyline points="20 12 20 22 4 22 4 12"/>
-+   <rect x="2" y="7" width="20" height="5"/>
-+   <line x1="12" y1="22" x2="12" y2="7"/>
-+   <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
-+   <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
-+ </svg>
-```
-
-### design/icons/category-subscriptions.svg (新建, 281 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-+   <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-+ </svg>
-```
-
-### design/icons/category-taxes.svg (新建, 270 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <line x1="12" y1="1" x2="12" y2="23"/>
-+   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-+ </svg>
-```
-
-### design/icons/category-investments.svg (新建, 288 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <line x1="12" y1="20" x2="12" y2="10"/>
-+   <line x1="18" y1="20" x2="18" y2="4"/>
-+   <line x1="6" y1="20" x2="6" y2="16"/>
-+ </svg>
-```
-
-### design/icons/category-charity.svg (新建, 316 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-+ </svg>
-```
-
-### design/icons/category-business.svg (新建, 281 chars)
-```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-+   <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-+ </svg>
-```
-
-### design/icons/category-fees.svg (新建, 286 chars)
+### icons/help.svg (新建, 296 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 +   <circle cx="12" cy="12" r="10"/>
-+   <line x1="12" y1="8" x2="12" y2="12"/>
-+   <line x1="12" y1="16" x2="12.01" y2="16"/>
++   <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
++   <line x1="12" y1="17" x2="12.01" y2="17"/>
 + </svg>
 ```
 
-### design/icons/category-other.svg (新建, 266 chars)
+### icons/category.svg (新建, 11629 chars)
+```
++ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200">
++   <defs>
++     <style>
++       .icon-bg { fill: rgba(255, 255, 255, 0.05); }
++       .icon-stroke { stroke: #e94560; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
++       .icon-fill { fill: #e94560; }
++       .label-text { fill: #f1f1f1; font-family: 'Segoe UI', sans-serif; font-size: 14px; }
++       .title-text { fill: #e94560; font-family: 'Segoe UI', sans-serif; font-size: 20px; font-weight: bold; }
++     </style>
++   </defs>
++   
++   <!-- Title -->
++   <text x="400" y="40" text-anchor="middle" class="title-text">Category Icon Set - 20 Icons</text>
++   
++   <!-- Row 1 -->
++   <!-- 1. Home -->
++   <g transform="translate(50, 80)">
++     <rect class="icon-bg" width="120" height="120" rx="8"/>
++     <path class="icon-stroke" d="M30 60 L60 35 L90 60 L90 85 L30 85 Z M50 85 L50 70 L70 70 L70 85"/>
++     <text x="60" y="110" text-anchor="middle" class="label-text">Home</text>
++ ... (更多)
+```
+
+### icons/budget.svg (新建, 450 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <circle cx="12" cy="12" r="1"/>
-+   <circle cx="19" cy="12" r="1"/>
-+   <circle cx="5" cy="12" r="1"/>
++   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
++   <line x1="12" y1="8" x2="12" y2="16"/>
++   <line x1="8" y1="12" x2="16" y2="12"/>
++   <path d="M9 3v2"/>
++   <path d="M15 3v2"/>
++   <path d="M9 19v2"/>
++   <path d="M15 19v2"/>
++   <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
 + </svg>
 ```
 
-### design/icons/category-income.svg (新建, 256 chars)
+### icons/chart.svg (新建, 288 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-+   <polyline points="17 6 23 6 23 12"/>
++   <line x1="18" y1="20" x2="18" y2="10"/>
++   <line x1="12" y1="20" x2="12" y2="4"/>
++   <line x1="6" y1="20" x2="6" y2="14"/>
 + </svg>
 ```
 
-### design/icons/category-savings.svg (新建, 270 chars)
+### icons/export.svg (新建, 324 chars)
 ```
 + <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <line x1="12" y1="1" x2="12" y2="23"/>
-+   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
++   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
++   <polyline points="7 10 12 15 17 10"></polyline>
++   <line x1="12" y1="15" x2="12" y2="3"></line>
 + </svg>
 ```
 
-### design/icons/category-debt.svg (新建, 248 chars)
+### icon-preview.html (新建, 22231 chars)
 ```
-+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+   <polyline points="1 18 7 12 13 18 23 8"/>
-+   <polyline points="17 8 23 8 23 14"/>
-+ </svg>
-```
-
-### design/color-scheme.json (新建, 4353 chars)
-```
-+ {
-+   "version": "1.0",
-+   "description": "Color palette for financial tracking application with WCAG AA compliance",
-+   "colors": {
-+     "primary": {
-+       "50": "#eff6ff",
-+       "100": "#dbeafe",
-+       "200": "#bfdbfe",
-+       "300": "#93c5fd",
-+       "400": "#60a5fa",
-+       "500": "#3b82f6",
-+       "600": "#2563eb",
-+       "700": "#1d4ed8",
-+       "800": "#1e40af",
-+       "900": "#1e3a8a",
-+       "contrast_ratio_500_white": 3.1,
-+       "contrast_ratio_700_white": 7.5,
-+       "recommended_text": "700"
-+     },
-+     "secondary": {
++ <!DOCTYPE html>
++ <html lang="zh-CN">
++ <head>
++     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0">
++     <title>图标预览 - 分类图标集合</title>
++     <style>
++         * {
++             box-sizing: border-box;
++             margin: 0;
++             padding: 0;
++         }
++         
++         :root {
++             --primary: #1a1a2e;
++             --secondary: #16213e;
++             --accent: #0f3460;
++             --highlight: #e94560;
++             --text: #f1f1f1;
++             --success: #2ecc71;
 + ... (更多)
 ```
