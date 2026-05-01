@@ -12,9 +12,12 @@
 无
 
 ## 审查的代码
-- backend/app/schemas/response.py
-- backend/app/core/exceptions.py
-- backend/app/middleware/__init__.py
-- backend/app/middleware/exception_handler.py
+- app/schemas/response.py
+- app/core/exceptions.py
+- app/middleware/exception_handler.py
+- app/middleware/__init__.py
+- app/api/test.py
+- diagnosis.md
+- app/main.py
 - backend/app/main.py
 - docs/Reqs/c3cc9e/553af0/dev-notes.md
