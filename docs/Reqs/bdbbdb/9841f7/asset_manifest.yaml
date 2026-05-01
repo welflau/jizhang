@@ -1,0 +1,83 @@
+# asset_manifest.yaml — Create categories database table and migration
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI 资产清单
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: 本工单无 UI 资产需求**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: 原因：本工单为纯后端数据库表结构设计和迁移脚本开发，不涉及前端界面实现。
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: ## 后续工单可能需要的资产（参考）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: 当开发分类管理 UI 时，可能需要以下资产：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: ### 图标（Icons）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: icon: category-income**（收入分类图标，24px，outline 风格，用于分类列表展示）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: icon: category-expense**（支出分类图标，24px，outline 风格，用于分类列表展示）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: icon: edit**（编辑图标，20px，outline 风格，用于分类编辑按钮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: icon: delete**（删除图标，20px，outline 风格，用于分类删除按钮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: icon: add**（新增图标，24px，filled 风格，用于添加分类按钮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: icon: default-badge**（默认标识，16px，用于标记预设分类）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: ### 插画（Illustrations）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: illustration
+    description: illustration: empty-categories**（分类列表为空时显示，400x300，扁平风格，内容：空文件夹 + 提示文字）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: illustration
+    description: illustration: category-created**（分类创建成功提示，200x200，庆祝风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: ### 颜色选择器资产
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: color-palette: preset-colors**（预设颜色列表，包含 12 种常用分类颜色的 HEX 值）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: ### 图标选择器资产
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: icon-set: category-icons**（分类图标集，包含 50+ 常用分类图标，如：餐饮、交通、购物、工资、奖金等，SVG 格式）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: 注意**：以上资产清单仅为后续 UI 开发参考，不属于当前工单范围。
+    status: pending  # 待美术Agent确认来源和规格
