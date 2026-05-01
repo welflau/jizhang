@@ -1,10 +1,12 @@
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
+from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from backend.app.core.config import settings
+from backend.app.core.database import init_db
+from backend.app.routers import auth
 import logging
-import os
-
-from app.core.config import get_settings
-from app.database import init_db, close_db
 
 # Configure logging
 logging.basicConfig(
@@ -13,67 +15,101 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-settings = get_settings()
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager.
-    
-    Handles startup and shutdown events:
-    - Startup: Initialize database connection and create tables
-    - Shutdown: Close database connections gracefully
-    """
-    # Startup
-    logger.info(f"Starting {settings.APP_NAME}...")
-    try:
-        await init_db()
-        logger.info("Database connection pool initialized")
-    except Exception as e:
-        logger.error(f"Failed to initialize database: {e}")
-        raise
-    
-    yield
-    
-    # Shutdown
-    logger.info("Shutting down application...")
-    await close_db()
-    logger.info("Application shutdown complete")
-
-
 app = FastAPI(
     title=settings.APP_NAME,
-    lifespan=lifespan,
-    debug=settings.DEBUG,
+    debug=settings.DEBUG
 )
+
+# CORS middleware for frontend access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify exact origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# Unified response format helper
+def unified_response(success: bool, data=None, message: str = "", code: int = 200):
+    """Create unified response format."""
+    return {
+        "success": success,
+        "data": data,
+        "message": message,
+        "code": code
+    }
+
+
+# Global exception handlers
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """Handle HTTP exceptions with unified format."""
+    logger.error(f"HTTP error: {exc.status_code} - {exc.detail}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=unified_response(
+            success=False,
+            data=None,
+            message=str(exc.detail),
+            code=exc.status_code
+        )
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle validation errors with unified format."""
+    logger.error(f"Validation error: {exc.errors()}")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=unified_response(
+            success=False,
+            data={"errors": exc.errors()},
+            message="Validation error",
+            code=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+    )
+
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """Handle general exceptions with unified format."""
+    logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content=unified_response(
+            success=False,
+            data=None,
+            message="Internal server error" if not settings.DEBUG else str(exc),
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    )
+
+
+# Include routers
+app.include_router(auth.router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on application startup."""
+    logger.info("Initializing database...")
+    await init_db()
+    logger.info("Database initialized successfully")
 
 
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {
-        "status": "ok",
-        "app": settings.APP_NAME,
-        "database": "connected"
-    }
-
-
-@app.get("/health")
-async def health_check():
-    """Detailed health check endpoint."""
-    return {
-        "status": "healthy",
-        "database_url": settings.DATABASE_URL.split("@")[-1] if "@" in settings.DATABASE_URL else "sqlite",
-        "debug_mode": settings.DEBUG
-    }
+    return {"status": "ok", "app": settings.APP_NAME}
 
 
 if __name__ == "__main__":
     import uvicorn
-    
     uvicorn.run(
-        "app.main:app",
+        "backend.app.main:app",
         host=settings.HOST,
         port=settings.PORT,
-        reload=settings.DEBUG,
+        reload=settings.DEBUG
     )
