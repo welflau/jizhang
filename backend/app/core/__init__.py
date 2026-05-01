@@ -1,13 +1,11 @@
-"""
-Core module initialization.
-Exports core configuration and utilities.
-"""
-
-from .config import settings
-from .logging import setup_logging, get_logger
+from app.core.config import settings
+from app.core.database import Base, engine, get_db, init_db, SessionLocal
 
 __all__ = [
     "settings",
-    "setup_logging",
-    "get_logger",
+    "Base",
+    "engine",
+    "get_db",
+    "init_db",
+    "SessionLocal",
 ]

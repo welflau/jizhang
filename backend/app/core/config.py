@@ -1,46 +1,91 @@
-from pydantic_settings import BaseSettings
-from functools import lru_cache
 import os
+from typing import Optional
+from pydantic_settings import BaseSettings
+from pydantic import Field, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
-    """Application configuration loaded from environment variables.
-    
-    Security-sensitive values (JWT_SECRET_KEY) must be set via env vars.
     """
+    Application settings with environment variable support
+    """
+    
     # Application
-    APP_NAME: str = "User Auth System"
-    DEBUG: bool = False
+    APP_NAME: str = "FastAPI Application"
+    APP_VERSION: str = "1.0.0"
+    DEBUG: bool = Field(default=False, env="DEBUG")
+    
+    # API
+    API_V1_PREFIX: str = "/api/v1"
     
     # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./app.db"
+    DATABASE_URL: str = Field(
+        default="postgresql+asyncpg://postgres:postgres@localhost:5432/fastapi_db",
+        env="DATABASE_URL"
+    )
+    DATABASE_ECHO: bool = Field(default=False, env="DATABASE_ECHO")
+    DATABASE_POOL_SIZE: int = Field(default=20, env="DATABASE_POOL_SIZE")
+    DATABASE_MAX_OVERFLOW: int = Field(default=10, env="DATABASE_MAX_OVERFLOW")
+    DATABASE_POOL_TIMEOUT: int = Field(default=30, env="DATABASE_POOL_TIMEOUT")
+    DATABASE_POOL_RECYCLE: int = Field(default=3600, env="DATABASE_POOL_RECYCLE")
     
     # Security
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "")
-    JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    SECRET_KEY: str = Field(
+        default="your-secret-key-change-this-in-production",
+        env="SECRET_KEY"
+    )
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES")
     
-    # Server
-    HOST: str = "0.0.0.0"
-    PORT: int = int(os.getenv("PORT", "8000"))
+    # CORS
+    BACKEND_CORS_ORIGINS: list[str] = Field(
+        default=["http://localhost:3000", "http://localhost:8000"],
+        env="BACKEND_CORS_ORIGINS"
+    )
+    
+    # Redis (optional)
+    REDIS_URL: Optional[str] = Field(default=None, env="REDIS_URL")
+    
+    # Logging
+    LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
+    
+    # Testing
+    TESTING: bool = Field(default=False, env="TESTING")
+    TEST_DATABASE_URL: Optional[str] = Field(default=None, env="TEST_DATABASE_URL")
+    
+    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    def assemble_cors_origins(cls, v):
+        if isinstance(v, str):
+            return [i.strip() for i in v.split(",")]
+        return v
+    
+    @validator("DATABASE_URL", pre=True)
+    def validate_database_url(cls, v):
+        if v and not v.startswith("postgresql"):
+            raise ValueError("DATABASE_URL must be a PostgreSQL connection string")
+        return v
+    
+    def get_database_url(self) -> str:
+        """Get the appropriate database URL based on environment"""
+        if self.TESTING and self.TEST_DATABASE_URL:
+            return self.TEST_DATABASE_URL
+        return self.DATABASE_URL
     
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
         case_sensitive = True
 
-    def validate_secrets(self):
-        """Validate that required secrets are set."""
-        if not self.JWT_SECRET_KEY:
-            raise ValueError("JWT_SECRET_KEY must be set in environment variables")
+
+# Create global settings instance
+settings = Settings()
 
 
-@lru_cache()
-def get_settings() -> Settings:
-    """Cached settings instance."""
-    settings = Settings()
-    settings.validate_secrets()
-    return settings
-
-
-settings = get_settings()
+# Database configuration dictionary for SQLAlchemy
+DATABASE_CONFIG = {
+    "echo": settings.DATABASE_ECHO,
+    "pool_size": settings.DATABASE_POOL_SIZE,
+    "max_overflow": settings.DATABASE_MAX_OVERFLOW,
+    "pool_timeout": settings.DATABASE_POOL_TIMEOUT,
+    "pool_recycle": settings.DATABASE_POOL_RECYCLE,
+    "pool_pre_ping": True,  # Enable connection health checks
+}
