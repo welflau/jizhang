@@ -1,0 +1,44 @@
+# asset_manifest.yaml — Create unified response format and exception handler middleware
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: success_checkmark
+    type: icon
+    description: Success response checkmark icon 24px filled
+    source_hint: iconify:mdi:check-circle
+    status: pending
+  - id: error_cross
+    type: icon
+    description: Error response cross icon 24px filled
+    source_hint: iconify:mdi:close-circle
+    status: pending
+  - id: warning_alert
+    type: icon
+    description: Warning response alert icon 24px filled
+    source_hint: iconify:mdi:alert-circle
+    status: pending
+  - id: info_information
+    type: icon
+    description: Info response information icon 24px filled
+    source_hint: iconify:mdi:information
+    status: pending
+  - id: code_brackets
+    type: icon
+    description: JSON code brackets icon 20px outline
+    source_hint: iconify:mdi:code-braces
+    status: pending
+  - id: copy_clipboard
+    type: icon
+    description: Copy to clipboard icon 16px outline
+    source_hint: iconify:mdi:content-copy
+    status: pending
+  - id: expand_collapse
+    type: icon
+    description: Expand/collapse detail icon 16px outline
+    source_hint: iconify:mdi:chevron-down
+    status: pending
+  - id: close_toast
+    type: icon
+    description: Close toast notification icon 16px outline
+    source_hint: iconify:mdi:close
+    status: pending
