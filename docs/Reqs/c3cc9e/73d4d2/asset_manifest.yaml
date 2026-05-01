@@ -1,0 +1,331 @@
+# asset_manifest.yaml — Implement JWT authentication middleware
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## Icons (Not Applicable - Backend Service)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: No icons required for backend authentication middleware.
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: ## Illustrations (Not Applicable)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: No illustrations required for backend authentication middleware.
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: ## Images (Not Applicable)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: No images required for backend authentication middleware.
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: ## Code Assets (Required)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: ### Cryptographic Keys
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: asset**: JWT_SECRET_KEY
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: type**: Environment variable (string)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: requirements**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: Length ≥ 32 characters
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: Cryptographically random (use `secrets.token_urlsafe(32)`)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: Never committed to version control
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: storage**: `.env` file (must be in `.gitignore`)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: example**: `JWT_SECRET_KEY=your-secret-key-min-32-chars-long-random-string`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: ### Configuration Files
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: asset**: `.env.example`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: type**: Template file
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: content**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: JWT_SECRET_KEY=change-me-to-random-32-char-string
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: JWT_ALGORITHM=HS256
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: ACCESS_TOKEN_EXPIRE_MINUTES=30
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: BCRYPT_SALT_ROUNDS=12
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: purpose**: Guide developers to set up environment variables
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: ### Python Dependencies
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: asset**: requirements.txt entries
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: required packages**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: PyJWT>=2.8.0
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: bcrypt>=4.1.0
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: python-jose[cryptography]>=3.3.0  # alternative to PyJWT
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: passlib[bcrypt]>=1.7.4  # password hashing utilities
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: python-multipart>=0.0.6  # for OAuth2PasswordBearer
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: ### Test Fixtures
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: asset**: Mock JWT tokens for testing
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: type**: JSON files in `tests/fixtures/`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: examples**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: `valid_token.json`: Valid token with future expiration
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: `expired_token.json`: Token with past expiration
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: `invalid_signature_token.json`: Token with wrong signature
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: `malformed_token.json`: Corrupted token string
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: ### Documentation Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_047
+    type: icon
+    description: asset**: API documentation snippets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_048
+    type: icon
+    description: type**: Markdown/OpenAPI spec
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_049
+    type: icon
+    description: content**: Example curl commands for token generation/verification
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_050
+    type: icon
+    description: example**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_051
+    type: icon
+    description: ```bash
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_052
+    type: icon
+    description: curl -X POST "http://localhost:8000/auth/login" \
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_053
+    type: icon
+    description: H "Content-Type: application/json" \
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_054
+    type: icon
+    description: d '{"username":"user","password":"pass"}'
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_055
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_056
+    type: icon
+    description: ### Error Message Templates
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_057
+    type: icon
+    description: asset**: `error_messages.py` (optional)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_058
+    type: icon
+    description: type**: Python constants
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_059
+    type: icon
+    description: content**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_060
+    type: icon
+    description: ```python
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_061
+    type: icon
+    description: TOKEN_EXPIRED = "Token has expired"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_062
+    type: icon
+    description: INVALID_TOKEN = "Could not validate credentials"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_063
+    type: icon
+    description: MISSING_SECRET = "JWT_SECRET_KEY not configured"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_064
+    type: icon
+    description: WEAK_PASSWORD = "Password does not meet security requirements"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_065
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_066
+    type: icon
+    description: ## Security Assets (Critical)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_067
+    type: icon
+    description: ### .gitignore Entries (Must Have)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_068
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_069
+    type: icon
+    description: .env
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_070
+    type: icon
+    description: .env.*
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_071
+    type: icon
+    description: !.env.example
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_072
+    type: icon
+    description: .pem
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_073
+    type: icon
+    description: .key
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_074
+    type: icon
+    description: secrets/
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_075
+    type: icon
+    description: credentials/
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_076
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_077
+    type: icon
+    description: ### Pre-commit Hooks (Recommended)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_078
+    type: icon
+    description: asset**: `.pre-commit-config.yaml`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_079
+    type: icon
+    description: purpose**: Prevent committing secrets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_080
+    type: icon
+    description: tools**: detect-secrets, gitleaks
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_081
+    type: icon
+    description: ## No Visual Assets Required
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_082
+    type: icon
+    description: This is a backend authentication middleware with no user-facing UI components. All "assets" are code
+    status: pending  # 待美术Agent确认来源和规格
