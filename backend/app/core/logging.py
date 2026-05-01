@@ -6,14 +6,14 @@ from typing import Optional
 from app.core.config import settings
 
 
-class LogConfig:
+class LoggerSetup:
     """日志配置类"""
-    
-    LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-    
-    @staticmethod
-    def get_log_level() -> int:
+
+    def __init__(self):
+        self.log_dir = Path("logs")
+        self.log_dir.mkdir(exist_ok=True)
+
+    def get_log_level(self) -> int:
         """根据环境获取日志级别"""
         level_map = {
             "DEBUG": logging.DEBUG,
@@ -24,86 +24,66 @@ class LogConfig:
         }
         return level_map.get(settings.LOG_LEVEL.upper(), logging.INFO)
 
+    def setup_logger(
+        self, name: Optional[str] = None, log_file: Optional[str] = None
+    ) -> logging.Logger:
+        """
+        配置并返回日志记录器
 
-def setup_logging() -> None:
-    """
-    配置日志系统
-    - 开发环境：输出到控制台
-    - 生产环境：输出到文件和控制台
-    """
-    log_level = LogConfig.get_log_level()
-    
-    # 创建根日志记录器
-    root_logger = logging.getLogger()
-    root_logger.setLevel(log_level)
-    
-    # 清除已存在的处理器
-    root_logger.handlers.clear()
-    
-    # 创建格式化器
-    formatter = logging.Formatter(
-        fmt=LogConfig.LOG_FORMAT,
-        datefmt=LogConfig.LOG_DATE_FORMAT
-    )
-    
-    # 控制台处理器
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(log_level)
-    console_handler.setFormatter(formatter)
-    root_logger.addHandler(console_handler)
-    
-    # 生产环境添加文件处理器
-    if settings.ENVIRONMENT == "production":
-        # 创建日志目录
-        log_dir = Path("logs")
-        log_dir.mkdir(exist_ok=True)
-        
-        # 应用日志文件
-        app_log_file = log_dir / "app.log"
-        file_handler = logging.handlers.RotatingFileHandler(
-            filename=app_log_file,
-            maxBytes=10 * 1024 * 1024,  # 10MB
-            backupCount=5,
-            encoding="utf-8"
+        Args:
+            name: 日志记录器名称，默认为根记录器
+            log_file: 日志文件名，默认为 app.log
+
+        Returns:
+            配置好的日志记录器
+        """
+        logger = logging.getLogger(name)
+        logger.setLevel(self.get_log_level())
+
+        # 避免重复添加处理器
+        if logger.handlers:
+            return logger
+
+        # 日志格式
+        formatter = logging.Formatter(
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
-        file_handler.setLevel(log_level)
-        file_handler.setFormatter(formatter)
-        root_logger.addHandler(file_handler)
-        
-        # 错误日志文件
-        error_log_file = log_dir / "error.log"
-        error_handler = logging.handlers.RotatingFileHandler(
-            filename=error_log_file,
-            maxBytes=10 * 1024 * 1024,  # 10MB
-            backupCount=5,
-            encoding="utf-8"
-        )
-        error_handler.setLevel(logging.ERROR)
-        error_handler.setFormatter(formatter)
-        root_logger.addHandler(error_handler)
-    
-    # 设置第三方库日志级别
-    logging.getLogger("uvicorn").setLevel(logging.INFO)
-    logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
-    logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
-    
-    # 记录启动信息
-    logger = logging.getLogger(__name__)
-    logger.info(f"日志系统初始化完成 - 环境: {settings.ENVIRONMENT}, 级别: {settings.LOG_LEVEL}")
+
+        # 控制台处理器
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(self.get_log_level())
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
+
+        # 文件处理器（生产环境或配置要求时）
+        if settings.ENVIRONMENT == "production" or settings.LOG_TO_FILE:
+            if log_file is None:
+                log_file = "app.log"
+
+            file_handler = logging.FileHandler(
+                self.log_dir / log_file, encoding="utf-8"
+            )
+            file_handler.setLevel(self.get_log_level())
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+
+        return logger
 
 
-def get_logger(name: Optional[str] = None) -> logging.Logger:
+# 创建全局日志记录器实例
+logger_setup = LoggerSetup()
+logger = logger_setup.setup_logger("app")
+
+
+def get_logger(name: str) -> logging.Logger:
     """
-    获取日志记录器
-    
+    获取指定名称的日志记录器
+
     Args:
-        name: 日志记录器名称，默认使用调用模块名
-        
+        name: 日志记录器名称
+
     Returns:
-        logging.Logger: 日志记录器实例
+        日志记录器实例
     """
-    return logging.getLogger(name or __name__)
-
-
-# 导入 RotatingFileHandler
-import logging.handlers
+    return logger_setup.setup_logger(name)

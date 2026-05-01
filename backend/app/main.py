@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.core.database import init_db
-from backend.app.routers import auth, transactions
+from backend.app.routers import auth
 import logging
 
 # Configure logging
@@ -28,7 +28,6 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
-app.include_router(transactions.router)
 
 
 @app.on_event("startup")
