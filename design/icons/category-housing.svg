@@ -1,4 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-  <polyline points="9 22 9 12 15 12 15 22"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .housing-primary { fill: #e94560; }
+      .housing-secondary { fill: #0f3460; }
+      .housing-accent { fill: #f1f1f1; }
+    </style>
+  </defs>
+  
+  <!-- Base house structure -->
+  <path class="housing-secondary" d="M32 8 L8 28 L8 56 L56 56 L56 28 Z"/>
+  
+  <!-- Roof -->
+  <path class="housing-primary" d="M32 4 L4 26 L8 26 L32 8 L56 26 L60 26 Z"/>
+  
+  <!-- Door -->
+  <rect class="housing-accent" x="26" y="38" width="12" height="18" rx="1"/>
+  <circle class="housing-secondary" cx="35" cy="47" r="1.5"/>
+  
+  <!-- Windows -->
+  <rect class="housing-accent" x="14" y="32" width="8" height="8" rx="1"/>
+  <line x1="18" y1="32" x2="18" y2="40" stroke="#0f3460" stroke-width="1"/>
+  <line x1="14" y1="36" x2="22" y2="36" stroke="#0f3460" stroke-width="1"/>
+  
+  <rect class="housing-accent" x="42" y="32" width="8" height="8" rx="1"/>
+  <line x1="46" y1="32" x2="46" y2="40" stroke="#0f3460" stroke-width="1"/>
+  <line x1="42" y1="36" x2="50" y2="36" stroke="#0f3460" stroke-width="1"/>
+  
+  <!-- Chimney -->
+  <rect class="housing-primary" x="42" y="12" width="6" height="12" rx="1"/>
+  
+  <!-- Smoke -->
+  <circle class="housing-accent" cx="45" cy="8" r="2" opacity="0.6"/>
+  <circle class="housing-accent" cx="47" cy="6" r="1.5" opacity="0.5"/>
+  <circle class="housing-accent" cx="43" cy="6" r="1.5" opacity="0.5"/>
 </svg>

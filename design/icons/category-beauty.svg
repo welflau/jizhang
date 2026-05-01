@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background Circle -->
+  <circle cx="32" cy="32" r="30" fill="#e94560" opacity="0.1"/>
+  
+  <!-- Lipstick -->
+  <rect x="26" y="18" width="12" height="20" rx="2" fill="#e94560"/>
+  <rect x="28" y="14" width="8" height="6" rx="1" fill="#d63651"/>
+  <ellipse cx="32" cy="14" rx="4" ry="3" fill="#ff6b81"/>
+  
+  <!-- Makeup Brush -->
+  <line x1="42" y1="42" x2="50" y2="50" stroke="#8b4513" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="40" cy="40" rx="3" ry="4" fill="#f1f1f1" transform="rotate(-45 40 40)"/>
+  
+  <!-- Compact Mirror -->
+  <circle cx="18" cy="46" r="8" fill="#ffd700" opacity="0.3"/>
+  <circle cx="18" cy="46" r="6" fill="#f1f1f1" opacity="0.5"/>
+  <line x1="15" y1="46" x2="21" y2="46" stroke="#e94560" stroke-width="1"/>
+  
+  <!-- Sparkles -->
+  <path d="M 48 20 L 49 22 L 51 23 L 49 24 L 48 26 L 47 24 L 45 23 L 47 22 Z" fill="#ffd700"/>
+  <path d="M 14 28 L 15 29.5 L 16.5 30.5 L 15 31.5 L 14 33 L 13 31.5 L 11.5 30.5 L 13 29.5 Z" fill="#ff6b81"/>
+</svg>

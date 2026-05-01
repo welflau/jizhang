@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .sports-primary { fill: #e94560; }
+      .sports-secondary { fill: #f1f1f1; }
+      .sports-accent { fill: #0f3460; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" class="sports-accent" opacity="0.1"/>
+  
+  <!-- Soccer ball -->
+  <g transform="translate(32, 32)">
+    <!-- Ball outline -->
+    <circle cx="0" cy="0" r="18" class="sports-secondary" stroke="#e94560" stroke-width="2" fill="none"/>
+    
+    <!-- Pentagon center -->
+    <path d="M 0,-8 L 7.6,-2.5 L 4.7,6.5 L -4.7,6.5 L -7.6,-2.5 Z" class="sports-primary"/>
+    
+    <!-- Pentagon edges -->
+    <path d="M 0,-8 L 0,-18" class="sports-accent" stroke="#e94560" stroke-width="2" fill="none"/>
+    <path d="M 7.6,-2.5 L 15.5,-8.5" class="sports-accent" stroke="#e94560" stroke-width="2" fill="none"/>
+    <path d="M 4.7,6.5 L 11,14.5" class="sports-accent" stroke="#e94560" stroke-width="2" fill="none"/>
+    <path d="M -4.7,6.5 L -11,14.5" class="sports-accent" stroke="#e94560" stroke-width="2" fill="none"/>
+    <path d="M -7.6,-2.5 L -15.5,-8.5" class="sports-accent" stroke="#e94560" stroke-width="2" fill="none"/>
+    
+    <!-- Connecting hexagons -->
+    <path d="M 7.6,-2.5 L 15.5,-8.5 L 17,0 L 11,14.5 L 4.7,6.5 Z" class="sports-secondary" opacity="0.3"/>
+    <path d="M -7.6,-2.5 L -15.5,-8.5 L -17,0 L -11,14.5 L -4.7,6.5 Z" class="sports-secondary" opacity="0.3"/>
+  </g>
+</svg>
