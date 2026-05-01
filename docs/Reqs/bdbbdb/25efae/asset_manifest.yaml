@@ -1,0 +1,174 @@
+# asset_manifest.yaml — Design category icon set and color palette
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: food_dining
+    type: icon
+    description: Fork and knife crossed, 24x24px outline style
+    source_hint: custom_design
+    status: pending
+  - id: transport_car
+    type: icon
+    description: Car front view simplified, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: transport_bus
+    type: icon
+    description: Bus side view, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: shopping_cart
+    type: icon
+    description: Shopping cart, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: shopping_bag
+    type: icon
+    description: Shopping bag with handles, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: medical_cross
+    type: icon
+    description: Medical cross in circle, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: entertainment_movie
+    type: icon
+    description: Film reel or clapperboard, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: entertainment_game
+    type: icon
+    description: Game controller, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: housing_home
+    type: icon
+    description: House with roof, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: communication_phone
+    type: icon
+    description: Mobile phone, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: education_book
+    type: icon
+    description: Open book, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: clothing_shirt
+    type: icon
+    description: T-shirt, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: beauty_cosmetic
+    type: icon
+    description: Lipstick or makeup brush, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: pet_paw
+    type: icon
+    description: Paw print, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: gift_box
+    type: icon
+    description: Gift box with ribbon, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: salary_briefcase
+    type: icon
+    description: Briefcase, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: bonus_star
+    type: icon
+    description: Star with sparkle, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: investment_chart
+    type: icon
+    description: Upward trending chart, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: freelance_laptop
+    type: icon
+    description: Laptop computer, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: gift_money
+    type: icon
+    description: Money envelope (red packet style), 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: refund_return
+    type: icon
+    description: Circular arrow (return/refund), 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: category_default
+    type: icon
+    description: Tag or label icon, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: other_more
+    type: icon
+    description: Three dots horizontal, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: add_plus
+    type: icon
+    description: Plus sign in circle, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: edit_pencil
+    type: icon
+    description: Pencil, 24x24px outline
+    source_hint: custom_design
+    status: pending
+  - id: empty_category
+    type: illustration
+    description: Empty state illustration showing empty folder with sparkles, 240x180px, flat style matching icon aesthetic
+    source_hint: ai_generate
+    status: pending
+  - id: color_palette_preview
+    type: illustration
+    description: Abstract color swatches arrangement for documentation header, 400x200px
+    source_hint: ai_generate
+    status: pending
+  - id: icon_design_spec
+    type: document
+    description: Icon design specification PDF/Figma showing grid system, stroke alignment, corner radius standards
+    source_hint: design_tool_export
+    status: pending
+  - id: color_accessibility_report
+    type: document
+    description: WCAG contrast ratio test results spreadsheet (CSV/Excel) with all color combinations
+    source_hint: manual_testing
+    status: pending
+  - id: figma_source
+    type: document
+    description: Figma source file containing all icons on artboards with naming conventions
+    source_hint: design_tool_export
+    status: pending
+  - id: icon_svg_sprites
+    type: code
+    description: SVG sprite sheet combining all icons for optimized loading
+    source_hint: build_process
+    status: pending
+  - id: icon_map_json
+    type: code
+    description: JSON mapping icon IDs to SVG paths and metadata
+    source_hint: build_process
+    status: pending
+  - id: color_blind_simulation
+    type: reference
+    description: Color palette viewed through deuteranopia/protanopia filters (PNG exports)
+    source_hint: accessibility_tool
+    status: pending
+  - id: icon_usage_examples
+    type: reference
+    description: Mockup images showing icons in context (category picker, transaction list), 1200x800px
+    source_hint: design_mockup
+    status: pending
