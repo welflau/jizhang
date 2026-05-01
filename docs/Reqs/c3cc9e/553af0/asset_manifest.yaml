@@ -1,0 +1,54 @@
+# asset_manifest.yaml — Create unified response format and exception handler middleware
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: status_success
+    type: icon
+    description: Success status icon (checkmark circle) 24px outline
+    source_hint: iconify:heroicons:check-circle
+    status: pending
+  - id: status_error
+    type: icon
+    description: Error status icon (x circle) 24px outline
+    source_hint: iconify:heroicons:x-circle
+    status: pending
+  - id: status_warning
+    type: icon
+    description: Warning status icon (exclamation triangle) 24px outline
+    source_hint: iconify:heroicons:exclamation-triangle
+    status: pending
+  - id: status_info
+    type: icon
+    description: Info status icon (information circle) 24px outline
+    source_hint: iconify:heroicons:information-circle
+    status: pending
+  - id: code_bracket
+    type: icon
+    description: Code/JSON indicator icon (code bracket) 20px outline
+    source_hint: iconify:heroicons:code-bracket
+    status: pending
+  - id: copy_clipboard
+    type: icon
+    description: Copy to clipboard icon 20px outline
+    source_hint: iconify:heroicons:clipboard-document
+    status: pending
+  - id: exception_handler_flow
+    type: illustration
+    description: Exception handling flow diagram illustration 600x400, showing request->exception->handler->response flow with color-coded paths
+    source_hint: ai_generate
+    status: pending
+  - id: api_response_structure
+    type: illustration
+    description: API response structure visualization 500x350, showing nested JSON structure with labeled fields (code/message/data)
+    source_hint: ai_generate
+    status: pending
+  - id: middleware_architecture
+    type: diagram
+    description: Middleware architecture diagram showing FastAPI exception handler stack 800x500
+    source_hint: design_tool
+    status: pending
+  - id: response_format_example
+    type: code_sample
+    description: Syntax-highlighted JSON response format examples (success/error cases)
+    source_hint: code_formatter
+    status: pending
