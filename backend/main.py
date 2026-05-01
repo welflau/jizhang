@@ -1,75 +1,61 @@
-"""FastAPI application entry point."""
-import os
-import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-
-from database import init_db
+from backend.routes import user_routes
+import logging
+import os
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager - runs on startup and shutdown."""
-    # Startup: Initialize database and run migrations
-    logger.info("Starting application...")
-    try:
-        await init_db()
-        logger.info("Database initialized successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize database: {e}")
-        raise
-    
-    yield
-    
-    # Shutdown
-    logger.info("Shutting down application...")
-
-
 app = FastAPI(
-    title="Personal Finance Manager",
-    version="0.1.0",
-    lifespan=lifespan
+    title="User Profile API",
+    description="API for user profile management with authentication",
+    version="1.0.0"
 )
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, specify exact origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Register routers
+app.include_router(user_routes.router)
+
+# Global exception handler
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Catch-all exception handler for unhandled errors"""
+    logger.exception(f"Unhandled exception on {request.method} {request.url}: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "detail": str(exc)}
+    )
 
 @app.get("/")
 async def root():
-    """Health check endpoint."""
-    return {"status": "ok", "message": "Personal Finance Manager API"}
-
+    """Root endpoint for health check"""
+    return {"status": "ok", "service": "User Profile API"}
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check."""
-    return {
-        "status": "healthy",
-        "database": "connected"
-    }
-
+    """Health check endpoint"""
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8080))
     uvicorn.run(
-        "main:app",
+        "backend.main:app",
         host="0.0.0.0",
         port=port,
-        reload=os.getenv("ENV") == "development"
+        reload=True
     )

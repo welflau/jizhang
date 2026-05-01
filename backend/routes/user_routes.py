@@ -1,157 +1,95 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import Dict, Any
-import jwt
-import os
+from backend.models.user import UserUpdateRequest, UserResponse
+from backend.services.user_service import UserService
+from backend.middleware.auth import get_current_user
 import logging
-
-from models.user import UpdateUserRequest, UpdateUserResponse, UserResponse
-from services.user_service import UserService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/user", tags=["user"])
-security = HTTPBearer()
+user_service = UserService()
 
-# JWT configuration
-JWT_SECRET = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
-JWT_ALGORITHM = "HS256"
-
-def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> int:
-    """Extract and verify user ID from JWT token
+@router.get("/profile", response_model=UserResponse)
+async def get_profile(current_user: dict = Depends(get_current_user)):
+    """Get current user profile
     
     Args:
-        credentials: HTTP Bearer token credentials
+        current_user: Authenticated user from JWT token
         
     Returns:
-        User ID from token
+        User profile data
         
     Raises:
-        HTTPException: If token is invalid or expired
+        HTTPException: 404 if user not found
     """
-    token = credentials.credentials
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        user_id = payload.get("user_id")
-        if user_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid token: user_id not found"
-            )
-        return int(user_id)
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token has expired"
-        )
-    except jwt.InvalidTokenError as e:
-        logger.warning(f"Invalid token: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token"
-        )
-
-@router.get("/me", response_model=UserResponse)
-async def get_current_user(
-    user_id: int = Depends(get_current_user_id)
-):
-    """Get current user information
-    
-    Returns:
-        Current user data
-    """
-    service = UserService()
-    user = await service.get_user_by_id(user_id)
+    user_id = current_user["user_id"]
+    user = await user_service.get_user_by_id(user_id)
     
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            detail=f"User {user_id} not found"
         )
     
-    return UserResponse(**user)
+    return user
 
-@router.put("/update", response_model=UpdateUserResponse)
-async def update_user_info(
-    request: UpdateUserRequest,
-    user_id: int = Depends(get_current_user_id)
+@router.patch("/profile", response_model=UserResponse)
+async def update_profile(
+    request: UserUpdateRequest,
+    current_user: dict = Depends(get_current_user)
 ):
-    """Update user information
-    
-    Supports updating:
-    - nickname: User display name
-    - avatar: Avatar URL or base64 data
-    - password: Requires old_password verification
-    - preferences: User preference settings
+    """Update current user profile
     
     Args:
-        request: Update request with fields to modify
-        user_id: Current user ID from JWT token
+        request: User update request with optional fields
+        current_user: Authenticated user from JWT token
         
     Returns:
-        Updated user information
+        Updated user profile data
+        
+    Raises:
+        HTTPException: 400 if validation fails, 401 if password incorrect, 404 if user not found
     """
-    service = UserService()
+    user_id = current_user["user_id"]
     
+    # If changing password, verify current password first
+    if request.new_password:
+        if not request.current_password:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="current_password is required when changing password"
+            )
+        
+        password_valid = await user_service.verify_password(user_id, request.current_password)
+        if not password_valid:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Current password is incorrect"
+            )
+    
+    # Convert preferences model to dict if provided
+    preferences_dict = None
+    if request.preferences:
+        preferences_dict = request.preferences.dict()
+    
+    # Update user profile
     try:
-        updated_user = await service.update_user_info(
+        updated_user = await user_service.update_user(
             user_id=user_id,
             nickname=request.nickname,
             avatar=request.avatar,
-            old_password=request.old_password,
             new_password=request.new_password,
-            preferences=request.preferences.dict() if request.preferences else None
+            preferences=preferences_dict
         )
         
-        return UpdateUserResponse(
-            success=True,
-            message="User information updated successfully",
-            user=UserResponse(**updated_user)
-        )
-    
-    except HTTPException:
-        # Re-raise HTTP exceptions from service layer
-        raise
-    except Exception as e:
-        logger.exception(f"Unexpected error updating user {user_id}: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update user information"
-        )
-
-@router.patch("/preferences", response_model=UpdateUserResponse)
-async def update_preferences(
-    preferences: Dict[str, Any],
-    user_id: int = Depends(get_current_user_id)
-):
-    """Update user preferences (merge with existing)
-    
-    Args:
-        preferences: Preference key-value pairs to update
-        user_id: Current user ID from JWT token
-        
-    Returns:
-        Updated user information
-    """
-    service = UserService()
-    
-    try:
-        updated_user = await service.update_preferences(
-            user_id=user_id,
-            preferences=preferences
-        )
-        
-        return UpdateUserResponse(
-            success=True,
-            message="User preferences updated successfully",
-            user=UserResponse(**updated_user)
-        )
+        logger.info(f"User {user_id} profile updated via API")
+        return updated_user
     
     except HTTPException:
         raise
     except Exception as e:
-        logger.exception(f"Unexpected error updating preferences for user {user_id}: {e}")
+        logger.exception(f"Unexpected error updating profile for user {user_id}: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update preferences"
+            detail="Failed to update profile"
         )

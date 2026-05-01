@@ -1,21 +1,21 @@
 import aiosqlite
 import bcrypt
 import json
-from typing import Optional, Dict, Any
 from datetime import datetime
+from typing import Optional, Dict, Any
 from fastapi import HTTPException
 import logging
 
 logger = logging.getLogger(__name__)
 
 class UserService:
-    """Service layer for user operations"""
+    """User service for database operations"""
     
     def __init__(self, db_path: str = "app.db"):
         self.db_path = db_path
     
     async def get_user_by_id(self, user_id: int) -> Optional[Dict[str, Any]]:
-        """Get user information by ID
+        """Get user by ID
         
         Args:
             user_id: User ID
@@ -26,20 +26,22 @@ class UserService:
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
-                "SELECT id, username, nickname, avatar, email, preferences, created_at, updated_at FROM users WHERE id = ?",
+                "SELECT id, username, email, nickname, avatar, preferences, created_at, updated_at "
+                "FROM users WHERE id = ?",
                 (user_id,)
             ) as cursor:
                 row = await cursor.fetchone()
-                if row:
-                    user_dict = dict(row)
-                    # Parse JSON preferences
-                    if user_dict.get('preferences'):
-                        try:
-                            user_dict['preferences'] = json.loads(user_dict['preferences'])
-                        except json.JSONDecodeError:
-                            user_dict['preferences'] = {}
-                    return user_dict
-                return None
+                if not row:
+                    return None
+                
+                user_dict = dict(row)
+                # Parse preferences JSON
+                if user_dict.get('preferences'):
+                    try:
+                        user_dict['preferences'] = json.loads(user_dict['preferences'])
+                    except json.JSONDecodeError:
+                        user_dict['preferences'] = {}
+                return user_dict
     
     async def verify_password(self, user_id: int, password: str) -> bool:
         """Verify user password
@@ -61,64 +63,32 @@ class UserService:
                     return False
                 
                 stored_hash = row[0]
-                # Verify password using bcrypt
-                return bcrypt.checkpw(
-                    password.encode('utf-8'),
-                    stored_hash.encode('utf-8')
-                )
+                return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
     
-    def _hash_password(self, password: str) -> str:
-        """Hash password using bcrypt
-        
-        Args:
-            password: Plain text password
-            
-        Returns:
-            Hashed password string
-        """
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed.decode('utf-8')
-    
-    async def update_user_info(
+    async def update_user(
         self,
         user_id: int,
         nickname: Optional[str] = None,
         avatar: Optional[str] = None,
-        old_password: Optional[str] = None,
         new_password: Optional[str] = None,
         preferences: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """Update user information
+        """Update user profile
         
         Args:
             user_id: User ID
             nickname: New nickname (optional)
             avatar: New avatar URL (optional)
-            old_password: Current password (required if changing password)
-            new_password: New password (optional)
+            new_password: New password plain text (optional, will be hashed)
             preferences: User preferences dict (optional)
             
         Returns:
-            Updated user data dict
+            Updated user data
             
         Raises:
-            HTTPException: If user not found or password verification fails
+            HTTPException: If user not found or update fails
         """
-        # Verify user exists
-        user = await self.get_user_by_id(user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-        
-        # Verify old password if changing password
-        if new_password:
-            if not old_password:
-                raise HTTPException(status_code=400, detail="old_password is required when changing password")
-            
-            if not await self.verify_password(user_id, old_password):
-                raise HTTPException(status_code=401, detail="Current password is incorrect")
-        
-        # Build update query dynamically
+        # Build dynamic UPDATE query
         update_fields = []
         params = []
         
@@ -131,8 +101,10 @@ class UserService:
             params.append(avatar)
         
         if new_password is not None:
+            # Hash password with bcrypt
+            password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt(rounds=10))
             update_fields.append("password_hash = ?")
-            params.append(self._hash_password(new_password))
+            params.append(password_hash.decode('utf-8'))
         
         if preferences is not None:
             update_fields.append("preferences = ?")
@@ -140,6 +112,9 @@ class UserService:
         
         if not update_fields:
             # No fields to update, return current user
+            user = await self.get_user_by_id(user_id)
+            if not user:
+                raise HTTPException(status_code=404, detail=f"User {user_id} not found")
             return user
         
         # Add updated_at timestamp
@@ -149,45 +124,25 @@ class UserService:
         # Add user_id for WHERE clause
         params.append(user_id)
         
-        # Execute update
         query = f"UPDATE users SET {', '.join(update_fields)} WHERE id = ?"
         
-        async with aiosqlite.connect(self.db_path) as db:
-            try:
+        try:
+            async with aiosqlite.connect(self.db_path) as db:
+                db.row_factory = aiosqlite.Row
                 await db.execute(query, params)
                 await db.commit()
-                logger.info(f"User {user_id} information updated successfully")
-            except Exception as e:
-                logger.exception(f"Failed to update user {user_id}: {e}")
-                raise HTTPException(status_code=500, detail="Failed to update user information")
+                
+                # Fetch updated user
+                updated_user = await self.get_user_by_id(user_id)
+                if not updated_user:
+                    raise HTTPException(status_code=404, detail=f"User {user_id} not found after update")
+                
+                logger.info(f"User {user_id} profile updated successfully")
+                return updated_user
         
-        # Return updated user data
-        updated_user = await self.get_user_by_id(user_id)
-        return updated_user
-    
-    async def update_preferences(
-        self,
-        user_id: int,
-        preferences: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Update user preferences (merge with existing)
-        
-        Args:
-            user_id: User ID
-            preferences: Preferences dict to merge
-            
-        Returns:
-            Updated user data dict
-        """
-        user = await self.get_user_by_id(user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-        
-        # Merge with existing preferences
-        current_prefs = user.get('preferences') or {}
-        merged_prefs = {**current_prefs, **preferences}
-        
-        return await self.update_user_info(
-            user_id=user_id,
-            preferences=merged_prefs
-        )
+        except aiosqlite.IntegrityError as e:
+            logger.error(f"Database integrity error updating user {user_id}: {e}")
+            raise HTTPException(status_code=400, detail="Invalid update data")
+        except Exception as e:
+            logger.exception(f"Error updating user {user_id}: {e}")
+            raise HTTPException(status_code=500, detail="Failed to update user profile")

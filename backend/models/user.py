@@ -1,115 +1,97 @@
-from pydantic import BaseModel, Field, validator
-from typing import Optional, Dict, Any
 from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, Field, validator
 import re
 
 class UserPreferences(BaseModel):
     """User preference settings"""
-    theme: Optional[str] = Field(default="light", description="UI theme: light/dark")
-    language: Optional[str] = Field(default="zh-CN", description="Interface language")
-    notifications_enabled: Optional[bool] = Field(default=True, description="Enable notifications")
-    email_notifications: Optional[bool] = Field(default=False, description="Email notifications")
-    
+    theme: str = Field(default="light", description="UI theme: light/dark")
+    language: str = Field(default="en", description="Interface language")
+    notifications_enabled: bool = Field(default=True, description="Enable notifications")
+    email_notifications: bool = Field(default=True, description="Enable email notifications")
+
     class Config:
         json_schema_extra = {
             "example": {
                 "theme": "dark",
-                "language": "en-US",
+                "language": "zh",
                 "notifications_enabled": True,
                 "email_notifications": False
             }
         }
 
-class UpdateUserRequest(BaseModel):
-    """Request model for updating user information"""
-    nickname: Optional[str] = Field(None, min_length=2, max_length=30, description="User nickname")
-    avatar: Optional[str] = Field(None, max_length=500, description="Avatar URL or base64 data")
-    old_password: Optional[str] = Field(None, min_length=6, description="Current password (required for password change)")
-    new_password: Optional[str] = Field(None, min_length=6, max_length=128, description="New password")
+class UserUpdateRequest(BaseModel):
+    """User profile update request schema"""
+    nickname: Optional[str] = Field(None, min_length=2, max_length=50, description="User nickname")
+    avatar: Optional[str] = Field(None, max_length=500, description="Avatar URL")
+    current_password: Optional[str] = Field(None, description="Current password for verification")
+    new_password: Optional[str] = Field(None, min_length=8, max_length=128, description="New password")
     preferences: Optional[UserPreferences] = Field(None, description="User preferences")
-    
-    @validator('nickname')
-    def validate_nickname(cls, v):
-        if v is not None:
-            if not re.match(r'^[\w\u4e00-\u9fa5\s-]+$', v):
-                raise ValueError('nickname can only contain letters, numbers, Chinese characters, spaces and hyphens')
-        return v
-    
+
     @validator('avatar')
-    def validate_avatar(cls, v):
-        if v is not None:
-            # Allow URL or base64 data URI
-            if not (v.startswith('http://') or v.startswith('https://') or v.startswith('data:image/')):
-                raise ValueError('avatar must be a valid URL or base64 data URI')
+    def validate_avatar_url(cls, v):
+        if v is None:
+            return v
+        # Basic URL validation
+        url_pattern = re.compile(
+            r'^https?://'
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
+            r'localhost|'
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+            r'(?::\d+)?'
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+        if not url_pattern.match(v):
+            raise ValueError('Invalid avatar URL format')
         return v
-    
+
     @validator('new_password')
-    def validate_new_password(cls, v, values):
-        if v is not None:
-            # Password strength check
-            if not re.search(r'[A-Za-z]', v) or not re.search(r'\d', v):
-                raise ValueError('new_password must contain both letters and numbers')
-            # Require old_password when changing password
-            if 'old_password' not in values or values['old_password'] is None:
-                raise ValueError('old_password is required when changing password')
+    def validate_password_strength(cls, v):
+        if v is None:
+            return v
+        # Password must contain at least one uppercase, one lowercase, one digit
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not re.search(r'[a-z]', v):
+            raise ValueError('Password must contain at least one lowercase letter')
+        if not re.search(r'\d', v):
+            raise ValueError('Password must contain at least one digit')
         return v
-    
+
     class Config:
         json_schema_extra = {
             "example": {
-                "nickname": "John Doe",
+                "nickname": "JohnDoe",
                 "avatar": "https://example.com/avatar.jpg",
-                "old_password": "oldpass123",
-                "new_password": "newpass456",
+                "current_password": "OldPass123",
+                "new_password": "NewPass456",
                 "preferences": {
                     "theme": "dark",
-                    "language": "en-US"
+                    "language": "en"
                 }
             }
         }
 
 class UserResponse(BaseModel):
-    """User information response model"""
+    """User profile response schema"""
     id: int
     username: str
+    email: str
     nickname: Optional[str] = None
     avatar: Optional[str] = None
-    email: Optional[str] = None
-    preferences: Optional[Dict[str, Any]] = None
-    created_at: datetime
-    updated_at: datetime
-    
+    preferences: Optional[dict] = None
+    created_at: str
+    updated_at: str
+
     class Config:
-        from_attributes = True
         json_schema_extra = {
             "example": {
                 "id": 1,
-                "username": "johndoe",
-                "nickname": "John Doe",
-                "avatar": "https://example.com/avatar.jpg",
+                "username": "john_doe",
                 "email": "john@example.com",
-                "preferences": {"theme": "dark"},
-                "created_at": "2024-01-01T00:00:00",
-                "updated_at": "2024-01-01T00:00:00"
-            }
-        }
-
-class UpdateUserResponse(BaseModel):
-    """Response model for user update operation"""
-    success: bool
-    message: str
-    user: UserResponse
-    
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "success": True,
-                "message": "User information updated successfully",
-                "user": {
-                    "id": 1,
-                    "username": "johndoe",
-                    "nickname": "John Doe",
-                    "avatar": "https://example.com/avatar.jpg"
-                }
+                "nickname": "JohnDoe",
+                "avatar": "https://example.com/avatar.jpg",
+                "preferences": {"theme": "dark", "language": "en"},
+                "created_at": "2024-01-01T00:00:00Z",
+                "updated_at": "2024-01-02T00:00:00Z"
             }
         }
