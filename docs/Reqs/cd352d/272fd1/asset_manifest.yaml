@@ -1,0 +1,99 @@
+# asset_manifest.yaml — Define SQLAlchemy ORM models for core tables
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI 资产清单
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: 本工单为后端 ORM 模型定义，不涉及 UI 资产。
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: ### 开发工具资产（非 UI）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: 数据库可视化工具**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: tool: DB 设计工具（如 dbdiagram.io / draw.io）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: 用途：绘制 ER 图，可视化表关系
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: 格式：PNG/SVG 导出
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: 代码编辑器插件**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: plugin: SQLAlchemy 语法高亮
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: 用途：提升模型定义代码可读性
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: 文档资产**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: document: 数据字典（Data Dictionary）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: 用途：记录每个字段的业务含义、取值范围、示例值
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: 格式：Markdown 表格
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: ### 未来前端开发可能需要的资产（参考）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: 图标（icon）**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: icon: category-income（收入分类图标，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: icon: category-expense（支出分类图标，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: icon: payment-method（支付方式图标，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: icon: transaction（交易记录图标，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: 插画（illustration）**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: illustration
+    description: illustration: empty-transactions（交易记录为空时显示，400x300）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: illustration
+    description: illustration: empty-categories（分类为空时显示，400x300）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: 注：以上前端资产不在本工单范围内，仅作为后续开发参考。
+    status: pending  # 待美术Agent确认来源和规格
