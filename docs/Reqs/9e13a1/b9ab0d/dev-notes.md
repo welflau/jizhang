@@ -3,8 +3,8 @@
 > 2026-05-02 01:05 | LLM
 
 ## 产出文件
-- [backend/app/models/budget.py](/app#repo?file=backend/app/models/budget.py) (1650 chars)
-- [backend/alembic/versions/002_create_budgets_table.py](/app#repo?file=backend/alembic/versions/002_create_budgets_table.py) (2083 chars)
+- [backend/app/models/budget.py](/app#repo?file=backend/app/models/budget.py) (1663 chars)
+- [backend/alembic/versions/002_create_budgets_table.py](/app#repo?file=backend/alembic/versions/002_create_budgets_table.py) (2113 chars)
 
 ## 自测: 自测 5/6 通过 ⚠️
 
@@ -19,7 +19,7 @@
 
 ## 代码变更 (Diff)
 
-### backend/app/models/budget.py (新建, 1650 chars)
+### backend/app/models/budget.py (新建, 1663 chars)
 ```
 + from datetime import datetime
 + from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, Index
@@ -44,9 +44,9 @@
 + ... (更多)
 ```
 
-### backend/alembic/versions/002_create_budgets_table.py (新建, 2083 chars)
+### backend/alembic/versions/002_create_budgets_table.py (新建, 2113 chars)
 ```
-+ """Create budgets table
++ """create budgets table
 + 
 + Revision ID: 002
 + Revises: 001
@@ -64,7 +64,7 @@
 + depends_on = None
 + 
 + 
-+ def upgrade():
++ def upgrade() -> None:
 +     # Create budgets table
 + ... (更多)
 ```

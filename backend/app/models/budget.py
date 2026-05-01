@@ -20,16 +20,17 @@ class Budget(Base):
 
     # 索引
     __table_args__ = (
-        Index("ix_budgets_user_id", "user_id"),
-        Index("ix_budgets_period", "period"),
-        Index("ix_budgets_user_id_period", "user_id", "period"),
-        Index("ix_budgets_user_id_category_id_period", "user_id", "category_id", "period", unique=True),
+        Index("idx_budget_user_id", "user_id"),
+        Index("idx_budget_period", "period"),
+        Index("idx_budget_user_period", "user_id", "period"),
+        Index("idx_budget_user_category_period", "user_id", "category_id", "period", unique=True),
     )
 
     def __repr__(self):
         return f"<Budget(id={self.id}, user_id={self.user_id}, category_id={self.category_id}, amount={self.amount}, period={self.period})>"
 
     def to_dict(self):
+        """转换为字典格式"""
         return {
             "id": self.id,
             "user_id": self.user_id,
