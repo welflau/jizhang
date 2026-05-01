@@ -2,8 +2,68 @@
 # 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
 # status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: placeholder
+  - id: check_circle
     type: icon
-    description: 待补充
-    source_hint: iconify
+    description: Success/healthy status indicator, 16-24px outline
+    source_hint: lucide:check-circle
+    status: pending
+  - id: x_circle
+    type: icon
+    description: Error/unhealthy status indicator, 16-24px outline
+    source_hint: lucide:x-circle
+    status: pending
+  - id: loader
+    type: icon
+    description: Loading/connecting spinner animation, 16-24px
+    source_hint: lucide:loader-2
+    status: pending
+  - id: alert_triangle
+    type: icon
+    description: Warning/error alert icon, 20-24px outline
+    source_hint: lucide:alert-triangle
+    status: pending
+  - id: database
+    type: icon
+    description: Database/connection pool icon, 24px outline
+    source_hint: lucide:database
+    status: pending
+  - id: activity
+    type: icon
+    description: Health check/monitoring icon, 24px outline
+    source_hint: lucide:activity
+    status: pending
+  - id: clock
+    type: icon
+    description: Response time/timestamp icon, 16px outline
+    source_hint: lucide:clock
+    status: pending
+  - id: info
+    type: icon
+    description: Information tooltip icon, 16px outline
+    source_hint: lucide:info
+    status: pending
+  - id: settings
+    type: icon
+    description: Configuration/settings icon, 24px outline
+    source_hint: lucide:settings
+    status: pending
+  - id: terminal
+    type: icon
+    description: Log/console output icon, 20px outline
+    source_hint: lucide:terminal
+    status: pending
+  - id: db_connection_error
+    type: illustration
+    description: Database connection error state illustration, 320x240px, flat style with server/database disconnected visual metaphor
+    source_hint: undraw.co or custom SVG
+    status: pending
+  - id: db_healthy
+    type: illustration
+    description: Database healthy state illustration, 280x200px, flat style with connected nodes/checkmark
+    source_hint: undraw.co or custom SVG
+    status: pending
+  - id: loading_connection
+    type: illustration
+    description: Database connecting state illustration, 240x180px, animated dots or progress visual
+    source_hint: custom SVG animation
     status: pending
