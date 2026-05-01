@@ -1,12 +1,16 @@
 """
 Services package initialization.
-This module exports all service classes for easy importing.
+
+This module initializes the services layer of the application.
+Services contain business logic and coordinate between API endpoints and data models.
 """
 
-from .auth_service import AuthService
-from .user_service import UserService
+from typing import List
 
-__all__ = [
-    "AuthService",
-    "UserService",
-]
+__all__: List[str] = []
+
+# Services will be imported here as they are created
+# Example:
+# from .user_service import UserService
+# from .auth_service import AuthService
+# __all__.extend(['UserService', 'AuthService'])

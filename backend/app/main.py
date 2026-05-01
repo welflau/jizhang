@@ -1,73 +1,54 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from backend.app.core.config import settings
+from backend.app.core.database import init_db
+from backend.app.routers import auth
 import logging
-import os
-from contextlib import asynccontextmanager
-
-from app.database import init_db
-from app.api.routes import export, import_data, clear
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager"""
-    # Startup
-    logger.info("Initializing database...")
-    await init_db()
-    logger.info("Application startup complete")
-    yield
-    # Shutdown
-    logger.info("Application shutdown")
-
 app = FastAPI(
-    title="Access Log API",
-    description="API for managing access logs with export/import/clear functionality",
-    version="1.0.0",
-    lifespan=lifespan
+    title=settings.APP_NAME,
+    debug=settings.DEBUG
 )
 
-# CORS middleware
+# CORS middleware for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, specify exact origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Register routers
-app.include_router(export.router, tags=["export"])
-app.include_router(import_data.router, tags=["import"])
-app.include_router(clear.router, tags=["clear"])
+# Include routers
+app.include_router(auth.router)
 
-# Global exception handler
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """Catch-all exception handler for unhandled errors"""
-    logger.exception(f"Unhandled exception on {request.method} {request.url}: {exc}")
-    return JSONResponse(
-        status_code=500,
-        content={"error": "Internal server error", "detail": str(exc)}
-    )
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on application startup."""
+    logger.info("Initializing database...")
+    await init_db()
+    logger.info("Database initialized successfully")
+
 
 @app.get("/")
 async def root():
-    """Health check endpoint"""
-    return {"status": "ok", "message": "Access Log API is running"}
+    """Health check endpoint."""
+    return {"status": "ok", "app": settings.APP_NAME}
+
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", 8080))
     uvicorn.run(
-        "app.main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=os.getenv("ENV") == "development"
+        "backend.app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.DEBUG
     )

@@ -1,10 +1,10 @@
 """
 Core module initialization.
-Exports core configuration and settings for the application.
+Exports core configuration and utilities.
 """
 
-from backend.app.core.config import settings
-from backend.app.core.logging import setup_logging, get_logger
+from .config import settings
+from .logging import setup_logging, get_logger
 
 __all__ = [
     "settings",

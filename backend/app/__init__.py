@@ -5,141 +5,168 @@ This module initializes the FastAPI application with core configurations includi
 - CORS middleware
 - Logging system
 - Environment variables
-- API routers
+- Application metadata
 """
 
 import logging
 import os
+import sys
 from pathlib import Path
-from logging.handlers import RotatingFileHandler
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-env_path = Path(__file__).parent.parent / '.env'
-load_dotenv(dotenv_path=env_path)
+load_dotenv()
 
-# Get environment settings
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
-APP_NAME = os.getenv('APP_NAME', 'FastAPI Application')
-APP_VERSION = os.getenv('APP_VERSION', '1.0.0')
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
-LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
+# Get environment
+ENV = os.getenv("ENV", "development")
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-# CORS settings
-CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
-CORS_ALLOW_CREDENTIALS = os.getenv('CORS_ALLOW_CREDENTIALS', 'True').lower() == 'true'
-CORS_ALLOW_METHODS = os.getenv('CORS_ALLOW_METHODS', '*').split(',')
-CORS_ALLOW_HEADERS = os.getenv('CORS_ALLOW_HEADERS', '*').split(',')
+# Configure logging
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+LOG_DIR = Path("logs")
 
+# Create logs directory if it doesn't exist
+if not LOG_DIR.exists():
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-def setup_logging():
-    """
-    Configure logging system based on environment
-    - Development: Console output with DEBUG level
-    - Production: File output with INFO level and rotation
-    """
-    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    log_level = getattr(logging, LOG_LEVEL.upper(), logging.INFO)
-    
-    # Create logs directory if it doesn't exist
-    logs_dir = Path(__file__).parent.parent / 'logs'
-    logs_dir.mkdir(exist_ok=True)
-    
-    # Configure root logger
-    logger = logging.getLogger()
-    logger.setLevel(log_level)
-    
-    # Remove existing handlers
-    logger.handlers.clear()
-    
-    # Console handler (always enabled)
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(log_level)
-    console_formatter = logging.Formatter(log_format)
-    console_handler.setFormatter(console_formatter)
-    logger.addHandler(console_handler)
-    
-    # File handler (enabled in production or when specified)
-    if ENVIRONMENT == 'production' or os.getenv('LOG_TO_FILE', 'False').lower() == 'true':
-        file_handler = RotatingFileHandler(
-            logs_dir / f'{APP_NAME.lower().replace(" ", "_")}.log',
-            maxBytes=10 * 1024 * 1024,  # 10MB
-            backupCount=5,
-            encoding='utf-8'
-        )
-        file_handler.setLevel(log_level)
-        file_formatter = logging.Formatter(log_format)
-        file_handler.setFormatter(file_formatter)
-        logger.addHandler(file_handler)
-    
-    logger.info(f"Logging initialized - Environment: {ENVIRONMENT}, Level: {LOG_LEVEL}")
+# Configure logging handlers based on environment
+handlers = []
 
+# Console handler (always enabled)
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(LOG_LEVEL)
+console_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+handlers.append(console_handler)
 
-def create_app() -> FastAPI:
-    """
-    Create and configure FastAPI application instance
-    
-    Returns:
-        FastAPI: Configured FastAPI application
-    """
-    # Setup logging first
-    setup_logging()
-    logger = logging.getLogger(__name__)
-    
-    # Create FastAPI app
-    app = FastAPI(
-        title=APP_NAME,
-        version=APP_VERSION,
-        debug=DEBUG,
-        docs_url='/docs' if DEBUG else None,
-        redoc_url='/redoc' if DEBUG else None,
+# File handler (enabled in production or when specified)
+if ENV == "production" or os.getenv("LOG_TO_FILE", "False").lower() == "true":
+    file_handler = logging.FileHandler(
+        LOG_DIR / f"app_{ENV}.log",
+        encoding="utf-8"
     )
-    
-    # Configure CORS
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=CORS_ORIGINS,
-        allow_credentials=CORS_ALLOW_CREDENTIALS,
-        allow_methods=CORS_ALLOW_METHODS,
-        allow_headers=CORS_ALLOW_HEADERS,
-    )
-    
-    logger.info(f"CORS configured - Origins: {CORS_ORIGINS}")
-    
-    # Health check endpoint
-    @app.get('/health')
-    async def health_check():
-        """Health check endpoint"""
-        return {
-            'status': 'healthy',
-            'environment': ENVIRONMENT,
-            'version': APP_VERSION
-        }
-    
-    # Root endpoint
-    @app.get('/')
-    async def root():
-        """Root endpoint"""
-        return {
-            'message': f'Welcome to {APP_NAME}',
-            'version': APP_VERSION,
-            'docs': '/docs' if DEBUG else 'disabled'
-        }
-    
-    logger.info(f"{APP_NAME} v{APP_VERSION} initialized successfully")
-    logger.info(f"Environment: {ENVIRONMENT}, Debug: {DEBUG}")
-    
-    return app
+    file_handler.setLevel(LOG_LEVEL)
+    file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    handlers.append(file_handler)
+
+# Configure root logger
+logging.basicConfig(
+    level=LOG_LEVEL,
+    format=LOG_FORMAT,
+    handlers=handlers
+)
+
+logger = logging.getLogger(__name__)
+
+# Log startup information
+logger.info(f"Starting application in {ENV} environment")
+logger.info(f"Debug mode: {DEBUG}")
+logger.info(f"Log level: {LOG_LEVEL}")
+
+# Initialize FastAPI application
+app = FastAPI(
+    title=os.getenv("APP_NAME", "FastAPI Application"),
+    description=os.getenv("APP_DESCRIPTION", "FastAPI application with structured architecture"),
+    version=os.getenv("APP_VERSION", "1.0.0"),
+    debug=DEBUG,
+    docs_url="/docs" if DEBUG else None,
+    redoc_url="/redoc" if DEBUG else None,
+)
+
+# Configure CORS
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+ALLOWED_METHODS = os.getenv("ALLOWED_METHODS", "GET,POST,PUT,DELETE,PATCH,OPTIONS").split(",")
+ALLOWED_HEADERS = os.getenv("ALLOWED_HEADERS", "*").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=os.getenv("ALLOW_CREDENTIALS", "True").lower() == "true",
+    allow_methods=ALLOWED_METHODS,
+    allow_headers=ALLOWED_HEADERS,
+    expose_headers=os.getenv("EXPOSE_HEADERS", "").split(",") if os.getenv("EXPOSE_HEADERS") else [],
+    max_age=int(os.getenv("CORS_MAX_AGE", "600")),
+)
+
+logger.info(f"CORS configured with origins: {ALLOWED_ORIGINS}")
 
 
-# Create application instance
-app = create_app()
+# Health check endpoint
+@app.get("/health", tags=["Health"])
+async def health_check():
+    """
+    Health check endpoint to verify application status
+    """
+    return {
+        "status": "healthy",
+        "environment": ENV,
+        "version": os.getenv("APP_VERSION", "1.0.0")
+    }
 
 
-# Import and include API routers (will be added later)
-# from app.api import users, items
-# app.include_router(users.router, prefix='/api/v1/users', tags=['users'])
-# app.include_router(items.router, prefix='/api/v1/items', tags=['items'])
+# Root endpoint
+@app.get("/", tags=["Root"])
+async def root():
+    """
+    Root endpoint with basic application information
+    """
+    return {
+        "message": "Welcome to FastAPI Application",
+        "docs": "/docs" if DEBUG else "Documentation disabled in production",
+        "health": "/health"
+    }
+
+
+# Application startup event
+@app.on_event("startup")
+async def startup_event():
+    """
+    Execute tasks on application startup
+    """
+    logger.info("Application startup complete")
+    logger.info(f"API documentation available at: /docs")
+
+
+# Application shutdown event
+@app.on_event("shutdown")
+async def shutdown_event():
+    """
+    Execute cleanup tasks on application shutdown
+    """
+    logger.info("Application shutting down")
+
+
+# Create necessary directories
+def create_project_structure():
+    """
+    Create project directory structure if it doesn't exist
+    """
+    directories = [
+        "app/api",
+        "app/models",
+        "app/schemas",
+        "app/services",
+        "app/core",
+        "app/utils",
+    ]
+    
+    base_path = Path(__file__).parent.parent
+    
+    for directory in directories:
+        dir_path = base_path / directory
+        if not dir_path.exists():
+            dir_path.mkdir(parents=True, exist_ok=True)
+            # Create __init__.py in each directory
+            init_file = dir_path / "__init__.py"
+            if not init_file.exists():
+                init_file.touch()
+            logger.info(f"Created directory: {directory}")
+
+
+# Create project structure on module import
+create_project_structure()
+
+logger.info("FastAPI application initialized successfully")
