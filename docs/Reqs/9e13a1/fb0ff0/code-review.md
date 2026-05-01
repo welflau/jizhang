@@ -12,8 +12,8 @@
 无
 
 ## 审查的代码
-- backend/app/routers/budgets.py
+- backend/app/models/budget.py
 - backend/app/schemas/budget.py
-- backend/app/services/budget_service.py
+- backend/app/api/routes/budgets.py
 - backend/app/main.py
 - docs/Reqs/9e13a1/fb0ff0/dev-notes.md
