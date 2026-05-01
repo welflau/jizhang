@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from backend.app.core.config import settings
-from backend.app.core.database import init_db
-from backend.app.routers import auth, backup
+from backend.app.core.database import init_db, close_db
+from backend.app.routers import auth
 import logging
 
 # Configure logging
@@ -49,7 +49,6 @@ async def exception_handler_middleware(request: Request, call_next):
 
 # Include routers
 app.include_router(auth.router)
-app.include_router(backup.router)
 
 
 @app.on_event("startup")
@@ -60,10 +59,18 @@ async def startup_event():
     logger.info("Database initialized successfully")
 
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Close database connection pool on application shutdown."""
+    logger.info("Closing database connection pool...")
+    await close_db()
+    logger.info("Database connection pool closed successfully")
+
+
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"status": "ok", "app": settings.APP_NAME}
+    return {"success": True, "message": "ok", "data": {"app": settings.APP_NAME}}
 
 
 if __name__ == "__main__":
