@@ -1,0 +1,109 @@
+# asset_manifest.yaml — Create categories database table and migration
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: database_table
+    type: icon
+    description: Database table icon for schema visualization, 24px outline style
+    source_hint: iconify:mdi:table
+    status: pending
+  - id: key_primary
+    type: icon
+    description: Primary key indicator icon, 24px outline style
+    source_hint: iconify:mdi:key-variant
+    status: pending
+  - id: key_foreign
+    type: icon
+    description: Foreign key indicator icon, 24px outline style
+    source_hint: iconify:mdi:key-link
+    status: pending
+  - id: index
+    type: icon
+    description: Database index indicator icon, 24px outline style
+    source_hint: iconify:mdi:database-search
+    status: pending
+  - id: check_circle
+    type: icon
+    description: Success status icon, 24px outline style
+    source_hint: iconify:mdi:check-circle-outline
+    status: pending
+  - id: alert_circle
+    type: icon
+    description: Error status icon, 24px outline style
+    source_hint: iconify:mdi:alert-circle-outline
+    status: pending
+  - id: clock
+    type: icon
+    description: Pending/loading status icon, 24px outline style
+    source_hint: iconify:mdi:clock-outline
+    status: pending
+  - id: arrow_up
+    type: icon
+    description: Income/upgrade indicator icon, 24px outline style
+    source_hint: iconify:mdi:arrow-up-circle-outline
+    status: pending
+  - id: arrow_down
+    type: icon
+    description: Expense/downgrade indicator icon, 24px outline style
+    source_hint: iconify:mdi:arrow-down-circle-outline
+    status: pending
+  - id: close
+    type: icon
+    description: Close/dismiss icon for toast notifications, 20px outline style
+    source_hint: iconify:mdi:close
+    status: pending
+  - id: info
+    type: icon
+    description: Information icon for tooltips, 16px outline style
+    source_hint: iconify:mdi:information-outline
+    status: pending
+  - id: refresh
+    type: icon
+    description: Refresh/reload icon for migration retry, 24px outline style
+    source_hint: iconify:mdi:refresh
+    status: pending
+  - id: empty_database
+    type: icon
+    description: Empty state illustration for no categories, minimalist line art style with database and folder motif, 400x300px, monochromatic with indigo accent
+    source_hint: ai_generate
+    status: pending
+  - id: migration_success
+    type: icon
+    description: Success state illustration showing checkmark with database, 300x240px, flat style with green accent
+    source_hint: ai_generate
+    status: pending
+  - id: migration_error
+    type: icon
+    description: Error state illustration showing alert with database, 300x240px, flat style with red accent
+    source_hint: ai_generate
+    status: pending
+  - id: spinner
+    type: icon
+    description: Loading spinner animation, 16px and 24px variants, smooth rotation
+    source_hint: iconify:mdi:loading
+    status: pending
+  - id: badge_unique
+    type: icon
+    description: Unique constraint badge icon, 16px solid style
+    source_hint: iconify:mdi:star-outline
+    status: pending
+  - id: badge_not_null
+    type: icon
+    description: NOT NULL constraint badge icon, 16px solid style
+    source_hint: iconify:mdi:exclamation
+    status: pending
+  - id: badge_default
+    type: icon
+    description: Default value indicator icon, 16px solid style
+    source_hint: iconify:mdi:cog-outline
+    status: pending
+  - id: color_picker
+    type: icon
+    description: Color picker icon for category color field, 20px outline style
+    source_hint: iconify:mdi:palette-outline
+    status: pending
+  - id: icon_picker
+    type: icon
+    description: Icon picker icon for category icon field, 20px outline style
+    source_hint: iconify:mdi:emoticon-outline
+    status: pending
