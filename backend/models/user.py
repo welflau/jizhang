@@ -1,97 +1,47 @@
-from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field, validator
-import re
+from sqlalchemy import Column, Integer, String, DateTime, Text
+from sqlalchemy.sql import func
+from backend.database import Base
+import json
 
-class UserPreferences(BaseModel):
-    """User preference settings"""
-    theme: str = Field(default="light", description="UI theme: light/dark")
-    language: str = Field(default="en", description="Interface language")
-    notifications_enabled: bool = Field(default=True, description="Enable notifications")
-    email_notifications: bool = Field(default=True, description="Enable email notifications")
+class User(Base):
+    """User model with profile and preferences support"""
+    __tablename__ = "users"
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "theme": "dark",
-                "language": "zh",
-                "notifications_enabled": True,
-                "email_notifications": False
-            }
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(50), unique=True, nullable=False, index=True)
+    email = Column(String(100), unique=True, nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    nickname = Column(String(100), nullable=True)
+    avatar_url = Column(String(500), nullable=True)
+    preferences = Column(Text, nullable=True, default="{}")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    def get_preferences(self) -> dict:
+        """Parse preferences JSON string to dict"""
+        if not self.preferences:
+            return {}
+        try:
+            return json.loads(self.preferences)
+        except json.JSONDecodeError:
+            return {}
+
+    def set_preferences(self, prefs: dict) -> None:
+        """Serialize preferences dict to JSON string"""
+        self.preferences = json.dumps(prefs, ensure_ascii=False)
+
+    def to_dict(self, include_sensitive: bool = False) -> dict:
+        """Convert user to dict, exclude sensitive fields by default"""
+        data = {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "nickname": self.nickname,
+            "avatar_url": self.avatar_url,
+            "preferences": self.get_preferences(),
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }
-
-class UserUpdateRequest(BaseModel):
-    """User profile update request schema"""
-    nickname: Optional[str] = Field(None, min_length=2, max_length=50, description="User nickname")
-    avatar: Optional[str] = Field(None, max_length=500, description="Avatar URL")
-    current_password: Optional[str] = Field(None, description="Current password for verification")
-    new_password: Optional[str] = Field(None, min_length=8, max_length=128, description="New password")
-    preferences: Optional[UserPreferences] = Field(None, description="User preferences")
-
-    @validator('avatar')
-    def validate_avatar_url(cls, v):
-        if v is None:
-            return v
-        # Basic URL validation
-        url_pattern = re.compile(
-            r'^https?://'
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
-            r'localhost|'
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
-            r'(?::\d+)?'
-            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-        if not url_pattern.match(v):
-            raise ValueError('Invalid avatar URL format')
-        return v
-
-    @validator('new_password')
-    def validate_password_strength(cls, v):
-        if v is None:
-            return v
-        # Password must contain at least one uppercase, one lowercase, one digit
-        if not re.search(r'[A-Z]', v):
-            raise ValueError('Password must contain at least one uppercase letter')
-        if not re.search(r'[a-z]', v):
-            raise ValueError('Password must contain at least one lowercase letter')
-        if not re.search(r'\d', v):
-            raise ValueError('Password must contain at least one digit')
-        return v
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "nickname": "JohnDoe",
-                "avatar": "https://example.com/avatar.jpg",
-                "current_password": "OldPass123",
-                "new_password": "NewPass456",
-                "preferences": {
-                    "theme": "dark",
-                    "language": "en"
-                }
-            }
-        }
-
-class UserResponse(BaseModel):
-    """User profile response schema"""
-    id: int
-    username: str
-    email: str
-    nickname: Optional[str] = None
-    avatar: Optional[str] = None
-    preferences: Optional[dict] = None
-    created_at: str
-    updated_at: str
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "id": 1,
-                "username": "john_doe",
-                "email": "john@example.com",
-                "nickname": "JohnDoe",
-                "avatar": "https://example.com/avatar.jpg",
-                "preferences": {"theme": "dark", "language": "en"},
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-02T00:00:00Z"
-            }
-        }
+        if include_sensitive:
+            data["password_hash"] = self.password_hash
+        return data

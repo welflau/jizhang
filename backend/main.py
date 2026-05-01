@@ -1,49 +1,51 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routes import user_routes
+from fastapi.responses import JSONResponse
+from backend.database import engine, Base
+from backend.controllers import user_controller
 import logging
 import os
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="User Profile API",
-    description="API for user profile management with authentication",
+    title="User Management API",
+    description="API for user information management with authentication",
     version="1.0.0"
 )
 
-# CORS middleware
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Register routers
-app.include_router(user_routes.router)
+# Include routers
+app.include_router(user_controller.router)
 
-# Global exception handler
+@app.on_event("startup")
+async def startup():
+    """Initialize database on startup"""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Database initialized")
+
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """Catch-all exception handler for unhandled errors"""
-    logger.exception(f"Unhandled exception on {request.method} {request.url}: {exc}")
+async def global_exception_handler(request, exc):
+    """Global exception handler for unhandled errors"""
+    logger.exception(f"Unhandled exception: {exc}")
     return JSONResponse(
         status_code=500,
-        content={"error": "Internal server error", "detail": str(exc)}
+        content={"error": "internal error"}
     )
-
-@app.get("/")
-async def root():
-    """Root endpoint for health check"""
-    return {"status": "ok", "service": "User Profile API"}
 
 @app.get("/health")
 async def health_check():

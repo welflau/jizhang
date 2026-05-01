@@ -1,148 +1,156 @@
-import aiosqlite
-import bcrypt
-import json
-from datetime import datetime
-from typing import Optional, Dict, Any
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from backend.models.user import User
+from backend.schemas.user import UpdateUserInfoRequest
 from fastapi import HTTPException
+import bcrypt
 import logging
 
 logger = logging.getLogger(__name__)
 
 class UserService:
-    """User service for database operations"""
-    
-    def __init__(self, db_path: str = "app.db"):
-        self.db_path = db_path
-    
-    async def get_user_by_id(self, user_id: int) -> Optional[Dict[str, Any]]:
+    """Service layer for user operations"""
+
+    @staticmethod
+    async def get_user_by_id(db: AsyncSession, user_id: int) -> User:
         """Get user by ID
         
         Args:
+            db: Database session
             user_id: User ID
             
         Returns:
-            User data dict or None if not found
-        """
-        async with aiosqlite.connect(self.db_path) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT id, username, email, nickname, avatar, preferences, created_at, updated_at "
-                "FROM users WHERE id = ?",
-                (user_id,)
-            ) as cursor:
-                row = await cursor.fetchone()
-                if not row:
-                    return None
-                
-                user_dict = dict(row)
-                # Parse preferences JSON
-                if user_dict.get('preferences'):
-                    try:
-                        user_dict['preferences'] = json.loads(user_dict['preferences'])
-                    except json.JSONDecodeError:
-                        user_dict['preferences'] = {}
-                return user_dict
-    
-    async def verify_password(self, user_id: int, password: str) -> bool:
-        """Verify user password
-        
-        Args:
-            user_id: User ID
-            password: Plain text password to verify
-            
-        Returns:
-            True if password matches, False otherwise
-        """
-        async with aiosqlite.connect(self.db_path) as db:
-            async with db.execute(
-                "SELECT password_hash FROM users WHERE id = ?",
-                (user_id,)
-            ) as cursor:
-                row = await cursor.fetchone()
-                if not row:
-                    return False
-                
-                stored_hash = row[0]
-                return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
-    
-    async def update_user(
-        self,
-        user_id: int,
-        nickname: Optional[str] = None,
-        avatar: Optional[str] = None,
-        new_password: Optional[str] = None,
-        preferences: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
-        """Update user profile
-        
-        Args:
-            user_id: User ID
-            nickname: New nickname (optional)
-            avatar: New avatar URL (optional)
-            new_password: New password plain text (optional, will be hashed)
-            preferences: User preferences dict (optional)
-            
-        Returns:
-            Updated user data
+            User object
             
         Raises:
-            HTTPException: If user not found or update fails
+            HTTPException: If user not found
         """
-        # Build dynamic UPDATE query
-        update_fields = []
-        params = []
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if not user:
+            raise HTTPException(status_code=404, detail=f"user {user_id} not found")
+        return user
+
+    @staticmethod
+    async def update_nickname(db: AsyncSession, user: User, nickname: str) -> None:
+        """Update user nickname
         
-        if nickname is not None:
-            update_fields.append("nickname = ?")
-            params.append(nickname)
+        Args:
+            db: Database session
+            user: User object
+            nickname: New nickname
+        """
+        user.nickname = nickname.strip()
+        logger.info(f"Updated nickname for user {user.id} to '{nickname}'")
+
+    @staticmethod
+    async def update_avatar(db: AsyncSession, user: User, avatar_url: str) -> None:
+        """Update user avatar URL
         
-        if avatar is not None:
-            update_fields.append("avatar = ?")
-            params.append(avatar)
+        Args:
+            db: Database session
+            user: User object
+            avatar_url: New avatar URL
+        """
+        user.avatar_url = avatar_url.strip()
+        logger.info(f"Updated avatar for user {user.id} to '{avatar_url}'")
+
+    @staticmethod
+    async def update_password(
+        db: AsyncSession,
+        user: User,
+        current_password: str,
+        new_password: str
+    ) -> None:
+        """Update user password with verification
         
-        if new_password is not None:
-            # Hash password with bcrypt
-            password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt(rounds=10))
-            update_fields.append("password_hash = ?")
-            params.append(password_hash.decode('utf-8'))
+        Args:
+            db: Database session
+            user: User object
+            current_password: Current password for verification
+            new_password: New password to set
+            
+        Raises:
+            HTTPException: If current password is incorrect
+        """
+        # Verify current password
+        if not bcrypt.checkpw(
+            current_password.encode("utf-8"),
+            user.password_hash.encode("utf-8")
+        ):
+            raise HTTPException(status_code=400, detail="current password is incorrect")
         
-        if preferences is not None:
-            update_fields.append("preferences = ?")
-            params.append(json.dumps(preferences))
+        # Hash new password
+        salt = bcrypt.gensalt()
+        new_hash = bcrypt.hashpw(new_password.encode("utf-8"), salt)
+        user.password_hash = new_hash.decode("utf-8")
+        logger.info(f"Updated password for user {user.id}")
+
+    @staticmethod
+    async def update_preferences(db: AsyncSession, user: User, preferences: dict) -> None:
+        """Update user preferences
         
-        if not update_fields:
-            # No fields to update, return current user
-            user = await self.get_user_by_id(user_id)
-            if not user:
-                raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-            return user
+        Args:
+            db: Database session
+            user: User object
+            preferences: New preferences dict
+        """
+        # Merge with existing preferences
+        current_prefs = user.get_preferences()
+        current_prefs.update(preferences)
+        user.set_preferences(current_prefs)
+        logger.info(f"Updated preferences for user {user.id}: {list(preferences.keys())}")
+
+    @staticmethod
+    async def update_user_info(
+        db: AsyncSession,
+        user_id: int,
+        update_data: UpdateUserInfoRequest
+    ) -> User:
+        """Update user information with validation
         
-        # Add updated_at timestamp
-        update_fields.append("updated_at = ?")
-        params.append(datetime.utcnow().isoformat())
+        Args:
+            db: Database session
+            user_id: User ID
+            update_data: Update request data
+            
+        Returns:
+            Updated user object
+            
+        Raises:
+            HTTPException: If validation fails or user not found
+        """
+        user = await UserService.get_user_by_id(db, user_id)
         
-        # Add user_id for WHERE clause
-        params.append(user_id)
+        # Update nickname
+        if update_data.nickname is not None:
+            await UserService.update_nickname(db, user, update_data.nickname)
         
-        query = f"UPDATE users SET {', '.join(update_fields)} WHERE id = ?"
+        # Update avatar
+        if update_data.avatar_url is not None:
+            await UserService.update_avatar(db, user, update_data.avatar_url)
         
-        try:
-            async with aiosqlite.connect(self.db_path) as db:
-                db.row_factory = aiosqlite.Row
-                await db.execute(query, params)
-                await db.commit()
-                
-                # Fetch updated user
-                updated_user = await self.get_user_by_id(user_id)
-                if not updated_user:
-                    raise HTTPException(status_code=404, detail=f"User {user_id} not found after update")
-                
-                logger.info(f"User {user_id} profile updated successfully")
-                return updated_user
+        # Update password (requires current password verification)
+        if update_data.new_password is not None:
+            if not update_data.current_password:
+                raise HTTPException(
+                    status_code=400,
+                    detail="current_password is required when changing password"
+                )
+            await UserService.update_password(
+                db,
+                user,
+                update_data.current_password,
+                update_data.new_password
+            )
         
-        except aiosqlite.IntegrityError as e:
-            logger.error(f"Database integrity error updating user {user_id}: {e}")
-            raise HTTPException(status_code=400, detail="Invalid update data")
-        except Exception as e:
-            logger.exception(f"Error updating user {user_id}: {e}")
-            raise HTTPException(status_code=500, detail="Failed to update user profile")
+        # Update preferences
+        if update_data.preferences is not None:
+            await UserService.update_preferences(db, user, update_data.preferences)
+        
+        # Commit changes
+        await db.commit()
+        await db.refresh(user)
+        
+        logger.info(f"Successfully updated user {user_id} information")
+        return user
