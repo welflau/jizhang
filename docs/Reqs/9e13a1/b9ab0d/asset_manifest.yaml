@@ -2,8 +2,98 @@
 # 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
 # status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: placeholder
+  - id: database
     type: icon
-    description: 待补充
-    source_hint: iconify
+    description: Database icon for budgets table representation 24px outline
+    source_hint: iconify:heroicons:circle-stack
+    status: pending
+  - id: index_indicator
+    type: icon
+    description: Index/lightning bolt icon for indexed columns 12px outline
+    source_hint: iconify:heroicons:bolt
+    status: pending
+  - id: check_circle
+    type: icon
+    description: Success/validation passed icon 20px outline
+    source_hint: iconify:heroicons:check-circle
+    status: pending
+  - id: x_circle
+    type: icon
+    description: Error/validation failed icon 20px outline
+    source_hint: iconify:heroicons:x-circle
+    status: pending
+  - id: exclamation_triangle
+    type: icon
+    description: Warning icon for constraint violations 20px outline
+    source_hint: iconify:heroicons:exclamation-triangle
+    status: pending
+  - id: arrow_path
+    type: icon
+    description: Loading/refresh icon for migration progress 24px outline
+    source_hint: iconify:heroicons:arrow-path
+    status: pending
+  - id: table_cells
+    type: icon
+    description: Table/grid icon for data display 24px outline
+    source_hint: iconify:heroicons:table-cells
+    status: pending
+  - id: key
+    type: icon
+    description: Primary key icon 16px outline
+    source_hint: iconify:heroicons:key
+    status: pending
+  - id: link
+    type: icon
+    description: Foreign key relationship icon 16px outline
+    source_hint: iconify:heroicons:link
+    status: pending
+  - id: calendar
+    type: icon
+    description: Period/date icon for budget period column 20px outline
+    source_hint: iconify:heroicons:calendar
+    status: pending
+  - id: currency_dollar
+    type: icon
+    description: Amount/money icon for budget amount column 20px outline
+    source_hint: iconify:heroicons:currency-dollar
+    status: pending
+  - id: folder_open
+    type: icon
+    description: Category icon for category_id column 20px outline
+    source_hint: iconify:heroicons:folder-open
+    status: pending
+  - id: user
+    type: icon
+    description: User icon for user_id column 20px outline
+    source_hint: iconify:heroicons:user
+    status: pending
+  - id: clock
+    type: icon
+    description: Timestamp icon for created_at column 20px outline
+    source_hint: iconify:heroicons:clock
+    status: pending
+  - id: empty_table
+    type: illustration
+    description: Empty state illustration for no budget records 400x300 flat style with database/table theme
+    source_hint: ai_generate
+    status: pending
+  - id: migration_success
+    type: illustration
+    description: Success illustration for completed migration 320x240 flat style with checkmark and database
+    source_hint: ai_generate
+    status: pending
+  - id: migration_error
+    type: illustration
+    description: Error illustration for failed migration 320x240 flat style with alert symbol
+    source_hint: ai_generate
+    status: pending
+  - id: schema_erd
+    type: diagram
+    description: Entity relationship diagram showing budgets table with foreign keys to users and categories 800x600
+    source_hint: design_tool
+    status: pending
+  - id: index_visualization
+    type: diagram
+    description: Visual representation of composite index (user_id, period) structure 600x400
+    source_hint: design_tool
     status: pending
