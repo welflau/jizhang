@@ -12,10 +12,7 @@
 无
 
 ## 审查的代码
-- backend/migrations/002_create_budgets_table.sql
-- backend/db_migration.py
-- backend/models/budget.py
-- backend/routes/budgets.py
-- backend/dependencies.py
-- README.md
+- backend/migrations/004_create_budgets_table.sql
+- app/models/budget.py
+- tests/test_budget_schema.py
 - docs/Reqs/9e13a1/b9ab0d/dev-notes.md
