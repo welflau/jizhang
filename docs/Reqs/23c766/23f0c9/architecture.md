@@ -8,31 +8,40 @@ RESTful API Extension
 - **framework**: Flask (existing)
 - **database**: SQLite (existing)
 - **serialization**: json (built-in)
-- **file_handling**: werkzeug.datastructures.FileStorage
-- **transaction**: sqlite3 context manager
 - **validation**: jsonschema
+- **transaction**: sqlite3.Connection context manager
+- **logging**: logging (built-in)
 
 ## 模块设计
 
 ### 
-职责: 
-- GET /api/export -> returns JSON file download
-- POST /api/import -> accepts multipart/form-data with JSON file
-- POST /api/clear -> accepts confirmation token, returns deletion count
+职责: Export endpoint implementation
+- input
+- output
 
 ### 
-职责: 
+职责: Import endpoint implementation
+- input
+- output
 
 ### 
-职责: 
+职责: Clear endpoint implementation
+- input
+- output
 
 ### 
-职责: 
+职责: Data validation utilities
+- input
+- output
+
+### 
+职责: Database operation helpers
+- input
+- output
 
 ## 关键决策
-- {'decision': 'Use JSON Schema for import validation', 'rationale': 'Ensures data integrity before database operations, prevents malformed data injection'}
-- {'decision': 'Implement token-based confirmation for clear operation', 'rationale': 'Prevents accidental data loss from CSRF or misclicks; token expires after 5 minutes'}
-- {'decision': 'Handle duplicate IDs by skipping (not overwriting)', 'rationale': 'Preserves existing data integrity; returns skipped count for user awareness'}
-- {'decision': 'Export uses streaming response for large datasets', 'rationale': 'Prevents memory overflow when record count exceeds thousands'}
-- {'decision': 'Import uses batch insert with transaction rollback', 'rationale': "All-or-nothing semantics; partial failure doesn't corrupt database"}
-- {'decision': 'Add rate limiting to clear endpoint (1 req/minute)', 'rationale': 'Prevents abuse or accidental repeated deletions'}
+- {'decision': 'Use JSON schema validation instead of manual checks', 'rationale': 'Ensures consistent validation logic, easier to maintain and extend schema', 'alternatives': 'Manual field checking (error-prone, harder to maintain)'}
+- {'decision': 'Import uses SKIP strategy for duplicate IDs by default', 'rationale': 'Safer than overwrite, prevents accidental data loss, user can clear first if needed', 'alternatives': 'UPDATE on conflict (risky), ABORT on duplicate (poor UX)'}
+- {'decision': 'Clear endpoint requires confirmation_token from frontend', 'rationale': 'Prevents accidental deletion via CSRF or misclick, token generated per session', 'alternatives': 'Admin password (harder UX), no protection (dangerous)'}
+- {'decision': 'Export returns file as attachment with timestamp in filename', 'rationale': 'Browser auto-downloads, filename includes export time for version tracking', 'alternatives': 'Inline JSON (requires manual save), fixed filename (overwrite risk)'}
+- {'decision': 'All operations use database transactions', 'rationale': 'Guarantees atomicity - import/clear either fully succeeds or fully rolls back', 'alternatives': 'No transaction (partial failure leaves inconsistent state)'}
