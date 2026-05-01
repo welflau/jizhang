@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>访问统计系统</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: var(--highlight);
+        }
+        
+        .stats-section {
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--highlight);
+        }
+        
+        .actions-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: var(--highlight);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #d63651;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #0d2a4d;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #c0392b;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #a93226;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .file-input-label:hover {
+            background: #0d2a4d;
+            transform: translateY(-2px);
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+        }
+        
+        .message.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .message.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+            color: #3498db;
+        }
+        
+        #visit-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(233, 69, 96, 0.9);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .stat-value {
+                font-size: 2em;
+            }
+            
+            .actions-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>访问统计系统</h1>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-label">总访问次数</div>
+                <div class="stat-value" id="total-visits">0</div>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <button class="btn btn-primary" onclick="exportData()">导出数据</button>
+            
+            <div class="file-input-wrapper">
+                <input type="file" id="import-file" accept=".json" onchange="importData()">
+                <label for="import-file" class="file-input-label">导入数据</label>
+            </div>
+            
+            <button class="btn btn-danger" onclick="confirmClear()">清空数据</button>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+    
+    <div id="visit-counter">
+        页面访问: <span id="page-visit-count">0</span>
+    </div>
+    
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            await recordVisit();
+            await updateVisitCount();
+            updatePageVisitCounter();
+        });
+        
+        // Record current visit
+        async function recordVisit() {
+            try {
+                const response = await fetch('/api/visit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({path: window.location.pathname})
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to record visit');
+                }
+            } catch (error) {
+                console.error('Error recording visit:', error);
+            }
+        }
+        
+        // Update total visit count
+        async function updateVisitCount() {
+            try {
+                const response = await fetch('/api/visits/count');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('total-visits').textContent = data.count;
+                }
+            } catch (error) {
+                console.error('Error fetching visit count:', error);
+                showMessage('无法获取访问统计', 'error');
+            }
+        }
+        
+        // Update page visit counter (localStorage)
+        function updatePageVisitCounter() {
+            const count = parseInt(localStorage.getItem('pageVisits') || '0') + 1;
+            localStorage.setItem('pageVisits', count);
+            document.getElementById('page-visit-count').textContent = count;
+        }
+        
+        // Export data
+        async function exportData() {
+            try {
+                showMessage('正在导出数据...', 'info');
+                
+                const response = await fetch('/api/export');
+                
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `visit_records_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                showMessage('数据导出成功！', 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showMessage('导出失败: ' + error.message, 'error');
+            }
+        }
+        
+        // Import data
+        async function importData() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                return;
+            }
+            
+            try {
+                showMessage('正在导入数据...', 'info');
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const response = await fetch('/api/import', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.detail || result.error || 'Import failed');
+                }
+                
+                let message = `导入完成！成功: ${result.success_count}, 跳过: ${result.skipped_count}`;
+                if (result.errors.length > 0) {
+                    message += `, 错误: ${result.errors.length}`;
+                }
+                
+                showMessage(message, result.errors.length > 0 ? 'info' : 'success');
+                
+                // Refresh count
+                await updateVisitCount();
+                
+                // Clear file input
+                fileInput.value = '';
+                
+            } catch (error) {
+                console.error('Import error:', error);
+                showMessage('导入失败: ' + error.message, 'error');
+                fileInput.value = '';
+            }
+        }
+        
+        // Confirm and clear data
+        function confirmClear() {
+            if (confirm('确定要清空所有访问记录吗？此操作不可恢复！')) {
+                clearData();
+            }
+        }
+        
+        // Clear all data
+        async function clearData() {
+            try {
+                showMessage('正在清空数据...', 'info');
+                
+                const response = await fetch('/api/clear', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({confirm_token: 'CLEAR_ALL_DATA'})
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.detail || result.error || 'Clear failed');
+                }
+                
+                showMessage(`已清空 ${result.deleted_count} 条记录`, 'success');
+                
+                // Refresh count
+                await updateVisitCount();
+                
+            } catch (error) {
+                console.error('Clear error:', error);
+                showMessage('清空失败: ' + error.message, 'error');
+            }
+        }
+        
+        // Show message
+        function showMessage(text, type = 'info') {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
