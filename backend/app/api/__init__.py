@@ -40,7 +40,7 @@ async def root():
         dict: Welcome message and API version
     """
     return {
-        "message": "Welcome to FastAPI Application",
+        "message": "Welcome to the FastAPI Application",
         "version": "1.0.0",
         "docs": "/docs",
         "redoc": "/redoc"
