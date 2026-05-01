@@ -12,6 +12,5 @@
 无
 
 ## 审查的代码
-- backend/schemas/statistics.py
-- docs/api/statistics.md
+- docs/statistics_api_spec.md
 - docs/Reqs/37cded/f2c30e/dev-notes.md
