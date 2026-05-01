@@ -12,8 +12,8 @@
 无
 
 ## 审查的代码
-- backend/app/models/category.py
 - backend/app/schemas/category.py
-- backend/app/api/routes/categories.py
-- backend/app/services/category_service.py
+- backend/app/services/category.py
+- backend/app/routers/category.py
+- backend/tests/test_category_api.py
 - docs/Reqs/bdbbdb/777aa2/dev-notes.md
