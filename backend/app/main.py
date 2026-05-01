@@ -1,10 +1,9 @@
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from backend.app.core.config import settings
-from backend.app.core.database import init_db
-from backend.app.routers import auth, backup
-from backend.app.middleware.jwt_middleware import jwt_auth_middleware
+from backend.app.core.database import init_db, close_db
+from backend.app.core.middleware import JWTAuthMiddleware
+from backend.app.routers import auth, budgets
 import logging
 
 # Configure logging
@@ -28,36 +27,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # JWT authentication middleware
-@app.middleware("http")
-async def jwt_middleware(request: Request, call_next):
-    """JWT authentication middleware."""
-    return await jwt_auth_middleware(request, call_next)
-
-
-# Exception handler middleware
-@app.middleware("http")
-async def exception_handler_middleware(request: Request, call_next):
-    """Catch all exceptions and return unified response format."""
-    try:
-        response = await call_next(request)
-        return response
-    except Exception as exc:
-        logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
-        return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "success": False,
-                "message": "Internal server error",
-                "data": None
-            }
-        )
-
+app.add_middleware(JWTAuthMiddleware)
 
 # Include routers
 app.include_router(auth.router)
-app.include_router(backup.router)
+app.include_router(budgets.router)
 
 
 @app.on_event("startup")
@@ -66,6 +41,14 @@ async def startup_event():
     logger.info("Initializing database...")
     await init_db()
     logger.info("Database initialized successfully")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Close database connection pool on application shutdown."""
+    logger.info("Closing database connection pool...")
+    await close_db()
+    logger.info("Database connection pool closed successfully")
 
 
 @app.get("/")
