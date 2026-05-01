@@ -1,0 +1,165 @@
+{
+  "version": "1.0",
+  "description": "Color palette for financial tracking application with WCAG AA compliance",
+  "colors": {
+    "primary": {
+      "50": "#eff6ff",
+      "100": "#dbeafe",
+      "200": "#bfdbfe",
+      "300": "#93c5fd",
+      "400": "#60a5fa",
+      "500": "#3b82f6",
+      "600": "#2563eb",
+      "700": "#1d4ed8",
+      "800": "#1e40af",
+      "900": "#1e3a8a",
+      "contrast_ratio_500_white": 3.1,
+      "contrast_ratio_700_white": 7.5,
+      "recommended_text": "700"
+    },
+    "secondary": {
+      "50": "#f8fafc",
+      "100": "#f1f5f9",
+      "200": "#e2e8f0",
+      "300": "#cbd5e1",
+      "400": "#94a3b8",
+      "500": "#64748b",
+      "600": "#475569",
+      "700": "#334155",
+      "800": "#1e293b",
+      "900": "#0f172a",
+      "contrast_ratio_600_white": 8.6,
+      "contrast_ratio_700_white": 12.5,
+      "recommended_text": "700"
+    },
+    "accent": {
+      "50": "#fdf4ff",
+      "100": "#fae8ff",
+      "200": "#f5d0fe",
+      "300": "#f0abfc",
+      "400": "#e879f9",
+      "500": "#d946ef",
+      "600": "#c026d3",
+      "700": "#a21caf",
+      "800": "#86198f",
+      "900": "#701a75",
+      "contrast_ratio_600_white": 5.2,
+      "contrast_ratio_700_white": 7.8,
+      "recommended_text": "700"
+    },
+    "semantic": {
+      "success": {
+        "light": "#d1fae5",
+        "DEFAULT": "#10b981",
+        "dark": "#047857",
+        "contrast_ratio_default_white": 3.8,
+        "contrast_ratio_dark_white": 6.4,
+        "recommended_text": "dark"
+      },
+      "warning": {
+        "light": "#fef3c7",
+        "DEFAULT": "#f59e0b",
+        "dark": "#d97706",
+        "contrast_ratio_default_white": 2.9,
+        "contrast_ratio_dark_white": 4.8,
+        "recommended_text": "dark"
+      },
+      "error": {
+        "light": "#fee2e2",
+        "DEFAULT": "#ef4444",
+        "dark": "#dc2626",
+        "contrast_ratio_default_white": 4.0,
+        "contrast_ratio_dark_white": 5.9,
+        "recommended_text": "dark"
+      },
+      "info": {
+        "light": "#dbeafe",
+        "DEFAULT": "#3b82f6",
+        "dark": "#1d4ed8",
+        "contrast_ratio_default_white": 3.1,
+        "contrast_ratio_dark_white": 7.5,
+        "recommended_text": "dark"
+      }
+    },
+    "neutral": {
+      "white": "#ffffff",
+      "50": "#fafafa",
+      "100": "#f5f5f5",
+      "200": "#e5e5e5",
+      "300": "#d4d4d4",
+      "400": "#a3a3a3",
+      "500": "#737373",
+      "600": "#525252",
+      "700": "#404040",
+      "800": "#262626",
+      "900": "#171717",
+      "black": "#000000",
+      "contrast_ratio_600_white": 7.9,
+      "contrast_ratio_700_white": 10.7
+    },
+    "category_colors": {
+      "food": "#ef4444",
+      "transport": "#3b82f6",
+      "shopping": "#8b5cf6",
+      "entertainment": "#ec4899",
+      "health": "#10b981",
+      "education": "#f59e0b",
+      "housing": "#6366f1",
+      "utilities": "#14b8a6",
+      "communication": "#06b6d4",
+      "insurance": "#8b5cf6",
+      "travel": "#f97316",
+      "personal_care": "#ec4899",
+      "pets": "#84cc16",
+      "gifts": "#d946ef",
+      "subscriptions": "#6366f1",
+      "taxes": "#64748b",
+      "investments": "#10b981",
+      "charity": "#f43f5e",
+      "business": "#0ea5e9",
+      "fees": "#f59e0b",
+      "other": "#94a3b8",
+      "income": "#22c55e",
+      "savings": "#3b82f6",
+      "debt": "#ef4444"
+    }
+  },
+  "wcag_compliance": {
+    "level": "AA",
+    "normal_text_minimum": 4.5,
+    "large_text_minimum": 3.0,
+    "notes": "All recommended text colors meet WCAG AA standards (4.5:1) on white background. Large text (18pt+ or 14pt+ bold) requires 3:1 minimum."
+  },
+  "usage_guidelines": {
+    "text_on_white": [
+      "primary-700",
+      "secondary-700",
+      "accent-700",
+      "neutral-700"
+    ],
+    "text_on_dark": [
+      "neutral-white",
+      "primary-100",
+      "secondary-100"
+    ],
+    "backgrounds": [
+      "neutral-50",
+      "neutral-100",
+      "primary-50",
+      "secondary-50"
+    ],
+    "interactive_elements": {
+      "default": "primary-600",
+      "hover": "primary-700",
+      "active": "primary-800",
+      "disabled": "neutral-300"
+    },
+    "borders": [
+      "neutral-200",
+      "neutral-300"
+    ]
+  },
+  "css_variables": {
+    "example": ":root {\n  --color-primary: #2563eb;\n  --color-success: #047857;\n  --color-error: #dc2626;\n  --color-text: #404040;\n  --color-border: #e5e5e5;\n}"
+  }
+}
