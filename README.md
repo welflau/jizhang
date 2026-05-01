@@ -1,105 +1,153 @@
-# FastAPI Project
+# User Profile Management System
 
-## Quick Start
+## Overview
 
-### 1. Install Dependencies
+A full-stack user management system with profile update capabilities, built with FastAPI backend and vanilla JavaScript frontend.
 
+## Features
+
+- **User Authentication**: Register and login with JWT tokens
+- **Profile Management**: Update nickname, avatar, and preferences
+- **Password Change**: Secure password update with old password verification
+- **Persistent Storage**: SQLite database with async operations
+- **Responsive UI**: Mobile-friendly single-page application
+
+## Tech Stack
+
+### Backend
+- FastAPI (async web framework)
+- SQLite with aiosqlite (async database)
+- JWT authentication
+- bcrypt password hashing
+- Pydantic v2 validation
+
+### Frontend
+- Vanilla JavaScript (no build tools)
+- Single HTML file with inline CSS/JS
+- Fetch API for HTTP requests
+- LocalStorage for token persistence
+
+## Installation
+
+### Prerequisites
+- Python 3.11+
+- pip
+
+### Setup
+
+1. Install backend dependencies:
 ```bash
+cd backend
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
-
+2. Start the backend server:
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+python main.py
 ```
 
-### 3. Run Application
+The API will be available at `http://localhost:8080`
 
+3. Open the frontend:
 ```bash
-# Development mode (with auto-reload)
-python -m app.main
-
-# Or using uvicorn directly
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
+cd frontend
+# Open index.html in your browser or use a local server:
+python -m http.server 3000
 ```
 
-### 4. Test Health Endpoint
+## API Endpoints
 
-```bash
-curl http://localhost:8080/api/health
-```
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login and get JWT token
 
-Expected response:
-```json
-{
-  "status": "healthy",
-  "environment": "development",
-  "version": "0.1.0"
-}
-```
+### User Management
+- `GET /api/users/me` - Get current user profile
+- `PATCH /api/users/me` - Update profile (nickname, avatar, preferences)
+- `PUT /api/users/me/password` - Change password
 
-## Project Structure
+## Security Features
 
-```
-app/
-├── api/           # API endpoints
-│   └── health.py  # Health check routes
-├── core/          # Core configuration
-│   ├── config.py  # Settings management
-│   └── logger.py  # Logging setup
-├── models/        # Database models (future)
-├── schemas/       # Pydantic schemas (future)
-├── services/      # Business logic (future)
-├── utils/         # Utility functions (future)
-└── main.py        # Application entry point
-```
+- JWT token-based authentication
+- bcrypt password hashing
+- Password strength validation (min 6 characters)
+- Old password verification for password changes
+- CORS enabled for development
+- Environment variable support for secrets
 
 ## Configuration
 
-All configuration is managed through environment variables (`.env` file):
+Environment variables:
+- `JWT_SECRET` - Secret key for JWT signing (default: dev-secret-change-in-production)
+- `PORT` - Backend server port (default: 8080)
 
-- `PROJECT_NAME`: Application name
-- `ENVIRONMENT`: `development` or `production`
-- `DEBUG`: Enable debug mode
-- `PORT`: Server port (default: 8080)
-- `LOG_LEVEL`: Logging level (DEBUG/INFO/WARNING/ERROR)
-- `LOG_TO_FILE`: Enable file logging
-- `ALLOWED_ORIGINS`: CORS allowed origins (comma-separated)
+## Database Schema
 
-## Logging
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    nickname TEXT,
+    avatar_url TEXT,
+    preferences TEXT DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-- Console logging enabled by default
-- File logging: set `LOG_TO_FILE=true` in `.env`
-- Log files stored in `logs/` directory
-- Log level configurable via `LOG_LEVEL`
+## Usage Examples
 
-## API Documentation
+### Register a new user
+```javascript
+fetch('http://localhost:8080/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    username: 'john_doe',
+    email: 'john@example.com',
+    password: 'secure123'
+  })
+});
+```
 
-Once running, visit:
-- Swagger UI: http://localhost:8080/docs
-- ReDoc: http://localhost:8080/redoc
+### Update profile
+```javascript
+fetch('http://localhost:8080/api/users/me', {
+  method: 'PATCH',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  },
+  body: JSON.stringify({
+    nickname: 'John',
+    avatar_url: 'https://example.com/avatar.jpg',
+    preferences: { theme: 'dark', language: 'en' }
+  })
+});
+```
 
-## Development
+## Development Notes
 
-### Adding New Endpoints
+- All async operations use `async/await` pattern
+- Database connections use context managers for proper cleanup
+- Frontend uses localStorage for token persistence
+- No build process required - single HTML file deployment
+- Error handling with proper HTTP status codes
+- Logging enabled for debugging
 
-1. Create router in `app/api/`
-2. Define Pydantic schemas in `app/schemas/`
-3. Register router in `app/main.py`
+## Production Considerations
 
-### Code Style
+1. Change `JWT_SECRET` to a strong random value
+2. Use environment variables for all secrets
+3. Enable HTTPS
+4. Configure CORS for specific origins
+5. Add rate limiting
+6. Use production-grade database (PostgreSQL)
+7. Implement refresh tokens
+8. Add input sanitization for XSS prevention
 
-- All code identifiers in English
-- Follow PEP 8 naming conventions
-- Use async/await for all I/O operations
-- Type hints required for function signatures
-- Docstrings for all public APIs
+## License
 
-## Security Notes
-
-- Never commit `.env` file (already in `.gitignore`)
-- Store secrets in environment variables
-- Use `python-dotenv` for local development
-- Production: use proper secret management service
+MIT
