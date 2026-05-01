@@ -56,7 +56,7 @@ class APIException(Exception):
     """API基础异常类"""
     def __init__(
         self,
-        message: str = "Internal Server Error",
+        message: str = "Internal server error",
         code: int = ResponseCode.INTERNAL_ERROR,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
         data: Any = None
@@ -135,7 +135,7 @@ class BadRequestError(APIException):
 
 
 class InternalServerError(APIException):
-    """服务器内部错误异常"""
+    """内部服务器错误"""
     def __init__(self, message: str = "Internal server error", data: Any = None):
         super().__init__(
             message=message,

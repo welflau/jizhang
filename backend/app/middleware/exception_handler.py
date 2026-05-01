@@ -12,70 +12,88 @@ logger = logging.getLogger(__name__)
 
 class BaseAPIException(Exception):
     """基础API异常类"""
-    def __init__(self, message: str = "Internal Server Error", code: int = 500):
+    def __init__(self, message: str = "Internal Server Error", code: int = 500, data: any = None):
         self.message = message
         self.code = code
+        self.data = data
         super().__init__(self.message)
 
 
 class NotFoundError(BaseAPIException):
     """资源未找到异常"""
-    def __init__(self, message: str = "Resource not found"):
-        super().__init__(message=message, code=404)
+    def __init__(self, message: str = "Resource not found", data: any = None):
+        super().__init__(message=message, code=404, data=data)
 
 
 class ValidationError(BaseAPIException):
     """数据验证异常"""
-    def __init__(self, message: str = "Validation error"):
-        super().__init__(message=message, code=400)
+    def __init__(self, message: str = "Validation error", data: any = None):
+        super().__init__(message=message, code=400, data=data)
 
 
 class UnauthorizedError(BaseAPIException):
     """未授权异常"""
-    def __init__(self, message: str = "Unauthorized"):
-        super().__init__(message=message, code=401)
+    def __init__(self, message: str = "Unauthorized", data: any = None):
+        super().__init__(message=message, code=401, data=data)
 
 
 class ForbiddenError(BaseAPIException):
     """禁止访问异常"""
-    def __init__(self, message: str = "Forbidden"):
-        super().__init__(message=message, code=403)
+    def __init__(self, message: str = "Forbidden", data: any = None):
+        super().__init__(message=message, code=403, data=data)
 
 
 class ConflictError(BaseAPIException):
-    """资源冲突异常"""
-    def __init__(self, message: str = "Resource conflict"):
-        super().__init__(message=message, code=409)
+    """冲突异常（如重复数据）"""
+    def __init__(self, message: str = "Resource conflict", data: any = None):
+        super().__init__(message=message, code=409, data=data)
 
 
-class BadRequestError(BaseAPIException):
-    """错误请求异常"""
-    def __init__(self, message: str = "Bad request"):
-        super().__init__(message=message, code=400)
+class BusinessError(BaseAPIException):
+    """业务逻辑异常"""
+    def __init__(self, message: str = "Business logic error", data: any = None):
+        super().__init__(message=message, code=400, data=data)
 
 
-class InternalServerError(BaseAPIException):
-    """内部服务器错误"""
-    def __init__(self, message: str = "Internal server error"):
-        super().__init__(message=message, code=500)
+class DatabaseError(BaseAPIException):
+    """数据库异常"""
+    def __init__(self, message: str = "Database error", data: any = None):
+        super().__init__(message=message, code=500, data=data)
+
+
+async def exception_handler_middleware(request: Request, call_next):
+    """全局异常处理中间件"""
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as exc:
+        logger.error(f"Unhandled exception: {str(exc)}\n{traceback.format_exc()}")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "code": 500,
+                "message": "Internal server error",
+                "data": None
+            }
+        )
 
 
 async def base_api_exception_handler(request: Request, exc: BaseAPIException):
-    """处理自定义API异常"""
-    logger.warning(f"API Exception: {exc.code} - {exc.message} - Path: {request.url.path}")
+    """自定义API异常处理器"""
+    logger.warning(f"API Exception: {exc.message} (code: {exc.code})")
     return JSONResponse(
         status_code=exc.code,
         content={
             "code": exc.code,
             "message": exc.message,
-            "data": None
+            "data": exc.data
         }
     )
 
 
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    """处理HTTP异常"""
-    logger.warning(f"HTTP Exception: {exc.status_code} - {exc.detail} - Path: {request.url.path}")
+    """HTTP异常处理器"""
+    logger.warning(f"HTTP Exception: {exc.detail} (status: {exc.status_code})")
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -87,31 +105,27 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    """处理请求验证异常"""
+    """请求验证异常处理器"""
     errors = []
     for error in exc.errors():
-        field = ".".join(str(loc) for loc in error["loc"][1:])
+        field = ".".join(str(loc) for loc in error["loc"] if loc != "body")
         message = error["msg"]
-        errors.append(f"{field}: {message}")
+        errors.append({"field": field, "message": message})
     
-    error_message = "; ".join(errors) if errors else "Validation error"
-    logger.warning(f"Validation Error: {error_message} - Path: {request.url.path}")
-    
+    logger.warning(f"Validation error: {errors}")
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={
             "code": 422,
-            "message": f"Validation error: {error_message}",
-            "data": {"errors": exc.errors()}
+            "message": "Validation error",
+            "data": {"errors": errors}
         }
     )
 
 
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
-    """处理SQLAlchemy数据库异常"""
-    logger.error(f"Database Error: {str(exc)} - Path: {request.url.path}")
-    logger.error(traceback.format_exc())
-    
+    """SQLAlchemy异常处理器"""
+    logger.error(f"Database error: {str(exc)}\n{traceback.format_exc()}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
@@ -123,22 +137,20 @@ async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
 
 
 async def general_exception_handler(request: Request, exc: Exception):
-    """处理所有未捕获的异常"""
-    logger.error(f"Unhandled Exception: {str(exc)} - Path: {request.url.path}")
-    logger.error(traceback.format_exc())
-    
+    """通用异常处理器"""
+    logger.error(f"Unexpected error: {str(exc)}\n{traceback.format_exc()}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
             "code": 500,
-            "message": "Internal server error",
+            "message": "An unexpected error occurred",
             "data": None
         }
     )
 
 
 def register_exception_handlers(app):
-    """注册所有异常处理器"""
+    """注册所有异常处理器到FastAPI应用"""
     app.add_exception_handler(BaseAPIException, base_api_exception_handler)
     app.add_exception_handler(StarletteHTTPException, http_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
