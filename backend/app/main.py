@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from backend.app.core.config import settings
 from backend.app.core.database import init_db
 from backend.app.routers import auth
@@ -26,6 +27,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Exception handler middleware
+@app.middleware("http")
+async def exception_handler_middleware(request: Request, call_next):
+    """Unified exception handler middleware."""
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as exc:
+        logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "success": False,
+                "message": "Internal server error",
+                "data": None
+            }
+        )
+
+
 # Include routers
 app.include_router(auth.router)
 
@@ -41,7 +62,14 @@ async def startup_event():
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"status": "ok", "app": settings.APP_NAME}
+    return {
+        "success": True,
+        "message": "OK",
+        "data": {
+            "status": "ok",
+            "app": settings.APP_NAME
+        }
+    }
 
 
 if __name__ == "__main__":
