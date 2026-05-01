@@ -12,8 +12,10 @@
 无
 
 ## 审查的代码
+- backend/app/models/category.py
 - backend/app/schemas/category.py
-- backend/app/services/category.py
-- backend/app/routers/category.py
-- backend/tests/test_category_api.py
+- backend/app/crud/category.py
+- backend/app/api/categories.py
+- smoke_test.sh
+- backend/app/main.py
 - docs/Reqs/bdbbdb/777aa2/dev-notes.md
