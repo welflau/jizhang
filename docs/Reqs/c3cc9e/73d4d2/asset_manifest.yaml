@@ -1,0 +1,259 @@
+# asset_manifest.yaml — Implement JWT authentication middleware
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## Icons (Not Applicable)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: This is a backend authentication middleware with no UI components. No icons required.
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: ## Illustrations (Not Applicable)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: No visual illustrations needed for backend service.
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: ## Images (Not Applicable)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: No images required for backend service.
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: ## Documentation Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: ### Sequence Diagrams (for developer documentation)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: diagram**: jwt-authentication-flow
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: Purpose**: Illustrate token generation → verification → refresh lifecycle
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: Format**: Mermaid sequence diagram
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: Size**: Scalable vector (SVG export)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: Usage**: Include in API documentation and developer onboarding
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: diagram**: password-hashing-flow
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: Purpose**: Show bcrypt hashing and verification process
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: Format**: Mermaid flowchart
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: Size**: Scalable vector (SVG export)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: Usage**: Security documentation
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: ### Code Examples (for API documentation)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: code-snippet**: token-generation-example
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: Language**: Python
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: Purpose**: Show how to call `create_access_token()`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: Format**: Syntax-highlighted code block
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: code-snippet**: protected-route-example
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: Language**: Python (FastAPI)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: Purpose**: Demonstrate using `get_current_user` dependency
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: Format**: Syntax-highlighted code block
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: code-snippet**: token-refresh-example
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: Language**: Python
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: Purpose**: Show token refresh implementation
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: Format**: Syntax-highlighted code block
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: ### Configuration Templates
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: file**: .env.example
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: Purpose**: Template for required environment variables
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: Content**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: JWT_SECRET_KEY=your-secret-key-min-32-characters-long
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: JWT_ALGORITHM=HS256
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: ACCESS_TOKEN_EXPIRE_MINUTES=30
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: BCRYPT_SALT_ROUNDS=12
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: Usage**: Copy to `.env` and fill in actual values
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: ## Testing Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: ### Mock Data
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: file**: test_tokens.json
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: Purpose**: Sample valid/invalid/expired tokens for testing
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_047
+    type: icon
+    description: Format**: JSON array of token objects
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_048
+    type: icon
+    description: Usage**: Unit tests and integration tests
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_049
+    type: icon
+    description: file**: test_users.json
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_050
+    type: icon
+    description: Purpose**: Sample user credentials (hashed passwords)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_051
+    type: icon
+    description: Format**: JSON array of user objects
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_052
+    type: icon
+    description: Usage**: Authentication flow testing
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_053
+    type: icon
+    description: ## Security Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_054
+    type: icon
+    description: ### Key Generation Script
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_055
+    type: icon
+    description: script**: generate_secret_key.py
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_056
+    type: icon
+    description: Purpose**: Generate cryptographically secure JWT_SECRET_KEY
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_057
+    type: icon
+    description: Output**: 64-character random string
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_058
+    type: icon
+    description: Usage**: Run once during initial setup
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_059
+    type: icon
+    description: ## Logging Assets (for monitoring dashboards)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_060
+    type: icon
+    description: ### Log Format Specification
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_061
+    type: icon
+    description: document**: log-format-spec.md
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_062
+    type: icon
+    description: Purpose**: Define structured logging format for auth events
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_063
+    type: icon
+    description: Fields**: timestamp, event_type, user_id, ip_address, success/failure, error_code
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_064
+    type: icon
+    description: Usage**: Configure logging middleware and monitoring tools
+    status: pending  # 待美术Agent确认来源和规格
