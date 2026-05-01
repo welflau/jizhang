@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
-from backend.app.core.database import init_db, close_db
-from backend.app.routers import auth
+from backend.app.core.database import init_db
+from backend.app.routers import auth, bills
 import logging
 
 # Configure logging
@@ -28,6 +28,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(bills.router)
 
 
 @app.on_event("startup")
@@ -36,14 +37,6 @@ async def startup_event():
     logger.info("Initializing database...")
     await init_db()
     logger.info("Database initialized successfully")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Close database connection pool on application shutdown."""
-    logger.info("Closing database connection pool...")
-    await close_db()
-    logger.info("Database connection pool closed successfully")
 
 
 @app.get("/")
