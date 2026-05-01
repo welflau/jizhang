@@ -31,7 +31,7 @@ class ResponseCode:
     NOT_FOUND = 404
     CONFLICT = 409
     VALIDATION_ERROR = 422
-    INTERNAL_SERVER_ERROR = 500
+    INTERNAL_ERROR = 500
 
 
 def success_response(data: Any = None, message: str = "success", code: int = ResponseCode.SUCCESS) -> dict:
@@ -43,7 +43,7 @@ def success_response(data: Any = None, message: str = "success", code: int = Res
     }
 
 
-def error_response(message: str = "error", code: int = ResponseCode.BAD_REQUEST, data: Any = None) -> dict:
+def error_response(message: str, code: int = ResponseCode.BAD_REQUEST, data: Any = None) -> dict:
     """错误响应"""
     return {
         "code": code,
@@ -52,12 +52,12 @@ def error_response(message: str = "error", code: int = ResponseCode.BAD_REQUEST,
     }
 
 
-class BaseAPIException(Exception):
-    """基础API异常类"""
+class APIException(Exception):
+    """API基础异常类"""
     def __init__(
         self,
         message: str = "Internal server error",
-        code: int = ResponseCode.INTERNAL_SERVER_ERROR,
+        code: int = ResponseCode.INTERNAL_ERROR,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
         data: Any = None
     ):
@@ -68,7 +68,7 @@ class BaseAPIException(Exception):
         super().__init__(self.message)
 
 
-class NotFoundError(BaseAPIException):
+class NotFoundError(APIException):
     """资源未找到异常"""
     def __init__(self, message: str = "Resource not found", data: Any = None):
         super().__init__(
@@ -79,7 +79,7 @@ class NotFoundError(BaseAPIException):
         )
 
 
-class ValidationError(BaseAPIException):
+class ValidationError(APIException):
     """数据验证异常"""
     def __init__(self, message: str = "Validation error", data: Any = None):
         super().__init__(
@@ -90,7 +90,7 @@ class ValidationError(BaseAPIException):
         )
 
 
-class UnauthorizedError(BaseAPIException):
+class UnauthorizedError(APIException):
     """未授权异常"""
     def __init__(self, message: str = "Unauthorized", data: Any = None):
         super().__init__(
@@ -101,7 +101,7 @@ class UnauthorizedError(BaseAPIException):
         )
 
 
-class ForbiddenError(BaseAPIException):
+class ForbiddenError(APIException):
     """禁止访问异常"""
     def __init__(self, message: str = "Forbidden", data: Any = None):
         super().__init__(
@@ -112,7 +112,7 @@ class ForbiddenError(BaseAPIException):
         )
 
 
-class ConflictError(BaseAPIException):
+class ConflictError(APIException):
     """资源冲突异常"""
     def __init__(self, message: str = "Resource conflict", data: Any = None):
         super().__init__(
@@ -123,7 +123,7 @@ class ConflictError(BaseAPIException):
         )
 
 
-class BadRequestError(BaseAPIException):
+class BadRequestError(APIException):
     """错误请求异常"""
     def __init__(self, message: str = "Bad request", data: Any = None):
         super().__init__(
@@ -134,12 +134,12 @@ class BadRequestError(BaseAPIException):
         )
 
 
-class InternalServerError(BaseAPIException):
-    """内部服务器错误异常"""
+class InternalServerError(APIException):
+    """内部服务器错误"""
     def __init__(self, message: str = "Internal server error", data: Any = None):
         super().__init__(
             message=message,
-            code=ResponseCode.INTERNAL_SERVER_ERROR,
+            code=ResponseCode.INTERNAL_ERROR,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             data=data
         )

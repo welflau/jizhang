@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 
-# Exception handler middleware
+# Global exception handler middleware
 @app.middleware("http")
 async def exception_handler_middleware(request: Request, call_next):
     """Catch all exceptions and return unified response format."""
@@ -70,7 +70,7 @@ async def shutdown_event():
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"success": True, "message": "ok", "data": {"app": settings.APP_NAME}}
+    return {"status": "ok", "app": settings.APP_NAME}
 
 
 if __name__ == "__main__":

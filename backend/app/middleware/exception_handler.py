@@ -7,226 +7,152 @@ import logging
 import traceback
 from typing import Union
 
-from app.schemas.response import ResponseModel
-from app.core.exceptions import (
-    BusinessException,
-    NotFoundException,
-    ValidationException,
-    UnauthorizedException,
-    ForbiddenException,
-    ConflictException,
-)
-
 logger = logging.getLogger(__name__)
 
 
+class BaseAPIException(Exception):
+    """基础API异常类"""
+    def __init__(self, message: str = "Internal Server Error", code: int = 500, data: any = None):
+        self.message = message
+        self.code = code
+        self.data = data
+        super().__init__(self.message)
+
+
+class NotFoundError(BaseAPIException):
+    """资源未找到异常"""
+    def __init__(self, message: str = "Resource not found", data: any = None):
+        super().__init__(message=message, code=404, data=data)
+
+
+class ValidationError(BaseAPIException):
+    """数据验证异常"""
+    def __init__(self, message: str = "Validation error", data: any = None):
+        super().__init__(message=message, code=400, data=data)
+
+
+class UnauthorizedError(BaseAPIException):
+    """未授权异常"""
+    def __init__(self, message: str = "Unauthorized", data: any = None):
+        super().__init__(message=message, code=401, data=data)
+
+
+class ForbiddenError(BaseAPIException):
+    """禁止访问异常"""
+    def __init__(self, message: str = "Forbidden", data: any = None):
+        super().__init__(message=message, code=403, data=data)
+
+
+class ConflictError(BaseAPIException):
+    """冲突异常（如重复数据）"""
+    def __init__(self, message: str = "Resource conflict", data: any = None):
+        super().__init__(message=message, code=409, data=data)
+
+
+class BusinessError(BaseAPIException):
+    """业务逻辑异常"""
+    def __init__(self, message: str = "Business logic error", data: any = None):
+        super().__init__(message=message, code=400, data=data)
+
+
+class DatabaseError(BaseAPIException):
+    """数据库异常"""
+    def __init__(self, message: str = "Database error", data: any = None):
+        super().__init__(message=message, code=500, data=data)
+
+
 async def exception_handler_middleware(request: Request, call_next):
-    """
-    全局异常处理中间件
-    捕获所有未处理的异常并返回统一格式
-    """
+    """全局异常处理中间件"""
     try:
         response = await call_next(request)
         return response
     except Exception as exc:
-        logger.error(
-            f"Unhandled exception: {str(exc)}\n"
-            f"Path: {request.url.path}\n"
-            f"Method: {request.method}\n"
-            f"Traceback: {traceback.format_exc()}"
-        )
+        logger.error(f"Unhandled exception: {str(exc)}\n{traceback.format_exc()}")
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content=ResponseModel.error(
-                message="Internal server error",
-                code=500
-            ).dict()
+            content={
+                "code": 500,
+                "message": "Internal server error",
+                "data": None
+            }
         )
 
 
-async def business_exception_handler(request: Request, exc: BusinessException):
-    """
-    业务异常处理器
-    """
-    logger.warning(
-        f"Business exception: {exc.message}\n"
-        f"Path: {request.url.path}\n"
-        f"Code: {exc.code}"
-    )
+async def base_api_exception_handler(request: Request, exc: BaseAPIException):
+    """自定义API异常处理器"""
+    logger.warning(f"API Exception: {exc.message} (code: {exc.code})")
     return JSONResponse(
-        status_code=exc.status_code,
-        content=ResponseModel.error(
-            message=exc.message,
-            code=exc.code
-        ).dict()
-    )
-
-
-async def not_found_exception_handler(request: Request, exc: NotFoundException):
-    """
-    资源不存在异常处理器
-    """
-    logger.info(
-        f"Not found: {exc.message}\n"
-        f"Path: {request.url.path}"
-    )
-    return JSONResponse(
-        status_code=status.HTTP_404_NOT_FOUND,
-        content=ResponseModel.error(
-            message=exc.message,
-            code=exc.code
-        ).dict()
-    )
-
-
-async def validation_exception_handler(request: Request, exc: ValidationException):
-    """
-    验证异常处理器
-    """
-    logger.info(
-        f"Validation error: {exc.message}\n"
-        f"Path: {request.url.path}"
-    )
-    return JSONResponse(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        content=ResponseModel.error(
-            message=exc.message,
-            code=exc.code
-        ).dict()
-    )
-
-
-async def unauthorized_exception_handler(request: Request, exc: UnauthorizedException):
-    """
-    未授权异常处理器
-    """
-    logger.warning(
-        f"Unauthorized access: {exc.message}\n"
-        f"Path: {request.url.path}"
-    )
-    return JSONResponse(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        content=ResponseModel.error(
-            message=exc.message,
-            code=exc.code
-        ).dict(),
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-
-
-async def forbidden_exception_handler(request: Request, exc: ForbiddenException):
-    """
-    禁止访问异常处理器
-    """
-    logger.warning(
-        f"Forbidden access: {exc.message}\n"
-        f"Path: {request.url.path}"
-    )
-    return JSONResponse(
-        status_code=status.HTTP_403_FORBIDDEN,
-        content=ResponseModel.error(
-            message=exc.message,
-            code=exc.code
-        ).dict()
-    )
-
-
-async def conflict_exception_handler(request: Request, exc: ConflictException):
-    """
-    冲突异常处理器
-    """
-    logger.info(
-        f"Conflict: {exc.message}\n"
-        f"Path: {request.url.path}"
-    )
-    return JSONResponse(
-        status_code=status.HTTP_409_CONFLICT,
-        content=ResponseModel.error(
-            message=exc.message,
-            code=exc.code
-        ).dict()
+        status_code=exc.code,
+        content={
+            "code": exc.code,
+            "message": exc.message,
+            "data": exc.data
+        }
     )
 
 
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    """
-    HTTP异常处理器
-    """
-    logger.info(
-        f"HTTP exception: {exc.detail}\n"
-        f"Path: {request.url.path}\n"
-        f"Status: {exc.status_code}"
-    )
+    """HTTP异常处理器"""
+    logger.warning(f"HTTP Exception: {exc.detail} (status: {exc.status_code})")
     return JSONResponse(
         status_code=exc.status_code,
-        content=ResponseModel.error(
-            message=exc.detail,
-            code=exc.status_code
-        ).dict()
+        content={
+            "code": exc.status_code,
+            "message": exc.detail,
+            "data": None
+        }
     )
 
 
-async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
-    """
-    请求验证异常处理器
-    """
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """请求验证异常处理器"""
     errors = []
     for error in exc.errors():
         field = ".".join(str(loc) for loc in error["loc"] if loc != "body")
         message = error["msg"]
-        errors.append(f"{field}: {message}" if field else message)
+        errors.append({"field": field, "message": message})
     
-    error_message = "; ".join(errors)
-    logger.info(
-        f"Request validation error: {error_message}\n"
-        f"Path: {request.url.path}"
-    )
-    
+    logger.warning(f"Validation error: {errors}")
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=ResponseModel.error(
-            message=f"Validation error: {error_message}",
-            code=422,
-            data={"errors": exc.errors()}
-        ).dict()
+        content={
+            "code": 422,
+            "message": "Validation error",
+            "data": {"errors": errors}
+        }
     )
 
 
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
-    """
-    数据库异常处理器
-    """
-    logger.error(
-        f"Database error: {str(exc)}\n"
-        f"Path: {request.url.path}\n"
-        f"Traceback: {traceback.format_exc()}"
-    )
+    """SQLAlchemy异常处理器"""
+    logger.error(f"Database error: {str(exc)}\n{traceback.format_exc()}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content=ResponseModel.error(
-            message="Database error occurred",
-            code=500
-        ).dict()
+        content={
+            "code": 500,
+            "message": "Database error occurred",
+            "data": None
+        }
+    )
+
+
+async def general_exception_handler(request: Request, exc: Exception):
+    """通用异常处理器"""
+    logger.error(f"Unexpected error: {str(exc)}\n{traceback.format_exc()}")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "code": 500,
+            "message": "An unexpected error occurred",
+            "data": None
+        }
     )
 
 
 def register_exception_handlers(app):
-    """
-    注册所有异常处理器到FastAPI应用
-    """
-    # 业务异常
-    app.add_exception_handler(BusinessException, business_exception_handler)
-    app.add_exception_handler(NotFoundException, not_found_exception_handler)
-    app.add_exception_handler(ValidationException, validation_exception_handler)
-    app.add_exception_handler(UnauthorizedException, unauthorized_exception_handler)
-    app.add_exception_handler(ForbiddenException, forbidden_exception_handler)
-    app.add_exception_handler(ConflictException, conflict_exception_handler)
-    
-    # 框架异常
+    """注册所有异常处理器到FastAPI应用"""
+    app.add_exception_handler(BaseAPIException, base_api_exception_handler)
     app.add_exception_handler(StarletteHTTPException, http_exception_handler)
-    app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
-    
-    # 数据库异常
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(SQLAlchemyError, sqlalchemy_exception_handler)
-    
-    logger.info("Exception handlers registered successfully")
+    app.add_exception_handler(Exception, general_exception_handler)

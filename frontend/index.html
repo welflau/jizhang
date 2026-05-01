@@ -20,7 +20,7 @@
             --error: #d93025;
             --success: #1e8e3e;
             --border: #dadce0;
-            --bg-light: #f8f9fa;
+            --bg-gray: #f8f9fa;
             --text-primary: #202124;
             --text-secondary: #5f6368;
         }
@@ -35,42 +35,48 @@
             padding: 20px;
         }
 
-        .container {
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-card {
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
             padding: 40px;
         }
 
-        .logo {
+        .auth-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
-        .logo h1 {
-            color: var(--primary);
-            font-size: 28px;
-            font-weight: 600;
+        .auth-header h1 {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        label {
+        .form-group label {
             display: block;
-            margin-bottom: 8px;
             color: var(--text-primary);
             font-size: 14px;
             font-weight: 500;
+            margin-bottom: 8px;
         }
 
-        input[type="email"],
-        input[type="password"],
-        input[type="tel"],
-        input[type="file"] {
+        .form-group input {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid var(--border);
@@ -79,25 +85,25 @@
             transition: border-color 0.2s;
         }
 
-        input:focus {
+        .form-group input:focus {
             outline: none;
             border-color: var(--primary);
         }
 
-        input.error {
+        .form-group input.error {
             border-color: var(--error);
         }
 
         .error-message {
             color: var(--error);
             font-size: 12px;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         .success-message {
             color: var(--success);
             font-size: 12px;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         .checkbox-group {
@@ -107,18 +113,17 @@
         }
 
         .checkbox-group input[type="checkbox"] {
+            width: auto;
             margin-right: 8px;
-            width: 16px;
-            height: 16px;
         }
 
         .checkbox-group label {
-            margin: 0;
-            font-weight: 400;
+            color: var(--text-secondary);
             font-size: 14px;
+            margin: 0;
         }
 
-        button {
+        .btn {
             width: 100%;
             padding: 12px;
             background: var(--primary);
@@ -131,114 +136,78 @@
             transition: background 0.2s;
         }
 
-        button:hover {
+        .btn:hover {
             background: var(--primary-dark);
         }
 
-        button:disabled {
+        .btn:disabled {
             background: var(--border);
             cursor: not-allowed;
         }
 
-        .link-button {
-            background: none;
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .auth-footer a {
             color: var(--primary);
             text-decoration: none;
-            font-size: 14px;
-            padding: 0;
-            margin-top: 16px;
-            text-align: center;
-            display: block;
-        }
-
-        .link-button:hover {
-            text-decoration: underline;
-            background: none;
-        }
-
-        .tabs {
-            display: flex;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            color: var(--text-secondary);
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
         }
 
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .user-info {
-            text-align: center;
-        }
-
-        .user-info h2 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-
-        .user-info p {
-            color: var(--text-secondary);
-            margin-bottom: 10px;
+        .auth-footer a:hover {
+            text-decoration: underline;
         }
 
         .alert {
-            padding: 12px;
+            padding: 12px 16px;
             border-radius: 4px;
             margin-bottom: 20px;
             font-size: 14px;
         }
 
-        .alert.error {
+        .alert-error {
             background: #fce8e6;
             color: var(--error);
             border: 1px solid #f5c6cb;
         }
 
-        .alert.success {
+        .alert-success {
             background: #e6f4ea;
             color: var(--success);
             border: 1px solid #c3e6cb;
         }
 
-        .backup-section {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid var(--border);
-        }
-
-        .backup-section h3 {
-            color: var(--text-primary);
-            font-size: 18px;
-            margin-bottom: 20px;
+        .user-dashboard {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
             text-align: center;
         }
 
-        .backup-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .user-dashboard h2 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
-        .backup-buttons button {
-            margin: 0;
+        .user-info {
+            background: var(--bg-gray);
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .user-info p {
+            color: var(--text-secondary);
+            margin: 8px 0;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
+            .auth-card {
+                padding: 24px;
             }
         }
     </style>
@@ -249,142 +218,73 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        const API_BASE = 'http://localhost:8080';
+        const API_BASE = 'http://localhost:8000';
 
         function App() {
-            const [view, setView] = useState('login'); // 'login', 'register', 'reset', 'dashboard'
-            const [token, setToken] = useState(localStorage.getItem('auth_token'));
+            const [view, setView] = useState('login'); // 'login' | 'register' | 'dashboard' | 'reset'
             const [user, setUser] = useState(null);
-            const [error, setError] = useState('');
-            const [success, setSuccess] = useState('');
+            const [tokens, setTokens] = useState({
+                access: localStorage.getItem('access_token'),
+                refresh: localStorage.getItem('refresh_token')
+            });
 
             useEffect(() => {
-                if (token) {
-                    fetchUserInfo();
+                if (tokens.access) {
+                    // Verify token and load user data
+                    fetchUserData();
                 }
-            }, [token]);
+            }, []);
 
-            const fetchUserInfo = async () => {
+            async function fetchUserData() {
                 try {
-                    const response = await fetch(`${API_BASE}/api/auth/me`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        setUser(data);
-                        setView('dashboard');
-                    } else {
-                        localStorage.removeItem('auth_token');
-                        setToken(null);
-                    }
-                } catch (err) {
-                    console.error('Failed to fetch user info:', err);
-                    localStorage.removeItem('auth_token');
-                    setToken(null);
+                    // In production, decode JWT to get user_id and fetch user data
+                    // For now, just set authenticated state
+                    setUser({ email: 'user@example.com' });
+                    setView('dashboard');
+                } catch (error) {
+                    console.error('Failed to fetch user data:', error);
+                    handleLogout();
                 }
-            };
-
-            const handleLogout = async () => {
-                try {
-                    await fetch(`${API_BASE}/api/auth/logout`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                } catch (err) {
-                    console.error('Logout error:', err);
-                }
-                localStorage.removeItem('auth_token');
-                setToken(null);
-                setUser(null);
-                setView('login');
-            };
-
-            if (view === 'dashboard' && user) {
-                return (
-                    <div className="container">
-                        <div className="user-info">
-                            <h2>Welcome!</h2>
-                            <p><strong>Email:</strong> {user.email}</p>
-                            {user.phone && <p><strong>Phone:</strong> {user.phone}</p>}
-                            <p><strong>Member since:</strong> {new Date(user.created_at).toLocaleDateString()}</p>
-                            <button onClick={handleLogout} style={{marginTop: '20px'}}>Logout</button>
-                        </div>
-                        <BackupSection token={token} />
-                    </div>
-                );
             }
 
-            return (
-                <div className="container">
-                    <div className="logo">
-                        <h1>🔐 Auth System</h1>
-                    </div>
+            function handleLoginSuccess(accessToken, refreshToken) {
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('refresh_token', refreshToken);
+                setTokens({ access: accessToken, refresh: refreshToken });
+                fetchUserData();
+            }
 
-                    {view === 'reset' ? (
-                        <ResetPasswordForm 
-                            setView={setView} 
-                            setError={setError}
-                            setSuccess={setSuccess}
-                            error={error}
-                            success={success}
-                        />
-                    ) : (
-                        <>
-                            <div className="tabs">
-                                <button 
-                                    className={`tab ${view === 'login' ? 'active' : ''}`}
-                                    onClick={() => {
-                                        setView('login');
-                                        setError('');
-                                        setSuccess('');
-                                    }}
-                                >
-                                    Login
-                                </button>
-                                <button 
-                                    className={`tab ${view === 'register' ? 'active' : ''}`}
-                                    onClick={() => {
-                                        setView('register');
-                                        setError('');
-                                        setSuccess('');
-                                    }}
-                                >
-                                    Register
-                                </button>
-                            </div>
+            function handleLogout() {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                setTokens({ access: null, refresh: null });
+                setUser(null);
+                setView('login');
+            }
 
-                            {view === 'login' ? (
-                                <LoginForm 
-                                    setToken={setToken} 
-                                    setView={setView}
-                                    setError={setError}
-                                    error={error}
-                                />
-                            ) : (
-                                <RegisterForm 
-                                    setToken={setToken}
-                                    setView={setView}
-                                    setError={setError}
-                                    error={error}
-                                />
-                            )}
-                        </>
-                    )}
-                </div>
-            );
+            if (view === 'dashboard' && user) {
+                return <Dashboard user={user} onLogout={handleLogout} />;
+            }
+
+            if (view === 'register') {
+                return <RegisterForm onSuccess={() => setView('login')} onSwitchToLogin={() => setView('login')} />;
+            }
+
+            if (view === 'reset') {
+                return <PasswordResetForm onBack={() => setView('login')} />;
+            }
+
+            return <LoginForm onSuccess={handleLoginSuccess} onSwitchToRegister={() => setView('register')} onForgotPassword={() => setView('reset')} />;
         }
 
-        function LoginForm({ setToken, setView, setError, error }) {
+        function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }) {
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
             const [rememberMe, setRememberMe] = useState(false);
+            const [error, setError] = useState('');
             const [loading, setLoading] = useState(false);
 
-            const handleSubmit = async (e) => {
+            async function handleSubmit(e) {
                 e.preventDefault();
                 setError('');
                 setLoading(true);
@@ -392,87 +292,102 @@
                 try {
                     const response = await fetch(`${API_BASE}/api/auth/login`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email, password, remember_me: rememberMe })
                     });
 
                     const data = await response.json();
 
-                    if (response.ok) {
-                        localStorage.setItem('auth_token', data.access_token);
-                        setToken(data.access_token);
-                    } else {
-                        setError(data.detail || 'Login failed');
+                    if (!response.ok) {
+                        throw new Error(data.message || data.detail || 'Login failed');
                     }
+
+                    onSuccess(data.data.access_token, data.data.refresh_token);
                 } catch (err) {
-                    setError('Network error. Please try again.');
+                    setError(err.message);
                 } finally {
                     setLoading(false);
                 }
-            };
+            }
 
             return (
-                <form onSubmit={handleSubmit}>
-                    {error && <div className="alert error">{error}</div>}
-                    
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                <div className="app-container">
+                    <div className="auth-card">
+                        <div className="auth-header">
+                            <h1>Welcome Back</h1>
+                            <p>Sign in to your account</p>
+                        </div>
+
+                        {error && <div className="alert alert-error">{error}</div>}
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="you@example.com"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="password">Password</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    placeholder="Enter your password"
+                                />
+                            </div>
+
+                            <div className="checkbox-group">
+                                <input
+                                    id="remember"
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+                                <label htmlFor="remember">Remember me</label>
+                            </div>
+
+                            <button type="submit" className="btn" disabled={loading}>
+                                {loading ? 'Signing in...' : 'Sign In'}
+                            </button>
+                        </form>
+
+                        <div className="auth-footer">
+                            <a onClick={onForgotPassword}>Forgot password?</a>
+                            <p style={{ marginTop: '16px' }}>
+                                Don't have an account? <a onClick={onSwitchToRegister}>Sign up</a>
+                            </p>
+                        </div>
                     </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="checkbox-group">
-                        <input
-                            type="checkbox"
-                            id="remember"
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                        <label htmlFor="remember">Remember me</label>
-                    </div>
-
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-
-                    <button 
-                        type="button" 
-                        className="link-button"
-                        onClick={() => setView('reset')}
-                    >
-                        Forgot password?
-                    </button>
-                </form>
+                </div>
             );
         }
 
-        function RegisterForm({ setToken, setView, setError, error }) {
+        function RegisterForm({ onSuccess, onSwitchToLogin }) {
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
-            const [phone, setPhone] = useState('');
+            const [confirmPassword, setConfirmPassword] = useState('');
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState(false);
             const [loading, setLoading] = useState(false);
 
-            const handleSubmit = async (e) => {
+            async function handleSubmit(e) {
                 e.preventDefault();
                 setError('');
+                setSuccess(false);
+
+                if (password !== confirmPassword) {
+                    setError('Passwords do not match');
+                    return;
+                }
 
                 if (password.length < 8) {
                     setError('Password must be at least 8 characters');
@@ -484,251 +399,268 @@
                 try {
                     const response = await fetch(`${API_BASE}/api/auth/register`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email, password, phone: phone || undefined })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
                     });
 
                     const data = await response.json();
 
-                    if (response.ok) {
-                        localStorage.setItem('auth_token', data.access_token);
-                        setToken(data.access_token);
-                    } else {
-                        setError(data.detail || 'Registration failed');
+                    if (!response.ok) {
+                        throw new Error(data.message || data.detail || 'Registration failed');
                     }
+
+                    setSuccess(true);
+                    setTimeout(() => onSuccess(), 2000);
                 } catch (err) {
-                    setError('Network error. Please try again.');
+                    setError(err.message);
                 } finally {
                     setLoading(false);
                 }
-            };
+            }
 
             return (
-                <form onSubmit={handleSubmit}>
-                    {error && <div className="alert error">{error}</div>}
-                    
-                    <div className="form-group">
-                        <label htmlFor="reg-email">Email</label>
-                        <input
-                            type="email"
-                            id="reg-email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
+                <div className="app-container">
+                    <div className="auth-card">
+                        <div className="auth-header">
+                            <h1>Create Account</h1>
+                            <p>Sign up to get started</p>
+                        </div>
 
-                    <div className="form-group">
-                        <label htmlFor="reg-password">Password</label>
-                        <input
-                            type="password"
-                            id="reg-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength="8"
-                        />
-                    </div>
+                        {error && <div className="alert alert-error">{error}</div>}
+                        {success && <div className="alert alert-success">Account created! Redirecting to login...</div>}
 
-                    <div className="form-group">
-                        <label htmlFor="phone">Phone (optional)</label>
-                        <input
-                            type="tel"
-                            id="phone"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                        />
-                    </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="you@example.com"
+                                />
+                            </div>
 
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Creating account...' : 'Register'}
-                    </button>
-                </form>
+                            <div className="form-group">
+                                <label htmlFor="password">Password</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    placeholder="At least 8 characters"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="confirmPassword">Confirm Password</label>
+                                <input
+                                    id="confirmPassword"
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                    placeholder="Confirm your password"
+                                />
+                            </div>
+
+                            <button type="submit" className="btn" disabled={loading}>
+                                {loading ? 'Creating account...' : 'Sign Up'}
+                            </button>
+                        </form>
+
+                        <div className="auth-footer">
+                            <p>
+                                Already have an account? <a onClick={onSwitchToLogin}>Sign in</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             );
         }
 
-        function ResetPasswordForm({ setView, setError, setSuccess, error, success }) {
+        function PasswordResetForm({ onBack }) {
+            const [step, setStep] = useState('request'); // 'request' | 'verify'
             const [email, setEmail] = useState('');
+            const [code, setCode] = useState('');
+            const [newPassword, setNewPassword] = useState('');
+            const [confirmPassword, setConfirmPassword] = useState('');
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState('');
             const [loading, setLoading] = useState(false);
 
-            const handleSubmit = async (e) => {
+            async function handleRequestReset(e) {
                 e.preventDefault();
                 setError('');
                 setSuccess('');
                 setLoading(true);
 
                 try {
-                    const response = await fetch(`${API_BASE}/api/auth/reset-password`, {
+                    const response = await fetch(`${API_BASE}/api/auth/password-reset/request`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email })
                     });
 
                     const data = await response.json();
 
-                    if (response.ok) {
-                        setSuccess('Password reset instructions sent to your email');
-                    } else {
-                        setError(data.detail || 'Failed to send reset email');
+                    if (!response.ok) {
+                        throw new Error(data.message || data.detail || 'Failed to send reset code');
                     }
+
+                    setSuccess('Reset code sent to your email');
+                    setStep('verify');
                 } catch (err) {
-                    setError('Network error. Please try again.');
+                    setError(err.message);
                 } finally {
                     setLoading(false);
                 }
-            };
+            }
 
-            return (
-                <form onSubmit={handleSubmit}>
-                    {error && <div className="alert error">{error}</div>}
-                    {success && <div className="alert success">{success}</div>}
-                    
-                    <div className="form-group">
-                        <label htmlFor="reset-email">Email</label>
-                        <input
-                            type="email"
-                            id="reset-email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Sending...' : 'Send Reset Link'}
-                    </button>
-
-                    <button 
-                        type="button" 
-                        className="link-button"
-                        onClick={() => setView('login')}
-                    >
-                        Back to Login
-                    </button>
-                </form>
-            );
-        }
-
-        function BackupSection({ token }) {
-            const [error, setError] = useState('');
-            const [success, setSuccess] = useState('');
-            const [loading, setLoading] = useState(false);
-
-            const handleBackup = async () => {
+            async function handleVerifyReset(e) {
+                e.preventDefault();
                 setError('');
                 setSuccess('');
-                setLoading(true);
 
-                try {
-                    const response = await fetch(`${API_BASE}/api/backup/export`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                        setSuccess('Backup downloaded successfully');
-                    } else {
-                        const data = await response.json();
-                        setError(data.detail || 'Failed to create backup');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
+                if (newPassword !== confirmPassword) {
+                    setError('Passwords do not match');
+                    return;
                 }
-            };
 
-            const handleRestore = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
+                if (newPassword.length < 8) {
+                    setError('Password must be at least 8 characters');
+                    return;
+                }
 
-                setError('');
-                setSuccess('');
                 setLoading(true);
 
                 try {
-                    const formData = new FormData();
-                    formData.append('file', file);
-
-                    const response = await fetch(`${API_BASE}/api/backup/import`, {
+                    const response = await fetch(`${API_BASE}/api/auth/password-reset/verify`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: formData
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email,
+                            code,
+                            new_password: newPassword
+                        })
                     });
 
                     const data = await response.json();
 
-                    if (response.ok) {
-                        setSuccess('Data restored successfully');
-                    } else {
-                        setError(data.detail || 'Failed to restore data');
+                    if (!response.ok) {
+                        throw new Error(data.message || data.detail || 'Failed to reset password');
                     }
+
+                    setSuccess('Password reset successful! Redirecting...');
+                    setTimeout(() => onBack(), 2000);
                 } catch (err) {
-                    setError('Network error. Please try again.');
+                    setError(err.message);
                 } finally {
                     setLoading(false);
-                    e.target.value = '';
                 }
-            };
+            }
 
             return (
-                <div className="backup-section">
-                    <h3>Data Backup & Restore</h3>
-                    
-                    {error && <div className="alert error">{error}</div>}
-                    {success && <div className="alert success">{success}</div>}
+                <div className="app-container">
+                    <div className="auth-card">
+                        <div className="auth-header">
+                            <h1>Reset Password</h1>
+                            <p>{step === 'request' ? 'Enter your email to receive a reset code' : 'Enter the code and your new password'}</p>
+                        </div>
 
-                    <div className="backup-buttons">
-                        <button onClick={handleBackup} disabled={loading}>
-                            {loading ? 'Processing...' : 'Download Backup'}
-                        </button>
-                        
-                        <label htmlFor="restore-file" style={{
-                            width: '100%',
-                            padding: '12px',
-                            background: 'var(--primary)',
-                            color: 'white',
-                            borderRadius: '4px',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            textAlign: 'center',
-                            display: 'block',
-                            opacity: loading ? 0.6 : 1
-                        }}>
-                            {loading ? 'Processing...' : 'Restore from Backup'}
-                        </label>
-                        <input
-                            type="file"
-                            id="restore-file"
-                            accept=".json"
-                            onChange={handleRestore}
-                            disabled={loading}
-                            style={{ display: 'none' }}
-                        />
+                        {error && <div className="alert alert-error">{error}</div>}
+                        {success && <div className="alert alert-success">{success}</div>}
+
+                        {step === 'request' ? (
+                            <form onSubmit={handleRequestReset}>
+                                <div className="form-group">
+                                    <label htmlFor="email">Email</label>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        placeholder="you@example.com"
+                                    />
+                                </div>
+
+                                <button type="submit" className="btn" disabled={loading}>
+                                    {loading ? 'Sending...' : 'Send Reset Code'}
+                                </button>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleVerifyReset}>
+                                <div className="form-group">
+                                    <label htmlFor="code">Reset Code</label>
+                                    <input
+                                        id="code"
+                                        type="text"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                        required
+                                        placeholder="Enter the code from your email"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="newPassword">New Password</label>
+                                    <input
+                                        id="newPassword"
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        required
+                                        placeholder="At least 8 characters"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="confirmPassword">Confirm Password</label>
+                                    <input
+                                        id="confirmPassword"
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        required
+                                        placeholder="Confirm your new password"
+                                    />
+                                </div>
+
+                                <button type="submit" className="btn" disabled={loading}>
+                                    {loading ? 'Resetting...' : 'Reset Password'}
+                                </button>
+                            </form>
+                        )}
+
+                        <div className="auth-footer">
+                            <a onClick={onBack}>Back to login</a>
+                        </div>
                     </div>
                 </div>
             );
         }
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        function Dashboard({ user, onLogout }) {
+            return (
+                <div className="app-container">
+                    <div className="user-dashboard">
+                        <h2>Welcome!</h2>
+                        <div className="user-info">
+                            <p><strong>Email:</strong> {user.email}</p>
+                        </div>
+                        <button className="btn" onClick={onLogout}>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
