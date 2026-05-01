@@ -1,0 +1,505 @@
+/* Icon Selector Component Styles */
+
+:root {
+    --icon-primary: #1a1a2e;
+    --icon-secondary: #16213e;
+    --icon-accent: #0f3460;
+    --icon-highlight: #e94560;
+    --icon-text: #f1f1f1;
+    --icon-border: rgba(255, 255, 255, 0.1);
+    --icon-hover: rgba(233, 69, 96, 0.1);
+    --icon-selected: rgba(233, 69, 96, 0.3);
+}
+
+/* Icon Selector Container */
+.icon-selector-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    max-width: 600px;
+    width: 100%;
+}
+
+.icon-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.icon-selector-title {
+    font-size: 1.5em;
+    color: var(--icon-highlight);
+    font-weight: 600;
+}
+
+.icon-selector-close {
+    background: transparent;
+    border: none;
+    color: var(--icon-text);
+    font-size: 1.5em;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.icon-selector-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+/* Search Section */
+.icon-selector-search {
+    margin-bottom: 20px;
+}
+
+.icon-search-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--icon-border);
+    border-radius: 8px;
+    color: var(--icon-text);
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.icon-search-input:focus {
+    outline: none;
+    border-color: var(--icon-highlight);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+}
+
+.icon-search-input::placeholder {
+    color: rgba(241, 241, 241, 0.5);
+}
+
+/* Color Picker Section */
+.icon-color-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid var(--icon-border);
+}
+
+.icon-color-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: var(--icon-text);
+    opacity: 0.8;
+}
+
+.icon-color-picker-wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.icon-color-input {
+    width: 60px;
+    height: 40px;
+    border: 2px solid var(--icon-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-color-input:hover {
+    border-color: var(--icon-highlight);
+    transform: scale(1.05);
+}
+
+.icon-color-value {
+    flex: 1;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--icon-border);
+    border-radius: 6px;
+    color: var(--icon-text);
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+}
+
+.icon-color-presets {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.icon-color-preset {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 2px solid var(--icon-border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-color-preset:hover {
+    transform: scale(1.1);
+    border-color: var(--icon-text);
+}
+
+.icon-color-preset.active {
+    border-color: var(--icon-highlight);
+    box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
+}
+
+/* Icon Grid */
+.icon-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.icon-selector-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.icon-selector-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.icon-selector-grid::-webkit-scrollbar-thumb {
+    background: var(--icon-highlight);
+    border-radius: 4px;
+}
+
+.icon-selector-grid::-webkit-scrollbar-thumb:hover {
+    background: #d63651;
+}
+
+/* Icon Item */
+.icon-item {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.8em;
+    position: relative;
+}
+
+.icon-item:hover {
+    background: var(--icon-hover);
+    border-color: var(--icon-highlight);
+    transform: scale(1.05);
+}
+
+.icon-item.selected {
+    background: var(--icon-selected);
+    border-color: var(--icon-highlight);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+}
+
+.icon-item.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--icon-highlight);
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5em;
+    font-weight: bold;
+}
+
+/* Preview Section */
+.icon-preview-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid var(--icon-border);
+    margin-bottom: 20px;
+}
+
+.icon-preview-label {
+    font-size: 0.9em;
+    color: var(--icon-text);
+    opacity: 0.8;
+}
+
+.icon-preview-display {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 3em;
+}
+
+.icon-preview-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.icon-preview-name {
+    font-size: 0.9em;
+    color: var(--icon-text);
+    font-weight: 600;
+}
+
+.icon-preview-code {
+    font-size: 0.85em;
+    color: var(--icon-text);
+    opacity: 0.6;
+    font-family: 'Courier New', monospace;
+}
+
+/* Action Buttons */
+.icon-selector-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.icon-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.icon-btn-primary {
+    background: var(--icon-highlight);
+    color: white;
+}
+
+.icon-btn-primary:hover {
+    background: #d63651;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+}
+
+.icon-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.icon-btn-secondary {
+    background: var(--icon-accent);
+    color: white;
+}
+
+.icon-btn-secondary:hover {
+    background: #0d2a4d;
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.icon-selector-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--icon-text);
+    opacity: 0.6;
+}
+
+.icon-selector-empty-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.icon-selector-empty-text {
+    font-size: 1em;
+}
+
+/* Loading State */
+.icon-selector-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--icon-text);
+}
+
+.icon-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--icon-highlight);
+    border-radius: 50%;
+    animation: icon-spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes icon-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Category Tabs */
+.icon-category-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.icon-category-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.icon-category-tabs::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.icon-category-tabs::-webkit-scrollbar-thumb {
+    background: var(--icon-highlight);
+    border-radius: 2px;
+}
+
+.icon-category-tab {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--icon-border);
+    border-radius: 6px;
+    color: var(--icon-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.9em;
+}
+
+.icon-category-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--icon-highlight);
+}
+
+.icon-category-tab.active {
+    background: var(--icon-highlight);
+    border-color: var(--icon-highlight);
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .icon-selector-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+    
+    .icon-selector-title {
+        font-size: 1.2em;
+    }
+    
+    .icon-selector-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 8px;
+        max-height: 300px;
+    }
+    
+    .icon-item {
+        font-size: 1.5em;
+    }
+    
+    .icon-preview-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .icon-preview-display {
+        width: 100%;
+        font-size: 2.5em;
+    }
+    
+    .icon-selector-actions {
+        flex-direction: column;
+    }
+    
+    .icon-btn {
+        width: 100%;
+    }
+    
+    .icon-color-picker-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .icon-color-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .icon-selector-grid {
+        grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+        gap: 6px;
+    }
+    
+    .icon-item {
+        font-size: 1.3em;
+    }
+    
+    .icon-category-tabs {
+        gap: 5px;
+    }
+    
+    .icon-category-tab {
+        padding: 6px 12px;
+        font-size: 0.85em;
+    }
+}
+
+/* Animation */
+.icon-item {
+    animation: iconFadeIn 0.3s ease;
+}
+
+@keyframes iconFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Accessibility */
+.icon-item:focus,
+.icon-btn:focus,
+.icon-search-input:focus,
+.icon-category-tab:focus {
+    outline: 2px solid var(--icon-highlight);
+    outline-offset: 2px;
+}
+
+.icon-selector-container[aria-hidden="true"] {
+    display: none;
+}
