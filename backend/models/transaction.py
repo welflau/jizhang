@@ -1,60 +1,171 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, Index, Enum as SQLEnum
-from sqlalchemy.orm import relationship
-from backend.database import Base
-import enum
+from typing import Optional
+from bson import ObjectId
+from pydantic import BaseModel, Field, validator
+from enum import Enum
 
 
-class TransactionType(str, enum.Enum):
-    """交易类型枚举"""
+class TransactionType(str, Enum):
     INCOME = "income"
     EXPENSE = "expense"
 
 
-class Transaction(Base):
-    """收支记录模型"""
-    __tablename__ = "transactions"
+class TransactionCategory(str, Enum):
+    # 收入类别
+    SALARY = "salary"
+    BONUS = "bonus"
+    INVESTMENT = "investment"
+    OTHER_INCOME = "other_income"
+    
+    # 支出类别
+    FOOD = "food"
+    TRANSPORT = "transport"
+    HOUSING = "housing"
+    ENTERTAINMENT = "entertainment"
+    SHOPPING = "shopping"
+    HEALTHCARE = "healthcare"
+    EDUCATION = "education"
+    OTHER_EXPENSE = "other_expense"
 
-    id = Column(Integer, primary_key=True, index=True, comment="交易记录ID")
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, comment="用户ID")
-    type = Column(SQLEnum(TransactionType), nullable=False, comment="交易类型：income收入/expense支出")
-    amount = Column(Numeric(precision=15, scale=2), nullable=False, comment="金额")
-    category_id = Column(Integer, ForeignKey("categories.id", ondelete="SET NULL"), nullable=True, comment="分类ID")
-    date = Column(DateTime, nullable=False, default=datetime.utcnow, comment="交易日期")
-    note = Column(String(500), nullable=True, comment="备注说明")
-    payment_method = Column(String(50), nullable=True, comment="支付方式")
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow, comment="创建时间")
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow, comment="更新时间")
 
-    # 关系定义
-    user = relationship("User", back_populates="transactions")
-    category = relationship("Category", back_populates="transactions")
+class PyObjectId(ObjectId):
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
 
-    # 创建复合索引优化查询性能
-    __table_args__ = (
-        Index('idx_user_date', 'user_id', 'date'),
-        Index('idx_user_type', 'user_id', 'type'),
-        Index('idx_user_category', 'user_id', 'category_id'),
-        Index('idx_user_type_date', 'user_id', 'type', 'date'),
-        Index('idx_date', 'date'),
-        {'comment': '收支记录表'}
-    )
+    @classmethod
+    def validate(cls, v):
+        if not ObjectId.is_valid(v):
+            raise ValueError("Invalid ObjectId")
+        return ObjectId(v)
 
-    def __repr__(self):
-        return f"<Transaction(id={self.id}, user_id={self.user_id}, type={self.type}, amount={self.amount})>"
+    @classmethod
+    def __modify_schema__(cls, field_schema):
+        field_schema.update(type="string")
 
-    def to_dict(self):
-        """转换为字典格式"""
-        return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "type": self.type.value if isinstance(self.type, TransactionType) else self.type,
-            "amount": float(self.amount) if self.amount else 0,
-            "category_id": self.category_id,
-            "category_name": self.category.name if self.category else None,
-            "date": self.date.isoformat() if self.date else None,
-            "note": self.note,
-            "payment_method": self.payment_method,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
-        }
+
+class TransactionBase(BaseModel):
+    type: TransactionType
+    category: TransactionCategory
+    amount: float = Field(..., gt=0, description="金额必须大于0")
+    description: Optional[str] = Field(None, max_length=500)
+    date: datetime
+    tags: Optional[list[str]] = Field(default_factory=list)
+
+    @validator('amount')
+    def validate_amount(cls, v):
+        if v <= 0:
+            raise ValueError("金额必须大于0")
+        # 保留两位小数
+        return round(v, 2)
+
+    @validator('tags')
+    def validate_tags(cls, v):
+        if v and len(v) > 10:
+            raise ValueError("标签数量不能超过10个")
+        return v
+
+    @validator('description')
+    def validate_description(cls, v):
+        if v and len(v.strip()) == 0:
+            return None
+        return v
+
+    class Config:
+        use_enum_values = True
+
+
+class TransactionCreate(TransactionBase):
+    pass
+
+
+class TransactionUpdate(BaseModel):
+    type: Optional[TransactionType] = None
+    category: Optional[TransactionCategory] = None
+    amount: Optional[float] = Field(None, gt=0)
+    description: Optional[str] = Field(None, max_length=500)
+    date: Optional[datetime] = None
+    tags: Optional[list[str]] = None
+
+    @validator('amount')
+    def validate_amount(cls, v):
+        if v is not None:
+            if v <= 0:
+                raise ValueError("金额必须大于0")
+            return round(v, 2)
+        return v
+
+    @validator('tags')
+    def validate_tags(cls, v):
+        if v is not None and len(v) > 10:
+            raise ValueError("标签数量不能超过10个")
+        return v
+
+    class Config:
+        use_enum_values = True
+
+
+class TransactionInDB(TransactionBase):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    user_id: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        use_enum_values = True
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str, datetime: lambda v: v.isoformat()}
+
+
+class TransactionResponse(BaseModel):
+    id: str = Field(..., alias="_id")
+    type: str
+    category: str
+    amount: float
+    description: Optional[str]
+    date: datetime
+    tags: list[str]
+    user_id: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        allow_population_by_field_name = True
+        json_encoders = {datetime: lambda v: v.isoformat()}
+
+
+class TransactionListResponse(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+    items: list[TransactionResponse]
+
+
+class TransactionFilter(BaseModel):
+    type: Optional[TransactionType] = None
+    category: Optional[TransactionCategory] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    min_amount: Optional[float] = Field(None, ge=0)
+    max_amount: Optional[float] = Field(None, ge=0)
+    tags: Optional[list[str]] = None
+    search: Optional[str] = None
+
+    @validator('max_amount')
+    def validate_amount_range(cls, v, values):
+        if v is not None and 'min_amount' in values and values['min_amount'] is not None:
+            if v < values['min_amount']:
+                raise ValueError("最大金额不能小于最小金额")
+        return v
+
+    @validator('end_date')
+    def validate_date_range(cls, v, values):
+        if v is not None and 'start_date' in values and values['start_date'] is not None:
+            if v < values['start_date']:
+                raise ValueError("结束日期不能早于开始日期")
+        return v
+
+    class Config:
+        use_enum_values = True

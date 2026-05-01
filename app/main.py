@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.logger import setup_logging
+from app.api import health, transactions
 
 
 @asynccontextmanager
@@ -31,7 +32,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -40,34 +41,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    """Health check endpoint."""
-    return {
-        "status": "ok",
-        "project": settings.PROJECT_NAME,
-        "version": settings.VERSION,
-        "environment": settings.ENVIRONMENT
-    }
-
-
-@app.get("/health")
-async def health_check():
-    """Detailed health check endpoint."""
-    return {
-        "status": "healthy",
-        "checks": {
-            "api": "ok"
-        }
-    }
+# Register routers
+app.include_router(health.router, prefix="/api", tags=["health"])
+app.include_router(transactions.router, prefix="/api", tags=["transactions"])
 
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
         "app.main:app",
-        host=settings.HOST,
+        host="0.0.0.0",
         port=settings.PORT,
         reload=settings.DEBUG
     )
