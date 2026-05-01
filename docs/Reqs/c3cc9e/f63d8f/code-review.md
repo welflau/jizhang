@@ -12,14 +12,9 @@
 无
 
 ## 审查的代码
-- backend/app/core/__init__.py
-- backend/app/core/config.py
-- backend/app/core/database.py
-- backend/app/db/__init__.py
-- backend/app/db/session.py
-- backend/app/db/init_db.py
-- backend/alembic.ini
-- backend/alembic/env.py
+- backend/app/models/base.py
+- backend/scripts/init_db.py
 - backend/.env.example
-- backend/main.py
+- backend/tests/test_database.py
+- backend/app/main.py
 - docs/Reqs/c3cc9e/f63d8f/dev-notes.md
