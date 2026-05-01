@@ -1,16 +1,16 @@
 # 开发笔记 — Frontend: Add data backup and restore UI
 
-> 2026-05-02 01:22 | LLM
+> 2026-05-02 01:23 | LLM
 
 ## 产出文件
-- [backend/main.py](/app#repo?file=backend/main.py) (16140 chars)
+- [backend/main.py](/app#repo?file=backend/main.py) (16118 chars)
 
-## 自测: 自测 6/6 通过 ✅
+## 自测: 自测 5/6 通过 ⚠️
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
 | 文件产出 | ✅ | 1 个文件 |
-| 入口文件 | ✅ | 存在 |
+| 入口文件 | ❌ | 缺少 |
 | 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |

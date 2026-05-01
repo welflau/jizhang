@@ -352,7 +352,7 @@ async def list_backups(current_user = Depends(get_current_user)):
         backups = []
         if os.path.exists(BACKUP_DIR):
             for filename in os.listdir(BACKUP_DIR):
-                if filename.endswith(".db"):
+                if filename.endswith('.db'):
                     filepath = os.path.join(BACKUP_DIR, filename)
                     stat = os.stat(filepath)
                     backups.append({
@@ -363,6 +363,7 @@ async def list_backups(current_user = Depends(get_current_user)):
         
         # Sort by creation time, newest first
         backups.sort(key=lambda x: x["created_at"], reverse=True)
+        
         return backups
     except Exception as e:
         logger.error(f"Failed to list backups: {e}")
@@ -384,14 +385,13 @@ async def restore_backup(req: RestoreRequest, current_user = Depends(get_current
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
         
         # Create a backup of current database before restoring
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        pre_restore_backup = os.path.join(BACKUP_DIR, f"pre_restore_{timestamp}.db")
-        shutil.copy2(DB_PATH, pre_restore_backup)
+        current_backup = f"pre_restore_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.db"
+        shutil.copy2(DB_PATH, os.path.join(BACKUP_DIR, current_backup))
         
         # Restore the backup
         shutil.copy2(backup_path, DB_PATH)
         
-        logger.info(f"Database restored by user {current_user['email']} from: {req.filename}")
+        logger.info(f"Database restored by user {current_user['email']} from backup: {req.filename}")
         
         return {"message": "Database restored successfully"}
     except HTTPException:
