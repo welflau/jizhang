@@ -1,0 +1,9 @@
+# asset_manifest.yaml — Implement budget CRUD API endpoints
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: placeholder
+    type: icon
+    description: 待补充
+    source_hint: iconify
+    status: pending
