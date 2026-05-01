@@ -1,5 +1,9 @@
 # 部署文档 - Initialize FastAPI project structure and core configuration
 
+## 本地预览
+
+- 预览地址: http://localhost:9066
+
 ## 部署步骤
 
 1. 构建镜像: `docker build -t app .`
