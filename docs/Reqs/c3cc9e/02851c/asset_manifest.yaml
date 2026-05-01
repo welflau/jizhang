@@ -1,11 +1,9 @@
 # asset_manifest.yaml — Setup API router structure and auto-generate Swagger docs
-# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: asset_001
+  - id: placeholder
     type: icon
-    description: icon: 待补充
-    status: pending  # 待美术Agent确认来源和规格
-  - id: asset_002
-    type: illustration
-    description: illustration: 空状态图（400x300）
-    status: pending  # 待美术Agent确认来源和规格
+    description: 待补充
+    source_hint: iconify
+    status: pending
