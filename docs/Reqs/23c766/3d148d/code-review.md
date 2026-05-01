@@ -12,11 +12,6 @@
 无
 
 ## 审查的代码
-- backend/app/api/v1/endpoints/data_management.py
-- backend/app/schemas/data_management.py
-- backend/app/services/data_management.py
-- tests/integration/test_data_management_flow.py
-- frontend/components/DataManagement.js
+- backend/startup_test.sh
 - backend/main.py
-- frontend/index.html
 - docs/Reqs/23c766/3d148d/dev-notes.md
