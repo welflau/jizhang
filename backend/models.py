@@ -1,140 +1,179 @@
+"""SQLAlchemy ORM models for core database tables.
+
+Defines User, Category, Transaction, and PaymentMethod models with proper
+relationships and constraints.
+"""
+
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Index
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Numeric,
+    DateTime,
+    ForeignKey,
+    Enum as SQLEnum,
+    Text,
+)
+from sqlalchemy.orm import declarative_base, relationship
+import enum
 
-db = SQLAlchemy()
+Base = declarative_base()
 
 
-class User(db.Model):
-    __tablename__ = 'users'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+class CategoryType(str, enum.Enum):
+    """Category type enumeration."""
+
+    INCOME = "income"
+    EXPENSE = "expense"
+
+
+class PaymentMethodType(str, enum.Enum):
+    """Payment method type enumeration."""
+
+    CASH = "cash"
+    CREDIT_CARD = "credit_card"
+    DEBIT_CARD = "debit_card"
+    BANK_TRANSFER = "bank_transfer"
+    E_WALLET = "e_wallet"
+    OTHER = "other"
+
+
+class User(Base):
+    """User account model.
+
+    Attributes:
+        id: Primary key
+        username: Unique username (3-30 chars)
+        email: Unique email address
+        password_hash: Hashed password (never store plaintext)
+        created_at: Account creation timestamp
+        updated_at: Last update timestamp
+    """
+
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(30), unique=True, nullable=False, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(
+        DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
     # Relationships
-    categories = db.relationship('Category', backref='user', lazy=True, cascade='all, delete-orphan')
-    transactions = db.relationship('Transaction', backref='user', lazy=True, cascade='all, delete-orphan')
-    budgets = db.relationship('Budget', backref='user', lazy=True, cascade='all, delete-orphan')
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'username': self.username,
-            'email': self.email,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None
-        }
+    categories = relationship(
+        "Category", back_populates="user", cascade="all, delete-orphan"
+    )
+    transactions = relationship(
+        "Transaction", back_populates="user", cascade="all, delete-orphan"
+    )
+    payment_methods = relationship(
+        "PaymentMethod", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+        return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
 
 
-class Category(db.Model):
-    __tablename__ = 'categories'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    type = db.Column(db.String(20), nullable=False)  # 'income' or 'expense'
-    icon = db.Column(db.String(50), nullable=True)
-    color = db.Column(db.String(20), nullable=True)
-    is_default = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+class Category(Base):
+    """Transaction category model.
+
+    Attributes:
+        id: Primary key
+        user_id: Foreign key to users table
+        name: Category name (e.g., 'Salary', 'Food', 'Transport')
+        type: CategoryType enum (income/expense)
+        icon: Icon identifier (e.g., 'icon-food', 'icon-salary')
+        color: Hex color code (e.g., '#FF5733')
+        created_at: Creation timestamp
+    """
+
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    name = Column(String(50), nullable=False)
+    type = Column(SQLEnum(CategoryType), nullable=False, index=True)
+    icon = Column(String(50), nullable=True)
+    color = Column(String(7), nullable=True)  # Hex color: #RRGGBB
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
     # Relationships
-    transactions = db.relationship('Transaction', backref='category', lazy=True)
-    budgets = db.relationship('Budget', backref='category', lazy=True)
-    
-    # Indexes for query optimization
-    __table_args__ = (
-        Index('idx_category_user_id', 'user_id'),
-        Index('idx_category_type', 'type'),
-        Index('idx_category_user_type', 'user_id', 'type'),
-        Index('idx_category_is_default', 'is_default'),
+    user = relationship("User", back_populates="categories")
+    transactions = relationship(
+        "Transaction", back_populates="category", cascade="all, delete-orphan"
     )
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'name': self.name,
-            'type': self.type,
-            'icon': self.icon,
-            'color': self.color,
-            'is_default': self.is_default,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None
-        }
+
+    def __repr__(self):
+        return f"<Category(id={self.id}, name='{self.name}', type='{self.type.value}')>"
 
 
-class Transaction(db.Model):
-    __tablename__ = 'transactions'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
-    amount = db.Column(db.Numeric(10, 2), nullable=False)
-    type = db.Column(db.String(20), nullable=False)  # 'income' or 'expense'
-    description = db.Column(db.Text, nullable=True)
-    transaction_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Indexes for query optimization
-    __table_args__ = (
-        Index('idx_transaction_user_id', 'user_id'),
-        Index('idx_transaction_category_id', 'category_id'),
-        Index('idx_transaction_date', 'transaction_date'),
-        Index('idx_transaction_user_date', 'user_id', 'transaction_date'),
-        Index('idx_transaction_type', 'type'),
+class PaymentMethod(Base):
+    """Payment method model.
+
+    Attributes:
+        id: Primary key
+        user_id: Foreign key to users table
+        name: Payment method name (e.g., 'My Visa Card', 'Cash Wallet')
+        type: PaymentMethodType enum
+        created_at: Creation timestamp
+    """
+
+    __tablename__ = "payment_methods"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    name = Column(String(100), nullable=False)
+    type = Column(SQLEnum(PaymentMethodType), nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="payment_methods")
+    transactions = relationship("Transaction", back_populates="payment_method")
+
+    def __repr__(self):
+        return f"<PaymentMethod(id={self.id}, name='{self.name}', type='{self.type.value}')>"
+
+
+class Transaction(Base):
+    """Financial transaction model.
+
+    Attributes:
+        id: Primary key
+        user_id: Foreign key to users table
+        category_id: Foreign key to categories table
+        payment_method_id: Foreign key to payment_methods table (nullable)
+        amount: Transaction amount (Decimal for precision)
+        date: Transaction date
+        description: Optional transaction description
+        created_at: Record creation timestamp
+        updated_at: Last update timestamp
+    """
+
+    __tablename__ = "transactions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    category_id = Column(
+        Integer, ForeignKey("categories.id", ondelete="RESTRICT"), nullable=False, index=True
     )
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'category_id': self.category_id,
-            'amount': float(self.amount),
-            'type': self.type,
-            'description': self.description,
-            'transaction_date': self.transaction_date.isoformat() if self.transaction_date else None,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None
-        }
-
-
-class Budget(db.Model):
-    __tablename__ = 'budgets'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
-    amount = db.Column(db.Numeric(10, 2), nullable=False)
-    period = db.Column(db.String(20), nullable=False)  # 'monthly', 'yearly', etc.
-    start_date = db.Column(db.DateTime, nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Indexes for query optimization
-    __table_args__ = (
-        Index('idx_budget_user_id', 'user_id'),
-        Index('idx_budget_category_id', 'category_id'),
-        Index('idx_budget_period', 'period'),
-        Index('idx_budget_dates', 'start_date', 'end_date'),
+    payment_method_id = Column(
+        Integer, ForeignKey("payment_methods.id", ondelete="SET NULL"), nullable=True, index=True
     )
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'category_id': self.category_id,
-            'amount': float(self.amount),
-            'period': self.period,
-            'start_date': self.start_date.isoformat() if self.start_date else None,
-            'end_date': self.end_date.isoformat() if self.end_date else None,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None
-        }
+    amount = Column(Numeric(15, 2), nullable=False)  # Precision: 15 digits, 2 decimals
+    date = Column(DateTime, nullable=False, index=True, default=datetime.utcnow)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(
+        DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    # Relationships
+    user = relationship("User", back_populates="transactions")
+    category = relationship("Category", back_populates="transactions")
+    payment_method = relationship("PaymentMethod", back_populates="transactions")
+
+    def __repr__(self):
+        return f"<Transaction(id={self.id}, amount={self.amount}, date='{self.date}', category_id={self.category_id})>"
