@@ -1,5 +1,7 @@
 import os
 import logging
+import json
+import shutil
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -7,6 +9,7 @@ import jwt
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, EmailStr
 import aiosqlite
 import bcrypt
@@ -21,6 +24,7 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
 DB_PATH = os.getenv("DB_PATH", "app.db")
 PORT = int(os.getenv("PORT", "8080"))
+BACKUP_DIR = os.getenv("BACKUP_DIR", "backups")
 
 app = FastAPI(title="User Auth API")
 
@@ -75,6 +79,16 @@ class MessageResponse(BaseModel):
     message: str
 
 
+class BackupResponse(BaseModel):
+    filename: str
+    created_at: str
+    size: int
+
+
+class RestoreRequest(BaseModel):
+    filename: str
+
+
 # Database dependency
 async def get_db():
     async with aiosqlite.connect(DB_PATH) as db:
@@ -112,6 +126,8 @@ async def init_db():
 @app.on_event("startup")
 async def startup_event():
     await init_db()
+    # Create backup directory if it doesn't exist
+    os.makedirs(BACKUP_DIR, exist_ok=True)
 
 
 # Utility functions
@@ -300,6 +316,141 @@ async def confirm_password_reset(req: ConfirmResetRequest, db = Depends(get_db))
     
     logger.info(f"Password reset confirmed for user_id: {reset_record['user_id']}")
     return {"message": "Password reset successfully"}
+
+
+# Backup and Restore endpoints
+@app.post("/api/backup/create", response_model=BackupResponse)
+async def create_backup(current_user = Depends(get_current_user)):
+    """Create a backup of the database"""
+    try:
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        filename = f"backup_{timestamp}.db"
+        backup_path = os.path.join(BACKUP_DIR, filename)
+        
+        # Copy database file
+        shutil.copy2(DB_PATH, backup_path)
+        
+        # Get file size
+        file_size = os.path.getsize(backup_path)
+        
+        logger.info(f"Backup created by user {current_user['email']}: {filename}")
+        
+        return {
+            "filename": filename,
+            "created_at": datetime.utcnow().isoformat(),
+            "size": file_size
+        }
+    except Exception as e:
+        logger.error(f"Backup creation failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Backup creation failed")
+
+
+@app.get("/api/backup/list", response_model=list[BackupResponse])
+async def list_backups(current_user = Depends(get_current_user)):
+    """List all available backups"""
+    try:
+        backups = []
+        if os.path.exists(BACKUP_DIR):
+            for filename in os.listdir(BACKUP_DIR):
+                if filename.endswith(".db"):
+                    filepath = os.path.join(BACKUP_DIR, filename)
+                    stat = os.stat(filepath)
+                    backups.append({
+                        "filename": filename,
+                        "created_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                        "size": stat.st_size
+                    })
+        
+        # Sort by creation time, newest first
+        backups.sort(key=lambda x: x["created_at"], reverse=True)
+        return backups
+    except Exception as e:
+        logger.error(f"Failed to list backups: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to list backups")
+
+
+@app.post("/api/backup/restore", response_model=MessageResponse)
+async def restore_backup(req: RestoreRequest, current_user = Depends(get_current_user)):
+    """Restore database from a backup"""
+    try:
+        backup_path = os.path.join(BACKUP_DIR, req.filename)
+        
+        # Validate backup file exists
+        if not os.path.exists(backup_path):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Backup file not found")
+        
+        # Validate filename to prevent path traversal
+        if ".." in req.filename or "/" in req.filename or "\\" in req.filename:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
+        
+        # Create a backup of current database before restoring
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        pre_restore_backup = os.path.join(BACKUP_DIR, f"pre_restore_{timestamp}.db")
+        shutil.copy2(DB_PATH, pre_restore_backup)
+        
+        # Restore the backup
+        shutil.copy2(backup_path, DB_PATH)
+        
+        logger.info(f"Database restored by user {current_user['email']} from: {req.filename}")
+        
+        return {"message": "Database restored successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Restore failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Restore failed")
+
+
+@app.get("/api/backup/download/{filename}")
+async def download_backup(filename: str, current_user = Depends(get_current_user)):
+    """Download a backup file"""
+    try:
+        # Validate filename to prevent path traversal
+        if ".." in filename or "/" in filename or "\\" in filename:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
+        
+        backup_path = os.path.join(BACKUP_DIR, filename)
+        
+        if not os.path.exists(backup_path):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Backup file not found")
+        
+        logger.info(f"Backup downloaded by user {current_user['email']}: {filename}")
+        
+        return FileResponse(
+            path=backup_path,
+            filename=filename,
+            media_type="application/octet-stream"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Download failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Download failed")
+
+
+@app.delete("/api/backup/delete/{filename}", response_model=MessageResponse)
+async def delete_backup(filename: str, current_user = Depends(get_current_user)):
+    """Delete a backup file"""
+    try:
+        # Validate filename to prevent path traversal
+        if ".." in filename or "/" in filename or "\\" in filename:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
+        
+        backup_path = os.path.join(BACKUP_DIR, filename)
+        
+        if not os.path.exists(backup_path):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Backup file not found")
+        
+        os.remove(backup_path)
+        
+        logger.info(f"Backup deleted by user {current_user['email']}: {filename}")
+        
+        return {"message": "Backup deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Delete failed")
 
 
 # Global exception handler
