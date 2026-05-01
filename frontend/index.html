@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --error: #d93025;
+            --success: #1e8e3e;
+            --border: #dadce0;
+            --bg-light: #f8f9fa;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        input.error {
+            border-color: var(--error);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        button:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .link-button {
+            background: none;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 0;
+            margin-top: 16px;
+            text-align: center;
+            display: block;
+        }
+
+        .link-button:hover {
+            text-decoration: underline;
+            background: none;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .user-info {
+            text-align: center;
+        }
+
+        .user-info h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .user-info p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert.error {
+            background: #fce8e6;
+            color: var(--error);
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.success {
+            background: #e6f4ea;
+            color: var(--success);
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const API_BASE = 'http://localhost:8080';
+
+        function App() {
+            const [view, setView] = useState('login'); // 'login', 'register', 'reset', 'dashboard'
+            const [token, setToken] = useState(localStorage.getItem('auth_token'));
+            const [user, setUser] = useState(null);
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState('');
+
+            useEffect(() => {
+                if (token) {
+                    fetchUserInfo();
+                }
+            }, [token]);
+
+            const fetchUserInfo = async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUser(data);
+                        setView('dashboard');
+                    } else {
+                        localStorage.removeItem('auth_token');
+                        setToken(null);
+                    }
+                } catch (err) {
+                    console.error('Failed to fetch user info:', err);
+                    localStorage.removeItem('auth_token');
+                    setToken(null);
+                }
+            };
+
+            const handleLogout = async () => {
+                try {
+                    await fetch(`${API_BASE}/api/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                } catch (err) {
+                    console.error('Logout error:', err);
+                }
+                localStorage.removeItem('auth_token');
+                setToken(null);
+                setUser(null);
+                setView('login');
+            };
+
+            if (view === 'dashboard' && user) {
+                return (
+                    <div className="container">
+                        <div className="user-info">
+                            <h2>Welcome!</h2>
+                            <p><strong>Email:</strong> {user.email}</p>
+                            {user.phone && <p><strong>Phone:</strong> {user.phone}</p>}
+                            <p><strong>Member since:</strong> {new Date(user.created_at).toLocaleDateString()}</p>
+                            <button onClick={handleLogout} style={{marginTop: '20px'}}>Logout</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="container">
+                    <div className="logo">
+                        <h1>🔐 Auth System</h1>
+                    </div>
+
+                    {view === 'reset' ? (
+                        <ResetPasswordForm 
+                            setView={setView} 
+                            setError={setError}
+                            setSuccess={setSuccess}
+                            error={error}
+                            success={success}
+                        />
+                    ) : (
+                        <>
+                            <div className="tabs">
+                                <button 
+                                    className={`tab ${view === 'login' ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setView('login');
+                                        setError('');
+                                        setSuccess('');
+                                    }}
+                                >
+                                    Login
+                                </button>
+                                <button 
+                                    className={`tab ${view === 'register' ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setView('register');
+                                        setError('');
+                                        setSuccess('');
+                                    }}
+                                >
+                                    Register
+                                </button>
+                            </div>
+
+                            {view === 'login' ? (
+                                <LoginForm 
+                                    setToken={setToken} 
+                                    setView={setView}
+                                    setError={setError}
+                                    error={error}
+                                />
+                            ) : (
+                                <RegisterForm 
+                                    setToken={setToken}
+                                    setView={setView}
+                                    setError={setError}
+                                    error={error}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+            );
+        }
+
+        function LoginForm({ setToken, setView, setError, error }) {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [rememberMe, setRememberMe] = useState(false);
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password, remember_me: rememberMe })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('auth_token', data.access_token);
+                        setToken(data.access_token);
+                    } else {
+                        setError(data.detail || 'Login failed');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <form onSubmit={handleSubmit}>
+                    {error && <div className="alert error">{error}</div>}
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="checkbox-group">
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                        />
+                        <label htmlFor="remember">Remember me</label>
+                    </div>
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
+
+                    <button 
+                        type="button" 
+                        className="link-button"
+                        onClick={() => setView('reset')}
+                    >
+                        Forgot password?
+                    </button>
+                </form>
+            );
+        }
+
+        function RegisterForm({ setToken, setView, setError, error }) {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [phone, setPhone] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+
+                if (password.length < 8) {
+                    setError('Password must be at least 8 characters');
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            email, 
+                            password, 
+                            phone: phone || null 
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('auth_token', data.access_token);
+                        setToken(data.access_token);
+                    } else {
+                        setError(data.detail || 'Registration failed');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <form onSubmit={handleSubmit}>
+                    {error && <div className="alert error">{error}</div>}
+                    
+                    <div className="form-group">
+                        <label htmlFor="reg-email">Email</label>
+                        <input
+                            type="email"
+                            id="reg-email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="reg-phone">Phone (optional)</label>
+                        <input
+                            type="tel"
+                            id="reg-phone"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+1234567890"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="reg-password">Password</label>
+                        <input
+                            type="password"
+                            id="reg-password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            minLength="8"
+                        />
+                        <div className="success-message">Minimum 8 characters</div>
+                    </div>
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Creating account...' : 'Register'}
+                    </button>
+                </form>
+            );
+        }
+
+        function ResetPasswordForm({ setView, setError, setSuccess, error, success }) {
+            const [step, setStep] = useState(1); // 1: request, 2: confirm
+            const [email, setEmail] = useState('');
+            const [token, setToken] = useState('');
+            const [newPassword, setNewPassword] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            const handleRequestReset = async (e) => {
+                e.preventDefault();
+                setError('');
+                setSuccess('');
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/reset-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setSuccess(data.message);
+                        setStep(2);
+                    } else {
+                        setError(data.detail || 'Request failed');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const handleConfirmReset = async (e) => {
+                e.preventDefault();
+                setError('');
+                setSuccess('');
+
+                if (newPassword.length < 8) {
+                    setError('Password must be at least 8 characters');
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/reset-password/confirm`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ token, new_password: newPassword })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setSuccess('Password reset successfully! Redirecting to login...');
+                        setTimeout(() => setView('login'), 2000);
+                    } else {
+                        setError(data.detail || 'Reset failed');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div>
+                    <h2 style={{marginBottom: '20px', textAlign: 'center'}}>Reset Password</h2>
+                    
+                    {error && <div className="alert error">{error}</div>}
+                    {success && <div className="alert success">{success}</div>}
+
+                    {step === 1 ? (
+                        <form onSubmit={handleRequestReset}>
+                            <div className="form-group">
+                                <label htmlFor="reset-email">Email</label>
+                                <input
+                                    type="email"
+                                    id="reset-email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <button type="submit" disabled={loading}>
+                                {loading ? 'Sending...' : 'Send Reset Link'}
+                            </button>
+                        </form>
+                    ) : (
+                        <form onSubmit={handleConfirmReset}>
+                            <div className="form-group">
+                                <label htmlFor="reset-token">Reset Token</label>
+                                <input
+                                    type="text"
+                                    id="reset-token"
+                                    value={token}
+                                    onChange={(e) => setToken(e.target.value)}
+                                    required
+                                    placeholder="Check server logs for token"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="new-password">New Password</label>
+                                <input
+                                    type="password"
+                                    id="new-password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    required
+                                    minLength="8"
+                                />
+                            </div>
+                            <button type="submit" disabled={loading}>
+                                {loading ? 'Resetting...' : 'Reset Password'}
+                            </button>
+                        </form>
+                    )}
+
+                    <button 
+                        type="button" 
+                        className="link-button"
+                        onClick={() => setView('login')}
+                    >
+                        Back to Login
+                    </button>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
