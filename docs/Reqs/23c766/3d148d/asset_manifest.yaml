@@ -2,8 +2,58 @@
 # 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
 # status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
 assets:
-  - id: placeholder
+  - id: asset_001
     type: icon
-    description: 待补充
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_002
+    type: icon
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_003
+    type: icon
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_004
+    type: icon
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_005
+    type: icon
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_006
+    type: icon
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_007
+    type: icon
+    description: ### type: icon
+    source_hint: iconify
+    status: pending
+  - id: asset_008
+    type: icon
+    description: ### type: illustration
+    source_hint: iconify
+    status: pending
+  - id: asset_009
+    type: icon
+    description: ### type: font
+    source_hint: iconify
+    status: pending
+  - id: asset_010
+    type: icon
+    description: ### type: animation
+    source_hint: iconify
+    status: pending
+  - id: asset_011
+    type: icon
+    description: ### type: animation
     source_hint: iconify
     status: pending
