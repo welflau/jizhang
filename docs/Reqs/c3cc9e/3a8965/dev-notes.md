@@ -1,218 +1,157 @@
 # 开发笔记 — Initialize FastAPI project structure and core configuration
 
-> 2026-05-02 00:59 | LLM
+> 2026-05-02 01:06 | LLM
 
 ## 产出文件
-- [app/__init__.py](/app#repo?file=app/__init__.py) (0 chars)
-- [app/main.py](/app#repo?file=app/main.py) (1273 chars)
-- [app/core/__init__.py](/app#repo?file=app/core/__init__.py) (0 chars)
-- [app/core/config.py](/app#repo?file=app/core/config.py) (1424 chars)
-- [app/core/logger.py](/app#repo?file=app/core/logger.py) (1490 chars)
-- [app/api/__init__.py](/app#repo?file=app/api/__init__.py) (0 chars)
-- [app/api/health.py](/app#repo?file=app/api/health.py) (696 chars)
-- [app/models/__init__.py](/app#repo?file=app/models/__init__.py) (0 chars)
-- [app/schemas/__init__.py](/app#repo?file=app/schemas/__init__.py) (0 chars)
-- [app/services/__init__.py](/app#repo?file=app/services/__init__.py) (0 chars)
-- [app/utils/__init__.py](/app#repo?file=app/utils/__init__.py) (0 chars)
-- [.env.example](/app#repo?file=.env.example) (345 chars)
-- [.gitignore](/app#repo?file=.gitignore) (554 chars)
-- [requirements.txt](/app#repo?file=requirements.txt) (137 chars)
-- [README.md](/app#repo?file=README.md) (2306 chars)
+- [backend/app/core/logger.py](/app#repo?file=backend/app/core/logger.py) (3180 chars)
+- [backend/.env.example](/app#repo?file=backend/.env.example) (1120 chars)
+- [backend/logs/.gitkeep](/app#repo?file=backend/logs/.gitkeep) (105 chars)
+- [tests/test_config.py](/app#repo?file=tests/test_config.py) (2860 chars)
+- [tests/test_logger.py](/app#repo?file=tests/test_logger.py) (4309 chars)
+- [tests/__init__.py](/app#repo?file=tests/__init__.py) (648 chars)
+- [backend/app/main.py](/app#repo?file=backend/app/main.py) (1274 chars)
 
-## 自测: 自测 4/6 通过 ⚠️
+## 自测: 自测 6/6 通过 ✅
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
-| 文件产出 | ✅ | 15 个文件 |
-| 入口文件 | ❌ | 缺少 |
-| 代码非空 | ❌ | 存在空文件 |
+| 文件产出 | ✅ | 7 个文件 |
+| 入口文件 | ✅ | 存在 |
+| 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |
-| 磁盘落地 | ✅ | 15 个文件已落盘 |
+| 磁盘落地 | ✅ | 7 个文件已落盘 |
 
 ## 代码变更 (Diff)
 
-### app/__init__.py (新建, 0 chars)
+### backend/app/core/logger.py (新建, 3180 chars)
 ```
-+ 
-```
-
-### app/main.py (新建, 1273 chars)
-```
-+ """FastAPI application entry point."""
-+ import os
-+ import logging
-+ from contextlib import asynccontextmanager
-+ from fastapi import FastAPI
-+ from fastapi.middleware.cors import CORSMiddleware
-+ from app.core.config import settings
-+ from app.core.logger import setup_logging
-+ from app.api import health
-+ 
-+ 
-+ @asynccontextmanager
-+ async def lifespan(app: FastAPI):
-+     """Application lifespan manager."""
-+     # Startup
-+     setup_logging()
-+     logger = logging.getLogger(__name__)
-+     logger.info("Application starting up...")
-+     logger.info(f"Environment: {settings.ENVIRONMENT}")
-+     logger.info(f"Debug mode: {settings.DEBUG}")
-+ ... (更多)
-```
-
-### app/core/__init__.py (新建, 0 chars)
-```
-+ 
-```
-
-### app/core/config.py (新建, 1424 chars)
-```
-+ """Application configuration management."""
-+ import os
-+ from typing import List
-+ from pydantic_settings import BaseSettings
-+ from pydantic import Field
-+ 
-+ 
-+ class Settings(BaseSettings):
-+     """Application settings loaded from environment variables."""
-+     
-+     # Basic
-+     PROJECT_NAME: str = Field(default="FastAPI Project", description="Project name")
-+     VERSION: str = Field(default="0.1.0", description="API version")
-+     ENVIRONMENT: str = Field(default="development", description="Environment: development/production")
-+     DEBUG: bool = Field(default=True, description="Debug mode")
-+     
-+     # Server
-+     PORT: int = Field(default=8080, description="Server port")
-+     HOST: str = Field(default="0.0.0.0", description="Server host")
-+     
-+ ... (更多)
-```
-
-### app/core/logger.py (新建, 1490 chars)
-```
-+ """Logging configuration."""
-+ import os
 + import logging
 + import sys
 + from pathlib import Path
++ from typing import Optional
++ from loguru import logger
 + from app.core.config import settings
 + 
 + 
-+ def setup_logging() -> None:
-+     """Configure application logging.
-+     
-+     Logs to console by default.
-+     Logs to file if LOG_TO_FILE is True.
++ class InterceptHandler(logging.Handler):
 +     """
-+     log_level = getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO)
-+     
-+     # Create formatter
-+     formatter = logging.Formatter(
-+         fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-+         datefmt="%Y-%m-%d %H:%M:%S"
++     拦截标准 logging 日志并重定向到 loguru
++     """
++     def emit(self, record: logging.LogRecord) -> None:
++         try:
++             level = logger.level(record.levelname).name
++         except ValueError:
++             level = record.levelno
++ 
++         frame, depth = logging.currentframe(), 2
++         while frame.f_code.co_filename == logging.__file__:
 + ... (更多)
 ```
 
-### app/api/__init__.py (新建, 0 chars)
+### backend/.env.example (新建, 1120 chars)
 ```
++ # Application Settings
++ APP_NAME=FastAPI Application
++ APP_VERSION=1.0.0
++ APP_ENV=development
++ DEBUG=True
 + 
++ # Server Configuration
++ HOST=0.0.0.0
++ PORT=8000
++ 
++ # CORS Settings
++ CORS_ORIGINS=http://localhost:3000,http://localhost:8080
++ CORS_CREDENTIALS=True
++ CORS_METHODS=*
++ CORS_HEADERS=*
++ 
++ # Database Configuration
++ DATABASE_URL=postgresql://user:password@localhost:5432/dbname
++ DATABASE_ECHO=False
++ 
++ ... (更多)
 ```
 
-### app/api/health.py (新建, 696 chars)
+### backend/logs/.gitkeep (新建, 105 chars)
 ```
-+ """Health check endpoints."""
-+ import logging
-+ from fastapi import APIRouter
-+ from pydantic import BaseModel
++ This file is intentionally empty to ensure the logs directory is tracked by Git while ignoring log files.
+```
+
+### tests/test_config.py (新建, 2860 chars)
+```
++ tests/test_config.py
++ 
++ import os
++ import pytest
 + from app.core.config import settings
 + 
-+ logger = logging.getLogger(__name__)
-+ router = APIRouter()
++ 
++ def test_settings_loaded():
++     """测试配置是否正确加载"""
++     assert settings is not None
++     assert settings.PROJECT_NAME is not None
++     assert settings.VERSION is not None
 + 
 + 
-+ class HealthResponse(BaseModel):
-+     """Health check response schema."""
-+     status: str
-+     environment: str
-+     version: str
++ def test_project_name():
++     """测试项目名称"""
++     assert settings.PROJECT_NAME == "FastAPI Project"
 + 
 + 
-+ @router.get("/health", response_model=HealthResponse)
-+ async def health_check():
-+     """Health check endpoint.
++ def test_version():
 + ... (更多)
 ```
 
-### app/models/__init__.py (新建, 0 chars)
+### tests/test_logger.py (新建, 4309 chars)
 ```
++ tests/test_logger.py
 + 
-```
-
-### app/schemas/__init__.py (新建, 0 chars)
-```
++ import logging
++ import os
++ import sys
++ from pathlib import Path
 + 
-```
-
-### app/services/__init__.py (新建, 0 chars)
-```
++ # Add parent directory to path to import app modules
++ sys.path.insert(0, str(Path(__file__).parent.parent))
 + 
-```
-
-### app/utils/__init__.py (新建, 0 chars)
-```
++ from app.core.logger import setup_logger, get_logger
 + 
-```
-
-### .env.example (新建, 345 chars)
-```
-+ # Application Configuration
-+ PROJECT_NAME=FastAPI Project
-+ VERSION=0.1.0
-+ ENVIRONMENT=development
-+ DEBUG=true
 + 
-+ # Server
-+ PORT=8080
-+ HOST=0.0.0.0
++ def test_logger_creation():
++     """Test logger creation and basic functionality"""
++     logger = get_logger(__name__)
++     assert logger is not None
++     assert isinstance(logger, logging.Logger)
++     print("✓ Logger creation test passed")
 + 
-+ # CORS (comma-separated)
-+ ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
-+ 
-+ # Logging
-+ LOG_LEVEL=INFO
-+ LOG_FILE=logs/app.log
-+ LOG_TO_FILE=false
-+ 
-+ # Database
-+ DATABASE_URL=sqlite+aiosqlite:///./app.db
 + ... (更多)
 ```
 
-### .gitignore (新建, 554 chars)
+### tests/__init__.py (新建, 648 chars)
 ```
-+ # Python
-+ __pycache__/
-+ *.py[cod]
-+ *$py.class
-+ *.so
-+ .Python
-+ build/
-+ develop-eggs/
-+ dist/
-+ downloads/
-+ eggs/
-+ .eggs/
-+ lib/
-+ lib64/
-+ parts/
-+ sdist/
-+ var/
-+ wheels/
-+ pip-wheel-metadata/
-+ share/python-wheels/
++ """
++ Tests package initialization.
++ 
++ This module initializes the tests package and provides common test utilities,
++ fixtures, and configurations for the FastAPI application test suite.
++ """
++ 
++ import os
++ import sys
++ from pathlib import Path
++ 
++ # Add the project root directory to Python path
++ project_root = Path(__file__).parent.parent
++ sys.path.insert(0, str(project_root))
++ 
++ # Test configuration
++ TEST_ENV = "testing"
++ os.environ["ENVIRONMENT"] = TEST_ENV
++ 
++ # Common test constants
 + ... (更多)
 ```
+
+### backend/app/main.py (无变化)
