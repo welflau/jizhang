@@ -1,0 +1,119 @@
+# asset_manifest.yaml — Implement JWT authentication middleware
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI Assets: None Required
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: Rationale**: This is a backend authentication middleware module with no user-facing interface. All i
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: ## Documentation Assets (Optional, for Developer Portal)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: If creating API documentation UI (e.g., Swagger/ReDoc), the following assets may be needed:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: ### Icons
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: icon**: lock-closed (authentication endpoint indicator, 20px, outline style)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: icon**: key (JWT token representation, 20px, outline style)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: icon**: shield-check (security feature badge, 24px, solid style)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: icon**: refresh (token refresh action, 20px, outline style)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: icon**: alert-circle (error state indicator, 20px, outline style)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: ### Diagrams
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: diagram**: jwt-flow (sequence diagram showing token generation → validation → refresh, 800x600, SVG 
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: diagram**: password-hash-flow (flowchart showing bcrypt hashing process, 600x400, SVG format)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: ### Code Examples (Syntax-Highlighted Blocks)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: code-snippet**: token-generation-example (Python code showing create_access_token() usage, 600px wid
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: code-snippet**: protected-route-example (FastAPI route with get_current_user dependency, 600px width
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: code-snippet**: password-hash-example (Python code showing hash_password() and verify_password() usa
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: ### Status Badges
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: badge**: security-level-high (green badge with shield icon, 120x30)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: badge**: bcrypt-enabled (blue badge, 100x30)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: badge**: jwt-compliant (blue badge, 100x30)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: ## Error State Illustrations (If Building Admin Dashboard)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: ### Illustrations
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: illustration
+    description: illustration**: invalid-token (broken key icon with red cross, 200x200, for 401 error pages)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: illustration
+    description: illustration**: token-expired (hourglass icon, 200x200, for token expiration notices)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: illustration
+    description: illustration**: config-error (wrench with alert symbol, 200x200, for JWT_SECRET_KEY missing errors)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: ### Placeholder Images
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: photo
+    description: image**: security-banner (abstract lock/shield graphic, 1200x400, for authentication documentation h
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: Note**: If this module is purely backend with no admin UI, all assets listed above are **NOT REQUIRE
+    status: pending  # 待美术Agent确认来源和规格
