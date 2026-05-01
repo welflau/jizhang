@@ -1,0 +1,219 @@
+:root {
+    /* Primary Colors - 主色调 */
+    --color-primary: #1a1a2e;
+    --color-primary-light: #2d2d44;
+    --color-primary-dark: #0f0f1a;
+    
+    --color-secondary: #16213e;
+    --color-secondary-light: #1f2d52;
+    --color-secondary-dark: #0d1628;
+    
+    --color-accent: #0f3460;
+    --color-accent-light: #164a8a;
+    --color-accent-dark: #0a2340;
+    
+    --color-highlight: #e94560;
+    --color-highlight-light: #ff5a7a;
+    --color-highlight-dark: #d63651;
+    
+    /* Text Colors - 文字颜色 */
+    --color-text-primary: #f1f1f1;
+    --color-text-secondary: #b8b8b8;
+    --color-text-tertiary: #8a8a8a;
+    --color-text-inverse: #1a1a2e;
+    
+    /* Background Colors - 背景颜色 */
+    --color-bg-primary: #1a1a2e;
+    --color-bg-secondary: #16213e;
+    --color-bg-tertiary: #0f3460;
+    --color-bg-overlay: rgba(255, 255, 255, 0.05);
+    --color-bg-overlay-hover: rgba(255, 255, 255, 0.08);
+    --color-bg-overlay-active: rgba(255, 255, 255, 0.12);
+    
+    /* Status Colors - 状态颜色 (符合 WCAG AA 标准) */
+    --color-success: #2ecc71;
+    --color-success-light: #52d98a;
+    --color-success-dark: #27ae60;
+    --color-success-bg: rgba(46, 204, 113, 0.2);
+    
+    --color-warning: #f39c12;
+    --color-warning-light: #f5b041;
+    --color-warning-dark: #d68910;
+    --color-warning-bg: rgba(243, 156, 18, 0.2);
+    
+    --color-error: #e74c3c;
+    --color-error-light: #ec7063;
+    --color-error-dark: #c0392b;
+    --color-error-bg: rgba(231, 76, 60, 0.2);
+    
+    --color-info: #3498db;
+    --color-info-light: #5dade2;
+    --color-info-dark: #2980b9;
+    --color-info-bg: rgba(52, 152, 219, 0.2);
+    
+    /* Neutral Colors - 中性色 */
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-gray-100: #f8f9fa;
+    --color-gray-200: #e9ecef;
+    --color-gray-300: #dee2e6;
+    --color-gray-400: #ced4da;
+    --color-gray-500: #adb5bd;
+    --color-gray-600: #6c757d;
+    --color-gray-700: #495057;
+    --color-gray-800: #343a40;
+    --color-gray-900: #212529;
+    
+    /* Border Colors - 边框颜色 */
+    --color-border-light: rgba(255, 255, 255, 0.1);
+    --color-border-medium: rgba(255, 255, 255, 0.2);
+    --color-border-dark: rgba(255, 255, 255, 0.3);
+    
+    /* Shadow Colors - 阴影颜色 */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.4);
+    --shadow-highlight: 0 4px 12px rgba(233, 69, 96, 0.4);
+    --shadow-success: 0 4px 12px rgba(46, 204, 113, 0.4);
+    --shadow-error: 0 4px 12px rgba(231, 76, 60, 0.4);
+    
+    /* Category Colors - 分类颜色 (20+ 种) */
+    --color-category-analytics: #3498db;
+    --color-category-dashboard: #9b59b6;
+    --color-category-users: #1abc9c;
+    --color-category-settings: #95a5a6;
+    --color-category-reports: #e67e22;
+    --color-category-database: #34495e;
+    --color-category-api: #16a085;
+    --color-category-security: #c0392b;
+    --color-category-notifications: #f39c12;
+    --color-category-messages: #2ecc71;
+    --color-category-calendar: #e74c3c;
+    --color-category-files: #3498db;
+    --color-category-images: #9b59b6;
+    --color-category-videos: #e91e63;
+    --color-category-audio: #ff5722;
+    --color-category-documents: #607d8b;
+    --color-category-charts: #00bcd4;
+    --color-category-maps: #4caf50;
+    --color-category-social: #2196f3;
+    --color-category-commerce: #ff9800;
+    --color-category-education: #673ab7;
+    --color-category-health: #009688;
+    --color-category-finance: #8bc34a;
+    --color-category-travel: #03a9f4;
+    --color-category-food: #ff5722;
+    
+    /* Gradient Colors - 渐变色 */
+    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, var(--color-highlight) 100%);
+    --gradient-success: linear-gradient(135deg, var(--color-success-dark) 0%, var(--color-success) 100%);
+    --gradient-error: linear-gradient(135deg, var(--color-error-dark) 0%, var(--color-error) 100%);
+    --gradient-info: linear-gradient(135deg, var(--color-info-dark) 0%, var(--color-info) 100%);
+    --gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+    
+    /* Opacity Levels - 透明度级别 */
+    --opacity-disabled: 0.5;
+    --opacity-hover: 0.8;
+    --opacity-active: 0.9;
+    
+    /* Transition Durations - 过渡时长 */
+    --transition-fast: 0.15s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+    
+    /* Z-index Layers - 层级 */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+
+/* Dark Theme Adjustments - 深色主题调整 */
+[data-theme="dark"] {
+    --color-text-primary: #f1f1f1;
+    --color-text-secondary: #b8b8b8;
+    --color-bg-primary: #1a1a2e;
+    --color-bg-secondary: #16213e;
+}
+
+/* Light Theme - 浅色主题 */
+[data-theme="light"] {
+    --color-primary: #ffffff;
+    --color-secondary: #f8f9fa;
+    --color-accent: #3498db;
+    --color-highlight: #e94560;
+    
+    --color-text-primary: #212529;
+    --color-text-secondary: #495057;
+    --color-text-tertiary: #6c757d;
+    
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f8f9fa;
+    --color-bg-overlay: rgba(0, 0, 0, 0.05);
+    --color-bg-overlay-hover: rgba(0, 0, 0, 0.08);
+    
+    --color-border-light: rgba(0, 0, 0, 0.1);
+    --color-border-medium: rgba(0, 0, 0, 0.2);
+}
+
+/* High Contrast Mode - 高对比度模式 (无障碍) */
+[data-theme="high-contrast"] {
+    --color-primary: #000000;
+    --color-secondary: #ffffff;
+    --color-accent: #0066cc;
+    --color-highlight: #cc0000;
+    
+    --color-text-primary: #000000;
+    --color-text-secondary: #333333;
+    
+    --color-success: #008000;
+    --color-error: #cc0000;
+    --color-warning: #ff8800;
+    --color-info: #0066cc;
+    
+    --color-border-light: #000000;
+    --color-border-medium: #000000;
+}
+
+/* Accessibility - 无障碍辅助类 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.focus-visible:focus {
+    outline: 2px solid var(--color-highlight);
+    outline-offset: 2px;
+}
+
+/* Color Utility Classes - 颜色工具类 */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+.text-info { color: var(--color-info); }
+.text-highlight { color: var(--color-highlight); }
+
+.bg-primary { background-color: var(--color-bg-primary); }
+.bg-secondary { background-color: var(--color-bg-secondary); }
+.bg-success { background-color: var(--color-success-bg); }
+.bg-warning { background-color: var(--color-warning-bg); }
+.bg-error { background-color: var(--color-error-bg); }
+.bg-info { background-color: var(--color-info-bg); }
+
+.border-light { border-color: var(--color-border-light); }
+.border-medium { border-color: var(--color-border-medium); }
+.border-dark { border-color: var(--color-border-dark); }
