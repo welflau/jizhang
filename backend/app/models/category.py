@@ -35,7 +35,7 @@ class Category(Base):
     def __repr__(self):
         return f"<Category(id={self.id}, name='{self.name}', type='{self.type}')>"
     
-    def to_dict(self, include_transactions=False):
+    def to_dict(self, include_stats: bool = False):
         """转换为字典"""
         data = {
             "id": self.id,
@@ -51,133 +51,49 @@ class Category(Base):
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
         
-        if include_transactions:
-            data["transactions_count"] = len(self.transactions)
-            data["transactions"] = [t.to_dict() for t in self.transactions]
+        if include_stats:
+            data["transaction_count"] = len(self.transactions)
+            data["total_amount"] = sum(t.amount for t in self.transactions if t.amount)
         
         return data
     
     @classmethod
-    def get_default_categories(cls):
-        """获取默认分类列表"""
-        return [
+    def create_default_categories(cls, db_session):
+        """创建默认分类"""
+        default_categories = [
             # 收入分类
-            {
-                "name": "工资",
-                "type": TransactionType.INCOME,
-                "icon": "💰",
-                "color": "#2ecc71",
-                "description": "工资收入",
-                "is_system": True,
-                "sort_order": 1
-            },
-            {
-                "name": "奖金",
-                "type": TransactionType.INCOME,
-                "icon": "🎁",
-                "color": "#27ae60",
-                "description": "奖金收入",
-                "is_system": True,
-                "sort_order": 2
-            },
-            {
-                "name": "投资收益",
-                "type": TransactionType.INCOME,
-                "icon": "📈",
-                "color": "#16a085",
-                "description": "投资理财收益",
-                "is_system": True,
-                "sort_order": 3
-            },
-            {
-                "name": "其他收入",
-                "type": TransactionType.INCOME,
-                "icon": "💵",
-                "color": "#1abc9c",
-                "description": "其他收入",
-                "is_system": True,
-                "sort_order": 99
-            },
+            {"name": "工资", "type": TransactionType.INCOME, "icon": "💰", "color": "#2ecc71", "is_system": True, "sort_order": 1},
+            {"name": "奖金", "type": TransactionType.INCOME, "icon": "🎁", "color": "#27ae60", "is_system": True, "sort_order": 2},
+            {"name": "投资收益", "type": TransactionType.INCOME, "icon": "📈", "color": "#16a085", "is_system": True, "sort_order": 3},
+            {"name": "兼职", "type": TransactionType.INCOME, "icon": "💼", "color": "#1abc9c", "is_system": True, "sort_order": 4},
+            {"name": "其他收入", "type": TransactionType.INCOME, "icon": "💵", "color": "#3498db", "is_system": True, "sort_order": 5},
+            
             # 支出分类
-            {
-                "name": "餐饮",
-                "type": TransactionType.EXPENSE,
-                "icon": "🍔",
-                "color": "#e74c3c",
-                "description": "餐饮支出",
-                "is_system": True,
-                "sort_order": 1
-            },
-            {
-                "name": "交通",
-                "type": TransactionType.EXPENSE,
-                "icon": "🚗",
-                "color": "#c0392b",
-                "description": "交通出行",
-                "is_system": True,
-                "sort_order": 2
-            },
-            {
-                "name": "购物",
-                "type": TransactionType.EXPENSE,
-                "icon": "🛍️",
-                "color": "#e67e22",
-                "description": "购物消费",
-                "is_system": True,
-                "sort_order": 3
-            },
-            {
-                "name": "娱乐",
-                "type": TransactionType.EXPENSE,
-                "icon": "🎮",
-                "color": "#d35400",
-                "description": "娱乐休闲",
-                "is_system": True,
-                "sort_order": 4
-            },
-            {
-                "name": "医疗",
-                "type": TransactionType.EXPENSE,
-                "icon": "🏥",
-                "color": "#9b59b6",
-                "description": "医疗健康",
-                "is_system": True,
-                "sort_order": 5
-            },
-            {
-                "name": "教育",
-                "type": TransactionType.EXPENSE,
-                "icon": "📚",
-                "color": "#8e44ad",
-                "description": "教育培训",
-                "is_system": True,
-                "sort_order": 6
-            },
-            {
-                "name": "住房",
-                "type": TransactionType.EXPENSE,
-                "icon": "🏠",
-                "color": "#3498db",
-                "description": "房租房贷",
-                "is_system": True,
-                "sort_order": 7
-            },
-            {
-                "name": "通讯",
-                "type": TransactionType.EXPENSE,
-                "icon": "📱",
-                "color": "#2980b9",
-                "description": "通讯费用",
-                "is_system": True,
-                "sort_order": 8
-            },
-            {
-                "name": "其他支出",
-                "type": TransactionType.EXPENSE,
-                "icon": "💸",
-                "color": "#95a5a6",
-                "description": "其他支出",
-                "is_system": True,
-                "sort_order": 99
-            }
+            {"name": "餐饮", "type": TransactionType.EXPENSE, "icon": "🍔", "color": "#e74c3c", "is_system": True, "sort_order": 1},
+            {"name": "交通", "type": TransactionType.EXPENSE, "icon": "🚗", "color": "#c0392b", "is_system": True, "sort_order": 2},
+            {"name": "购物", "type": TransactionType.EXPENSE, "icon": "🛍️", "color": "#e67e22", "is_system": True, "sort_order": 3},
+            {"name": "娱乐", "type": TransactionType.EXPENSE, "icon": "🎮", "color": "#d35400", "is_system": True, "sort_order": 4},
+            {"name": "医疗", "type": TransactionType.EXPENSE, "icon": "🏥", "color": "#9b59b6", "is_system": True, "sort_order": 5},
+            {"name": "教育", "type": TransactionType.EXPENSE, "icon": "📚", "color": "#8e44ad", "is_system": True, "sort_order": 6},
+            {"name": "住房", "type": TransactionType.EXPENSE, "icon": "🏠", "color": "#34495e", "is_system": True, "sort_order": 7},
+            {"name": "通讯", "type": TransactionType.EXPENSE, "icon": "📱", "color": "#2c3e50", "is_system": True, "sort_order": 8},
+            {"name": "其他支出", "type": TransactionType.EXPENSE, "icon": "💸", "color": "#95a5a6", "is_system": True, "sort_order": 9},
         ]
+        
+        created_count = 0
+        for cat_data in default_categories:
+            # 检查是否已存在
+            existing = db_session.query(cls).filter_by(
+                name=cat_data["name"],
+                type=cat_data["type"]
+            ).first()
+            
+            if not existing:
+                category = cls(**cat_data)
+                db_session.add(category)
+                created_count += 1
+        
+        if created_count > 0:
+            db_session.commit()
+        
+        return created_count

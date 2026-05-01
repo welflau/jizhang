@@ -89,6 +89,24 @@ class RestoreRequest(BaseModel):
     filename: str
 
 
+class CategoryCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    description: Optional[str] = None
+
+
+class CategoryUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    description: Optional[str] = None
+
+
+class CategoryResponse(BaseModel):
+    id: int
+    name: str
+    description: Optional[str]
+    created_at: str
+    updated_at: str
+
+
 # Database dependency
 async def get_db():
     async with aiosqlite.connect(DB_PATH) as db:
@@ -117,6 +135,15 @@ async def init_db():
                 expires_at TEXT NOT NULL,
                 used BOOLEAN DEFAULT 0,
                 FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        """)
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS categories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
             )
         """)
         await db.commit()
@@ -453,13 +480,114 @@ async def delete_backup(filename: str, current_user = Depends(get_current_user))
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Delete failed")
 
 
-# Global exception handler
-@app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
-    logger.exception(f"Unhandled exception: {exc}")
-    return {"error": "Internal server error"}, 500
+# Category CRUD endpoints
+@app.post("/api/categories", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
+async def create_category(req: CategoryCreate, current_user = Depends(get_current_user), db = Depends(get_db)):
+    """Create a new category"""
+    now = datetime.utcnow().isoformat()
+    cursor = await db.execute(
+        "INSERT INTO categories (name, description, created_at, updated_at) VALUES (?, ?, ?, ?)",
+        (req.name, req.description, now, now)
+    )
+    await db.commit()
+    category_id = cursor.lastrowid
+    
+    logger.info(f"Category created by user {current_user['email']}: {req.name}")
+    
+    return {
+        "id": category_id,
+        "name": req.name,
+        "description": req.description,
+        "created_at": now,
+        "updated_at": now
+    }
+
+
+@app.get("/api/categories", response_model=list[CategoryResponse])
+async def list_categories(current_user = Depends(get_current_user), db = Depends(get_db)):
+    """List all categories"""
+    cursor = await db.execute("SELECT * FROM categories ORDER BY created_at DESC")
+    rows = await cursor.fetchall()
+    
+    return [
+        {
+            "id": row["id"],
+            "name": row["name"],
+            "description": row["description"],
+            "created_at": row["created_at"],
+            "updated_at": row["updated_at"]
+        }
+        for row in rows
+    ]
+
+
+@app.get("/api/categories/{category_id}", response_model=CategoryResponse)
+async def get_category(category_id: int, current_user = Depends(get_current_user), db = Depends(get_db)):
+    """Get a specific category by ID"""
+    cursor = await db.execute("SELECT * FROM categories WHERE id = ?", (category_id,))
+    row = await cursor.fetchone()
+    
+    if not row:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "description": row["description"],
+        "created_at": row["created_at"],
+        "updated_at": row["updated_at"]
+    }
+
+
+@app.put("/api/categories/{category_id}", response_model=CategoryResponse)
+async def update_category(category_id: int, req: CategoryUpdate, current_user = Depends(get_current_user), db = Depends(get_db)):
+    """Update a category"""
+    # Check if category exists
+    cursor = await db.execute("SELECT * FROM categories WHERE id = ?", (category_id,))
+    row = await cursor.fetchone()
+    
+    if not row:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    # Prepare update fields
+    name = req.name if req.name is not None else row["name"]
+    description = req.description if req.description is not None else row["description"]
+    now = datetime.utcnow().isoformat()
+    
+    await db.execute(
+        "UPDATE categories SET name = ?, description = ?, updated_at = ? WHERE id = ?",
+        (name, description, now, category_id)
+    )
+    await db.commit()
+    
+    logger.info(f"Category updated by user {current_user['email']}: {category_id}")
+    
+    return {
+        "id": category_id,
+        "name": name,
+        "description": description,
+        "created_at": row["created_at"],
+        "updated_at": now
+    }
+
+
+@app.delete("/api/categories/{category_id}", response_model=MessageResponse)
+async def delete_category(category_id: int, current_user = Depends(get_current_user), db = Depends(get_db)):
+    """Delete a category"""
+    cursor = await db.execute("SELECT id FROM categories WHERE id = ?", (category_id,))
+    row = await cursor.fetchone()
+    
+    if not row:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    await db.execute("DELETE FROM categories WHERE id = ?", (category_id,))
+    await db.commit()
+    
+    logger.info(f"Category deleted by user {current_user['email']}: {category_id}")
+    
+    return {"message": "Category deleted successfully"}
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
