@@ -11,14 +11,14 @@ export interface IconItem {
   id: string;
   /** 图标名称 */
   name: string;
-  /** 图标SVG内容或类名 */
+  /** 图标SVG内容或路径 */
   content: string;
   /** 图标分类 */
   category: string;
   /** 图标标签（用于搜索） */
-  tags: string[];
-  /** 图标类型 */
-  type: 'svg' | 'font' | 'image';
+  tags?: string[];
+  /** 图标关键词（用于搜索） */
+  keywords?: string[];
 }
 
 /**
@@ -34,18 +34,6 @@ export interface IconCategory {
 }
 
 /**
- * 颜色选项接口
- */
-export interface ColorOption {
-  /** 颜色值（HEX格式） */
-  value: string;
-  /** 颜色名称 */
-  label: string;
-  /** 是否为自定义颜色 */
-  isCustom?: boolean;
-}
-
-/**
  * 图标选择器配置接口
  */
 export interface IconSelectorConfig {
@@ -55,20 +43,20 @@ export interface IconSelectorConfig {
   showCategories?: boolean;
   /** 是否显示颜色选择器 */
   showColorPicker?: boolean;
-  /** 是否支持多选 */
-  multiSelect?: boolean;
-  /** 每页显示数量 */
-  pageSize?: number;
-  /** 默认选中的图标ID */
-  defaultSelectedId?: string;
   /** 默认颜色 */
   defaultColor?: string;
-  /** 预设颜色列表 */
-  presetColors?: ColorOption[];
-  /** 图标大小（像素） */
+  /** 每行显示图标数量 */
+  iconsPerRow?: number;
+  /** 图标大小 */
   iconSize?: number;
-  /** 网格列数 */
-  gridColumns?: number;
+  /** 是否允许多选 */
+  multiSelect?: boolean;
+  /** 最大选择数量（多选模式） */
+  maxSelection?: number;
+  /** 是否显示图标名称 */
+  showIconName?: boolean;
+  /** 搜索防抖延迟（毫秒） */
+  searchDebounce?: number;
 }
 
 /**
@@ -79,20 +67,18 @@ export interface IconSelectorState {
   icons: IconItem[];
   /** 过滤后的图标列表 */
   filteredIcons: IconItem[];
-  /** 当前选中的图标 */
-  selectedIcon: IconItem | null;
-  /** 选中的多个图标（多选模式） */
-  selectedIcons: IconItem[];
-  /** 当前选中的颜色 */
-  selectedColor: string;
+  /** 所有分类列表 */
+  categories: IconCategory[];
+  /** 当前选中的分类ID */
+  selectedCategory: string | null;
   /** 搜索关键词 */
   searchKeyword: string;
-  /** 当前选中的分类 */
-  selectedCategory: string | null;
-  /** 当前页码 */
-  currentPage: number;
-  /** 总页数 */
-  totalPages: number;
+  /** 当前选中的图标ID（单选） */
+  selectedIconId: string | null;
+  /** 当前选中的图标ID列表（多选） */
+  selectedIconIds: string[];
+  /** 当前选中的颜色 */
+  selectedColor: string;
   /** 是否正在加载 */
   loading: boolean;
   /** 错误信息 */
@@ -107,24 +93,8 @@ export interface IconSelectEvent {
   icon: IconItem;
   /** 选中的颜色 */
   color: string;
-  /** 事件时间戳 */
+  /** 时间戳 */
   timestamp: number;
-}
-
-/**
- * 图标搜索选项接口
- */
-export interface IconSearchOptions {
-  /** 搜索关键词 */
-  keyword: string;
-  /** 分类筛选 */
-  category?: string;
-  /** 标签筛选 */
-  tags?: string[];
-  /** 排序方式 */
-  sortBy?: 'name' | 'category' | 'recent';
-  /** 排序方向 */
-  sortOrder?: 'asc' | 'desc';
 }
 
 /**
@@ -133,26 +103,34 @@ export interface IconSearchOptions {
 export interface IconSelectorCallbacks {
   /** 图标选择回调 */
   onSelect?: (event: IconSelectEvent) => void;
+  /** 图标取消选择回调 */
+  onDeselect?: (iconId: string) => void;
   /** 颜色变化回调 */
   onColorChange?: (color: string) => void;
   /** 搜索回调 */
   onSearch?: (keyword: string) => void;
-  /** 分类变化回调 */
-  onCategoryChange?: (category: string | null) => void;
-  /** 关闭回调 */
-  onClose?: () => void;
+  /** 分类切换回调 */
+  onCategoryChange?: (categoryId: string | null) => void;
+  /** 错误回调 */
+  onError?: (error: Error) => void;
 }
 
 /**
- * 图标选择器Props接口
+ * 图标选择器属性接口
  */
 export interface IconSelectorProps {
+  /** 图标列表 */
+  icons?: IconItem[];
   /** 配置选项 */
   config?: IconSelectorConfig;
   /** 回调函数 */
   callbacks?: IconSelectorCallbacks;
-  /** 是否显示选择器 */
-  visible?: boolean;
+  /** 初始选中的图标ID */
+  initialSelectedIconId?: string;
+  /** 初始选中的图标ID列表（多选） */
+  initialSelectedIconIds?: string[];
+  /** 初始颜色 */
+  initialColor?: string;
   /** 自定义类名 */
   className?: string;
   /** 自定义样式 */
@@ -160,131 +138,157 @@ export interface IconSelectorProps {
 }
 
 /**
- * 颜色选择器Props接口
+ * 图标搜索过滤器接口
  */
-export interface ColorPickerProps {
-  /** 当前颜色值 */
-  value: string;
-  /** 颜色变化回调 */
-  onChange: (color: string) => void;
+export interface IconSearchFilter {
+  /** 搜索关键词 */
+  keyword: string;
+  /** 分类ID */
+  categoryId?: string | null;
+  /** 标签过滤 */
+  tags?: string[];
+}
+
+/**
+ * 图标渲染选项接口
+ */
+export interface IconRenderOptions {
+  /** 图标颜色 */
+  color?: string;
+  /** 图标大小 */
+  size?: number;
+  /** 是否选中状态 */
+  selected?: boolean;
+  /** 是否禁用 */
+  disabled?: boolean;
+  /** 自定义类名 */
+  className?: string;
+}
+
+/**
+ * 颜色选择器配置接口
+ */
+export interface ColorPickerConfig {
   /** 预设颜色列表 */
-  presetColors?: ColorOption[];
+  presetColors?: string[];
   /** 是否显示透明度选择 */
   showAlpha?: boolean;
   /** 是否显示颜色输入框 */
   showInput?: boolean;
-  /** 自定义类名 */
-  className?: string;
+  /** 颜色格式 */
+  format?: 'hex' | 'rgb' | 'hsl';
 }
 
 /**
- * 图标预览Props接口
+ * 图标加载器接口
  */
-export interface IconPreviewProps {
-  /** 图标项 */
-  icon: IconItem;
-  /** 图标颜色 */
-  color: string;
-  /** 图标大小 */
-  size?: number;
-  /** 是否选中 */
-  selected?: boolean;
-  /** 点击回调 */
-  onClick?: () => void;
-  /** 自定义类名 */
-  className?: string;
+export interface IconLoader {
+  /** 加载图标数据 */
+  load: () => Promise<IconItem[]>;
+  /** 加载分类数据 */
+  loadCategories?: () => Promise<IconCategory[]>;
 }
 
 /**
- * 图标网格Props接口
+ * 图标搜索结果接口
  */
-export interface IconGridProps {
-  /** 图标列表 */
+export interface IconSearchResult {
+  /** 匹配的图标列表 */
   icons: IconItem[];
-  /** 选中的图标ID */
-  selectedId?: string;
-  /** 图标颜色 */
-  color: string;
-  /** 图标大小 */
-  iconSize?: number;
-  /** 网格列数 */
-  columns?: number;
-  /** 图标点击回调 */
-  onIconClick: (icon: IconItem) => void;
-  /** 自定义类名 */
-  className?: string;
-}
-
-/**
- * 图标搜索框Props接口
- */
-export interface IconSearchProps {
+  /** 总数量 */
+  total: number;
   /** 搜索关键词 */
-  value: string;
-  /** 搜索变化回调 */
-  onChange: (value: string) => void;
-  /** 占位符文本 */
-  placeholder?: string;
-  /** 是否显示清除按钮 */
-  showClear?: boolean;
-  /** 自定义类名 */
-  className?: string;
+  keyword: string;
+  /** 搜索耗时（毫秒） */
+  duration?: number;
 }
 
 /**
- * 图标分类筛选Props接口
+ * 图标预览配置接口
  */
-export interface IconCategoryFilterProps {
-  /** 分类列表 */
-  categories: IconCategory[];
-  /** 当前选中的分类 */
-  selectedCategory: string | null;
-  /** 分类变化回调 */
-  onChange: (category: string | null) => void;
-  /** 自定义类名 */
-  className?: string;
+export interface IconPreviewConfig {
+  /** 是否显示预览 */
+  enabled?: boolean;
+  /** 预览大小 */
+  size?: number;
+  /** 预览位置 */
+  position?: 'top' | 'bottom' | 'left' | 'right';
+  /** 是否显示图标信息 */
+  showInfo?: boolean;
 }
 
 /**
- * 分页组件Props接口
+ * 图标选择器主题接口
  */
-export interface PaginationProps {
-  /** 当前页码 */
-  currentPage: number;
-  /** 总页数 */
-  totalPages: number;
-  /** 页码变化回调 */
-  onChange: (page: number) => void;
-  /** 是否显示快速跳转 */
-  showQuickJumper?: boolean;
-  /** 自定义类名 */
-  className?: string;
+export interface IconSelectorTheme {
+  /** 主色调 */
+  primary?: string;
+  /** 次要色调 */
+  secondary?: string;
+  /** 强调色 */
+  accent?: string;
+  /** 高亮色 */
+  highlight?: string;
+  /** 文本颜色 */
+  text?: string;
+  /** 背景颜色 */
+  background?: string;
+  /** 边框颜色 */
+  border?: string;
+  /** 悬停背景色 */
+  hoverBackground?: string;
+  /** 选中背景色 */
+  selectedBackground?: string;
 }
 
 /**
- * 图标加载器返回类型
+ * 默认配置常量
  */
-export interface IconLoaderResult {
-  /** 图标列表 */
-  icons: IconItem[];
-  /** 分类列表 */
-  categories: IconCategory[];
-  /** 加载是否成功 */
-  success: boolean;
-  /** 错误信息 */
-  error?: string;
-}
+export const DEFAULT_ICON_SELECTOR_CONFIG: Required<IconSelectorConfig> = {
+  showSearch: true,
+  showCategories: true,
+  showColorPicker: true,
+  defaultColor: '#e94560',
+  iconsPerRow: 6,
+  iconSize: 32,
+  multiSelect: false,
+  maxSelection: 1,
+  showIconName: true,
+  searchDebounce: 300,
+};
 
 /**
- * 图标数据源接口
+ * 默认颜色选择器配置
  */
-export interface IconDataSource {
-  /** 获取所有图标 */
-  getIcons: () => Promise<IconItem[]>;
-  /** 根据分类获取图标 */
-  getIconsByCategory: (category: string) => Promise<IconItem[]>;
-  /** 搜索图标 */
-  searchIcons: (options: IconSearchOptions) => Promise<IconItem[]>;
-  /** 获取分类列表 */
-  getCategories: () => Promise<IconCategory[]>;
-}
+export const DEFAULT_COLOR_PICKER_CONFIG: Required<ColorPickerConfig> = {
+  presetColors: [
+    '#e94560',
+    '#1a1a2e',
+    '#16213e',
+    '#0f3460',
+    '#f1f1f1',
+    '#2ecc71',
+    '#3498db',
+    '#e74c3c',
+    '#f39c12',
+    '#9b59b6',
+  ],
+  showAlpha: false,
+  showInput: true,
+  format: 'hex',
+};
+
+/**
+ * 默认主题配置
+ */
+export const DEFAULT_ICON_SELECTOR_THEME: Required<IconSelectorTheme> = {
+  primary: '#1a1a2e',
+  secondary: '#16213e',
+  accent: '#0f3460',
+  highlight: '#e94560',
+  text: '#f1f1f1',
+  background: 'rgba(255, 255, 255, 0.05)',
+  border: 'rgba(255, 255, 255, 0.1)',
+  hoverBackground: 'rgba(255, 255, 255, 0.08)',
+  selectedBackground: 'rgba(233, 69, 96, 0.2)',
+};

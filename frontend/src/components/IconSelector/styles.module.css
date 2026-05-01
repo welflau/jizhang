@@ -1,56 +1,43 @@
 .iconSelector {
     display: flex;
     flex-direction: column;
-    gap: 16px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 20px;
     backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 20px;
+    gap: 15px;
 }
 
 .title {
     font-size: 1.2em;
     font-weight: 600;
-    color: var(--text, #f1f1f1);
-}
-
-.closeButton {
-    background: transparent;
-    border: none;
-    color: var(--text, #f1f1f1);
-    font-size: 1.5em;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    line-height: 1;
-}
-
-.closeButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
+    color: var(--highlight, #e94560);
+    margin: 0;
 }
 
 .searchBox {
+    flex: 1;
+    max-width: 300px;
     position: relative;
-    width: 100%;
 }
 
 .searchInput {
     width: 100%;
-    padding: 12px 40px 12px 16px;
+    padding: 10px 15px;
+    padding-left: 40px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--text, #f1f1f1);
-    font-size: 1em;
+    font-size: 0.95em;
     transition: all 0.3s ease;
 }
 
@@ -58,7 +45,7 @@
     outline: none;
     border-color: var(--highlight, #e94560);
     background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
 }
 
 .searchInput::placeholder {
@@ -67,65 +54,57 @@
 
 .searchIcon {
     position: absolute;
-    right: 12px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: rgba(241, 241, 241, 0.5);
     pointer-events: none;
 }
 
-.colorSection {
+.colorPickerWrapper {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .colorLabel {
-    font-size: 0.95em;
-    color: rgba(241, 241, 241, 0.9);
-    font-weight: 500;
-}
-
-.colorPicker {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    font-size: 0.9em;
+    color: rgba(241, 241, 241, 0.8);
+    white-space: nowrap;
 }
 
 .colorInput {
-    width: 60px;
-    height: 40px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    width: 40px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
     background: transparent;
 }
 
-.colorInput:hover {
-    border-color: var(--highlight, #e94560);
-    transform: scale(1.05);
+.colorInput::-webkit-color-swatch-wrapper {
+    padding: 0;
 }
 
-.colorValue {
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-    color: var(--text, #f1f1f1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.colorInput::-webkit-color-swatch {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }
 
 .iconGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 12px;
+    gap: 10px;
     max-height: 400px;
     overflow-y: auto;
-    padding: 12px;
+    padding: 10px;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
+    margin-bottom: 15px;
 }
 
 .iconGrid::-webkit-scrollbar {
@@ -138,126 +117,138 @@
 }
 
 .iconGrid::-webkit-scrollbar-thumb {
-    background: rgba(233, 69, 96, 0.6);
+    background: rgba(233, 69, 96, 0.5);
     border-radius: 4px;
 }
 
 .iconGrid::-webkit-scrollbar-thumb:hover {
-    background: rgba(233, 69, 96, 0.8);
+    background: rgba(233, 69, 96, 0.7);
 }
 
 .iconItem {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 15px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid transparent;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1.8em;
+    font-size: 24px;
     aspect-ratio: 1;
 }
 
 .iconItem:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: var(--highlight, #e94560);
+    border-color: rgba(233, 69, 96, 0.5);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.3);
+    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.2);
 }
 
 .iconItem.selected {
     background: rgba(233, 69, 96, 0.2);
     border-color: var(--highlight, #e94560);
-    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.3);
+    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+}
+
+.iconItem.selected:hover {
+    transform: translateY(-2px) scale(1.05);
 }
 
 .preview {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .previewLabel {
-    font-size: 0.9em;
+    font-size: 0.95em;
     color: rgba(241, 241, 241, 0.8);
     font-weight: 500;
 }
 
 .previewIcon {
-    font-size: 4em;
-    transition: all 0.3s ease;
-}
-
-.previewIcon:hover {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.actions {
+    font-size: 48px;
     display: flex;
-    gap: 12px;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    min-width: 80px;
+    min-height: 80px;
 }
 
-.button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
+.previewInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.previewName {
+    font-size: 1.1em;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    color: var(--text, #f1f1f1);
 }
 
-.confirmButton {
-    background: var(--highlight, #e94560);
-    color: white;
-}
-
-.confirmButton:hover {
-    background: #d63651;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
-}
-
-.confirmButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.cancelButton {
-    background: var(--accent, #0f3460);
-    color: white;
-}
-
-.cancelButton:hover {
-    background: #0d2a4d;
-    transform: translateY(-2px);
+.previewColor {
+    font-size: 0.9em;
+    color: rgba(241, 241, 241, 0.7);
+    font-family: 'Courier New', monospace;
 }
 
 .emptyState {
     text-align: center;
-    padding: 40px 20px;
+    padding: 60px 20px;
+    color: rgba(241, 241, 241, 0.5);
+}
+
+.emptyIcon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+.emptyText {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.emptyHint {
+    font-size: 0.9em;
+    opacity: 0.7;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
     color: rgba(241, 241, 241, 0.6);
     font-size: 1em;
 }
 
-.emptyIcon {
-    font-size: 3em;
-    margin-bottom: 12px;
-    opacity: 0.5;
+.error {
+    padding: 15px;
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    color: #e74c3c;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
-    .iconSelector {
-        padding: 16px;
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .searchBox {
+        max-width: none;
     }
 
     .iconGrid {
@@ -268,18 +259,47 @@
 
     .iconItem {
         padding: 12px;
-        font-size: 1.5em;
+        font-size: 20px;
+    }
+
+    .preview {
+        flex-direction: column;
+        text-align: center;
     }
 
     .previewIcon {
-        font-size: 3em;
+        font-size: 40px;
+        min-width: 70px;
+        min-height: 70px;
     }
 
-    .actions {
-        flex-direction: column;
+    .colorPickerWrapper {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .iconSelector {
+        padding: 15px;
     }
 
-    .button {
-        width: 100%;
+    .title {
+        font-size: 1.1em;
+    }
+
+    .iconGrid {
+        grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+        gap: 6px;
+    }
+
+    .iconItem {
+        padding: 10px;
+        font-size: 18px;
+    }
+
+    .previewIcon {
+        font-size: 36px;
+        min-width: 60px;
+        min-height: 60px;
     }
 }

@@ -3,16 +3,12 @@ import * as Icons from 'lucide-react';
 import './IconGrid.css';
 
 interface IconGridProps {
-  selectedIcon: string;
-  onIconSelect: (iconName: string) => void;
+  onSelect: (iconName: string) => void;
+  selectedIcon?: string;
   searchQuery?: string;
 }
 
-const IconGrid: React.FC<IconGridProps> = ({
-  selectedIcon,
-  onIconSelect,
-  searchQuery = ''
-}) => {
+const IconGrid: React.FC<IconGridProps> = ({ onSelect, selectedIcon, searchQuery = '' }) => {
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
 
   // 获取所有可用的图标
@@ -40,13 +36,13 @@ const IconGrid: React.FC<IconGridProps> = ({
     }
     
     const query = searchQuery.toLowerCase();
-    return allIcons.filter(icon =>
+    return allIcons.filter(icon => 
       icon.name.toLowerCase().includes(query)
     );
   }, [allIcons, searchQuery]);
 
   const handleIconClick = (iconName: string) => {
-    onIconSelect(iconName);
+    onSelect(iconName);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, iconName: string) => {
@@ -70,7 +66,7 @@ const IconGrid: React.FC<IconGridProps> = ({
     <div className="icon-grid-container">
       <div className="icon-grid-header">
         <span className="icon-count">
-          {filteredIcons.length} 个图标
+          找到 {filteredIcons.length} 个图标
         </span>
       </div>
       
@@ -92,7 +88,7 @@ const IconGrid: React.FC<IconGridProps> = ({
               aria-label={`选择图标 ${name}`}
               aria-pressed={isSelected}
             >
-              <div className="icon-wrapper">
+              <div className="icon-preview">
                 <IconComponent size={24} strokeWidth={2} />
               </div>
               <div className="icon-name">{name}</div>

@@ -1,165 +1,188 @@
-import React, { useState, useMemo } from 'react';
-import * as Icons from 'lucide-react';
+import React, { useState, useMemo, useCallback } from 'react';
 import './IconSelector.css';
+
+// 常用图标列表
+const ICON_LIST = [
+  'home', 'user', 'settings', 'search', 'heart', 'star', 'bookmark',
+  'bell', 'mail', 'phone', 'camera', 'image', 'video', 'music',
+  'file', 'folder', 'download', 'upload', 'cloud', 'link', 'lock',
+  'unlock', 'key', 'shield', 'eye', 'eye-off', 'edit', 'trash',
+  'plus', 'minus', 'check', 'x', 'arrow-up', 'arrow-down', 'arrow-left',
+  'arrow-right', 'chevron-up', 'chevron-down', 'chevron-left', 'chevron-right',
+  'menu', 'more-vertical', 'more-horizontal', 'grid', 'list', 'calendar',
+  'clock', 'map', 'navigation', 'compass', 'target', 'flag', 'tag',
+  'filter', 'refresh', 'share', 'external-link', 'maximize', 'minimize',
+  'copy', 'clipboard', 'scissors', 'paperclip', 'printer', 'monitor',
+  'smartphone', 'tablet', 'laptop', 'cpu', 'hard-drive', 'wifi',
+  'bluetooth', 'battery', 'zap', 'sun', 'moon', 'cloud-rain', 'wind',
+  'thermometer', 'droplet', 'umbrella', 'coffee', 'gift', 'shopping-cart',
+  'credit-card', 'dollar-sign', 'trending-up', 'trending-down', 'pie-chart',
+  'bar-chart', 'activity', 'award', 'briefcase', 'package', 'inbox',
+  'send', 'message-circle', 'message-square', 'users', 'user-plus', 'user-minus',
+  'user-check', 'user-x', 'smile', 'frown', 'meh', 'thumbs-up', 'thumbs-down',
+  'help-circle', 'info', 'alert-circle', 'alert-triangle', 'check-circle', 'x-circle'
+];
 
 interface IconSelectorProps {
   value?: string;
-  onChange?: (iconName: string) => void;
   color?: string;
+  onChange?: (icon: string) => void;
   onColorChange?: (color: string) => void;
   showColorPicker?: boolean;
 }
 
 const IconSelector: React.FC<IconSelectorProps> = ({
-  value = 'Circle',
-  onChange,
+  value = '',
   color = '#e94560',
+  onChange,
   onColorChange,
-  showColorPicker = true,
+  showColorPicker = true
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedIcon, setSelectedIcon] = useState(value);
-
-  // 获取所有可用的图标
-  const allIcons = useMemo(() => {
-    return Object.keys(Icons).filter(
-      (key) => key !== 'createLucideIcon' && typeof Icons[key as keyof typeof Icons] === 'function'
-    );
-  }, []);
+  const [iconColor, setIconColor] = useState(color);
 
   // 过滤图标
   const filteredIcons = useMemo(() => {
-    if (!searchTerm) return allIcons;
-    return allIcons.filter((iconName) =>
-      iconName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [allIcons, searchTerm]);
+    if (!searchQuery.trim()) {
+      return ICON_LIST;
+    }
+    const query = searchQuery.toLowerCase();
+    return ICON_LIST.filter(icon => icon.toLowerCase().includes(query));
+  }, [searchQuery]);
 
-  // 获取图标组件
-  const getIconComponent = (iconName: string) => {
-    const IconComponent = Icons[iconName as keyof typeof Icons] as React.ComponentType<any>;
-    return IconComponent;
-  };
-
-  // 处理图标选择
-  const handleIconSelect = (iconName: string) => {
-    setSelectedIcon(iconName);
-    onChange?.(iconName);
+  // 选择图标
+  const handleIconSelect = useCallback((icon: string) => {
+    setSelectedIcon(icon);
+    onChange?.(icon);
     setIsOpen(false);
-    setSearchTerm('');
-  };
+    setSearchQuery('');
+  }, [onChange]);
 
-  // 处理颜色变化
-  const handleColorChange = (newColor: string) => {
+  // 改变颜色
+  const handleColorChange = useCallback((newColor: string) => {
+    setIconColor(newColor);
     onColorChange?.(newColor);
-  };
+  }, [onColorChange]);
 
-  const SelectedIconComponent = getIconComponent(selectedIcon);
+  // 预设颜色
+  const presetColors = [
+    '#e94560', '#0f3460', '#16213e', '#1a1a2e',
+    '#2ecc71', '#3498db', '#9b59b6', '#f39c12',
+    '#e74c3c', '#1abc9c', '#34495e', '#95a5a6'
+  ];
 
   return (
     <div className="icon-selector">
       <div className="icon-selector-trigger" onClick={() => setIsOpen(!isOpen)}>
         <div className="selected-icon-preview">
-          <SelectedIconComponent size={24} color={color} strokeWidth={2} />
-          <span className="selected-icon-name">{selectedIcon}</span>
+          {selectedIcon ? (
+            <span className="icon-display" style={{ color: iconColor }}>
+              <i className={`icon-${selectedIcon}`}>📌</i>
+            </span>
+          ) : (
+            <span className="icon-placeholder">选择图标</span>
+          )}
         </div>
-        <Icons.ChevronDown
-          size={20}
-          className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
-        />
+        <span className="icon-selector-arrow">{isOpen ? '▲' : '▼'}</span>
       </div>
 
       {isOpen && (
-        <>
-          <div className="icon-selector-overlay" onClick={() => setIsOpen(false)} />
-          <div className="icon-selector-dropdown">
-            <div className="icon-selector-header">
-              <div className="search-wrapper">
-                <Icons.Search size={18} className="search-icon" />
+        <div className="icon-selector-dropdown">
+          <div className="icon-selector-header">
+            <input
+              type="text"
+              className="icon-search-input"
+              placeholder="搜索图标..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus
+            />
+          </div>
+
+          {showColorPicker && (
+            <div className="color-picker-section">
+              <div className="color-picker-label">图标颜色</div>
+              <div className="color-picker-wrapper">
+                <input
+                  type="color"
+                  className="color-input"
+                  value={iconColor}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                />
                 <input
                   type="text"
-                  className="icon-search-input"
-                  placeholder="搜索图标..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  autoFocus
+                  className="color-text-input"
+                  value={iconColor}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  placeholder="#e94560"
                 />
-                {searchTerm && (
-                  <button
-                    className="clear-search-btn"
-                    onClick={() => setSearchTerm('')}
-                  >
-                    <Icons.X size={16} />
-                  </button>
-                )}
               </div>
-
-              {showColorPicker && (
-                <div className="color-picker-section">
-                  <label className="color-label">图标颜色</label>
-                  <div className="color-input-wrapper">
-                    <input
-                      type="color"
-                      value={color}
-                      onChange={(e) => handleColorChange(e.target.value)}
-                      className="color-input"
-                    />
-                    <input
-                      type="text"
-                      value={color}
-                      onChange={(e) => handleColorChange(e.target.value)}
-                      className="color-text-input"
-                      placeholder="#e94560"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="icon-grid-container">
-              {filteredIcons.length > 0 ? (
-                <div className="icon-grid">
-                  {filteredIcons.map((iconName) => {
-                    const IconComponent = getIconComponent(iconName);
-                    const isSelected = iconName === selectedIcon;
-
-                    return (
-                      <div
-                        key={iconName}
-                        className={`icon-item ${isSelected ? 'selected' : ''}`}
-                        onClick={() => handleIconSelect(iconName)}
-                        title={iconName}
-                      >
-                        <div className="icon-preview">
-                          <IconComponent size={24} color={color} strokeWidth={2} />
-                        </div>
-                        <span className="icon-name">{iconName}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="no-results">
-                  <Icons.SearchX size={48} color="var(--text)" opacity={0.3} />
-                  <p>未找到匹配的图标</p>
+              <div className="preset-colors">
+                {presetColors.map((presetColor) => (
                   <button
-                    className="clear-search-link"
-                    onClick={() => setSearchTerm('')}
-                  >
-                    清除搜索
-                  </button>
-                </div>
-              )}
+                    key={presetColor}
+                    className={`preset-color-btn ${iconColor === presetColor ? 'active' : ''}`}
+                    style={{ backgroundColor: presetColor }}
+                    onClick={() => handleColorChange(presetColor)}
+                    title={presetColor}
+                  />
+                ))}
+              </div>
             </div>
+          )}
 
-            <div className="icon-selector-footer">
-              <span className="icon-count">
-                显示 {filteredIcons.length} / {allIcons.length} 个图标
-              </span>
-            </div>
+          <div className="icon-grid-container">
+            {filteredIcons.length > 0 ? (
+              <div className="icon-grid">
+                {filteredIcons.map((icon) => (
+                  <button
+                    key={icon}
+                    className={`icon-item ${selectedIcon === icon ? 'selected' : ''}`}
+                    onClick={() => handleIconSelect(icon)}
+                    title={icon}
+                    style={{ color: iconColor }}
+                  >
+                    <i className={`icon-${icon}`}>📌</i>
+                    <span className="icon-name">{icon}</span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="no-icons-found">
+                <p>未找到匹配的图标</p>
+                <p className="no-icons-hint">尝试其他关键词</p>
+              </div>
+            )}
           </div>
-        </>
+
+          <div className="icon-selector-footer">
+            <button
+              className="btn-clear"
+              onClick={() => {
+                setSelectedIcon('');
+                onChange?.('');
+                setIsOpen(false);
+              }}
+            >
+              清除选择
+            </button>
+            <button
+              className="btn-close"
+              onClick={() => setIsOpen(false)}
+            >
+              关闭
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isOpen && (
+        <div
+          className="icon-selector-overlay"
+          onClick={() => setIsOpen(false)}
+        />
       )}
     </div>
   );
