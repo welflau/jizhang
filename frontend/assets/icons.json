@@ -1,0 +1,307 @@
+{
+  "categories": [
+    {
+      "name": "常用",
+      "icons": [
+        {"name": "home", "unicode": "🏠"},
+        {"name": "star", "unicode": "⭐"},
+        {"name": "heart", "unicode": "❤️"},
+        {"name": "fire", "unicode": "🔥"},
+        {"name": "check", "unicode": "✓"},
+        {"name": "cross", "unicode": "✕"},
+        {"name": "plus", "unicode": "+"},
+        {"name": "minus", "unicode": "-"},
+        {"name": "search", "unicode": "🔍"},
+        {"name": "settings", "unicode": "⚙️"}
+      ]
+    },
+    {
+      "name": "箭头",
+      "icons": [
+        {"name": "arrow-up", "unicode": "↑"},
+        {"name": "arrow-down", "unicode": "↓"},
+        {"name": "arrow-left", "unicode": "←"},
+        {"name": "arrow-right", "unicode": "→"},
+        {"name": "arrow-up-right", "unicode": "↗"},
+        {"name": "arrow-down-right", "unicode": "↘"},
+        {"name": "arrow-down-left", "unicode": "↙"},
+        {"name": "arrow-up-left", "unicode": "↖"},
+        {"name": "chevron-up", "unicode": "⌃"},
+        {"name": "chevron-down", "unicode": "⌄"},
+        {"name": "chevron-left", "unicode": "‹"},
+        {"name": "chevron-right", "unicode": "›"}
+      ]
+    },
+    {
+      "name": "表情",
+      "icons": [
+        {"name": "smile", "unicode": "😊"},
+        {"name": "laugh", "unicode": "😄"},
+        {"name": "love", "unicode": "😍"},
+        {"name": "cool", "unicode": "😎"},
+        {"name": "thinking", "unicode": "🤔"},
+        {"name": "sad", "unicode": "😢"},
+        {"name": "angry", "unicode": "😠"},
+        {"name": "surprised", "unicode": "😮"},
+        {"name": "wink", "unicode": "😉"},
+        {"name": "tongue", "unicode": "😛"}
+      ]
+    },
+    {
+      "name": "符号",
+      "icons": [
+        {"name": "info", "unicode": "ℹ️"},
+        {"name": "warning", "unicode": "⚠️"},
+        {"name": "error", "unicode": "⛔"},
+        {"name": "question", "unicode": "❓"},
+        {"name": "exclamation", "unicode": "❗"},
+        {"name": "bell", "unicode": "🔔"},
+        {"name": "lock", "unicode": "🔒"},
+        {"name": "unlock", "unicode": "🔓"},
+        {"name": "key", "unicode": "🔑"},
+        {"name": "link", "unicode": "🔗"}
+      ]
+    },
+    {
+      "name": "文件",
+      "icons": [
+        {"name": "file", "unicode": "📄"},
+        {"name": "folder", "unicode": "📁"},
+        {"name": "folder-open", "unicode": "📂"},
+        {"name": "document", "unicode": "📃"},
+        {"name": "clipboard", "unicode": "📋"},
+        {"name": "bookmark", "unicode": "🔖"},
+        {"name": "tag", "unicode": "🏷️"},
+        {"name": "archive", "unicode": "📦"},
+        {"name": "trash", "unicode": "🗑️"},
+        {"name": "download", "unicode": "⬇️"},
+        {"name": "upload", "unicode": "⬆️"}
+      ]
+    },
+    {
+      "name": "媒体",
+      "icons": [
+        {"name": "image", "unicode": "🖼️"},
+        {"name": "camera", "unicode": "📷"},
+        {"name": "video", "unicode": "🎥"},
+        {"name": "music", "unicode": "🎵"},
+        {"name": "play", "unicode": "▶️"},
+        {"name": "pause", "unicode": "⏸️"},
+        {"name": "stop", "unicode": "⏹️"},
+        {"name": "volume", "unicode": "🔊"},
+        {"name": "mute", "unicode": "🔇"},
+        {"name": "microphone", "unicode": "🎤"}
+      ]
+    },
+    {
+      "name": "通讯",
+      "icons": [
+        {"name": "mail", "unicode": "✉️"},
+        {"name": "message", "unicode": "💬"},
+        {"name": "chat", "unicode": "💭"},
+        {"name": "phone", "unicode": "📞"},
+        {"name": "mobile", "unicode": "📱"},
+        {"name": "send", "unicode": "📤"},
+        {"name": "receive", "unicode": "📥"},
+        {"name": "notification", "unicode": "🔔"},
+        {"name": "at", "unicode": "@"},
+        {"name": "hashtag", "unicode": "#"}
+      ]
+    },
+    {
+      "name": "编辑",
+      "icons": [
+        {"name": "edit", "unicode": "✏️"},
+        {"name": "pen", "unicode": "🖊️"},
+        {"name": "pencil", "unicode": "✎"},
+        {"name": "brush", "unicode": "🖌️"},
+        {"name": "copy", "unicode": "📋"},
+        {"name": "cut", "unicode": "✂️"},
+        {"name": "paste", "unicode": "📄"},
+        {"name": "undo", "unicode": "↶"},
+        {"name": "redo", "unicode": "↷"},
+        {"name": "refresh", "unicode": "🔄"}
+      ]
+    },
+    {
+      "name": "用户",
+      "icons": [
+        {"name": "user", "unicode": "👤"},
+        {"name": "users", "unicode": "👥"},
+        {"name": "profile", "unicode": "👨"},
+        {"name": "account", "unicode": "🧑"},
+        {"name": "team", "unicode": "👨‍👩‍👧‍👦"},
+        {"name": "crown", "unicode": "👑"},
+        {"name": "badge", "unicode": "🎖️"},
+        {"name": "id-card", "unicode": "🪪"},
+        {"name": "contact", "unicode": "📇"},
+        {"name": "fingerprint", "unicode": "👆"}
+      ]
+    },
+    {
+      "name": "时间",
+      "icons": [
+        {"name": "clock", "unicode": "🕐"},
+        {"name": "calendar", "unicode": "📅"},
+        {"name": "date", "unicode": "📆"},
+        {"name": "alarm", "unicode": "⏰"},
+        {"name": "timer", "unicode": "⏱️"},
+        {"name": "stopwatch", "unicode": "⏲️"},
+        {"name": "hourglass", "unicode": "⏳"},
+        {"name": "sunrise", "unicode": "🌅"},
+        {"name": "sunset", "unicode": "🌇"},
+        {"name": "night", "unicode": "🌙"}
+      ]
+    },
+    {
+      "name": "天气",
+      "icons": [
+        {"name": "sun", "unicode": "☀️"},
+        {"name": "moon", "unicode": "🌙"},
+        {"name": "cloud", "unicode": "☁️"},
+        {"name": "rain", "unicode": "🌧️"},
+        {"name": "snow", "unicode": "❄️"},
+        {"name": "thunder", "unicode": "⚡"},
+        {"name": "wind", "unicode": "💨"},
+        {"name": "fog", "unicode": "🌫️"},
+        {"name": "rainbow", "unicode": "🌈"},
+        {"name": "umbrella", "unicode": "☂️"}
+      ]
+    },
+    {
+      "name": "位置",
+      "icons": [
+        {"name": "location", "unicode": "📍"},
+        {"name": "pin", "unicode": "📌"},
+        {"name": "map", "unicode": "🗺️"},
+        {"name": "compass", "unicode": "🧭"},
+        {"name": "globe", "unicode": "🌍"},
+        {"name": "flag", "unicode": "🚩"},
+        {"name": "marker", "unicode": "🔴"},
+        {"name": "target", "unicode": "🎯"},
+        {"name": "route", "unicode": "🛣️"},
+        {"name": "navigation", "unicode": "🧭"}
+      ]
+    },
+    {
+      "name": "购物",
+      "icons": [
+        {"name": "cart", "unicode": "🛒"},
+        {"name": "bag", "unicode": "🛍️"},
+        {"name": "gift", "unicode": "🎁"},
+        {"name": "price-tag", "unicode": "🏷️"},
+        {"name": "credit-card", "unicode": "💳"},
+        {"name": "money", "unicode": "💰"},
+        {"name": "coin", "unicode": "🪙"},
+        {"name": "receipt", "unicode": "🧾"},
+        {"name": "barcode", "unicode": "📊"},
+        {"name": "package", "unicode": "📦"}
+      ]
+    },
+    {
+      "name": "交通",
+      "icons": [
+        {"name": "car", "unicode": "🚗"},
+        {"name": "bus", "unicode": "🚌"},
+        {"name": "train", "unicode": "🚆"},
+        {"name": "plane", "unicode": "✈️"},
+        {"name": "ship", "unicode": "🚢"},
+        {"name": "bike", "unicode": "🚲"},
+        {"name": "rocket", "unicode": "🚀"},
+        {"name": "taxi", "unicode": "🚕"},
+        {"name": "truck", "unicode": "🚚"},
+        {"name": "scooter", "unicode": "🛴"}
+      ]
+    },
+    {
+      "name": "食物",
+      "icons": [
+        {"name": "apple", "unicode": "🍎"},
+        {"name": "pizza", "unicode": "🍕"},
+        {"name": "burger", "unicode": "🍔"},
+        {"name": "coffee", "unicode": "☕"},
+        {"name": "cake", "unicode": "🍰"},
+        {"name": "ice-cream", "unicode": "🍦"},
+        {"name": "beer", "unicode": "🍺"},
+        {"name": "wine", "unicode": "🍷"},
+        {"name": "bread", "unicode": "🍞"},
+        {"name": "egg", "unicode": "🥚"}
+      ]
+    },
+    {
+      "name": "运动",
+      "icons": [
+        {"name": "football", "unicode": "⚽"},
+        {"name": "basketball", "unicode": "🏀"},
+        {"name": "tennis", "unicode": "🎾"},
+        {"name": "trophy", "unicode": "🏆"},
+        {"name": "medal", "unicode": "🏅"},
+        {"name": "target-sport", "unicode": "🎯"},
+        {"name": "dumbbell", "unicode": "🏋️"},
+        {"name": "running", "unicode": "🏃"},
+        {"name": "swimming", "unicode": "🏊"},
+        {"name": "cycling", "unicode": "🚴"}
+      ]
+    },
+    {
+      "name": "办公",
+      "icons": [
+        {"name": "briefcase", "unicode": "💼"},
+        {"name": "laptop", "unicode": "💻"},
+        {"name": "desktop", "unicode": "🖥️"},
+        {"name": "keyboard", "unicode": "⌨️"},
+        {"name": "mouse", "unicode": "🖱️"},
+        {"name": "printer", "unicode": "🖨️"},
+        {"name": "calculator", "unicode": "🧮"},
+        {"name": "chart", "unicode": "📈"},
+        {"name": "graph", "unicode": "📊"},
+        {"name": "presentation", "unicode": "📽️"}
+      ]
+    },
+    {
+      "name": "工具",
+      "icons": [
+        {"name": "wrench", "unicode": "🔧"},
+        {"name": "hammer", "unicode": "🔨"},
+        {"name": "screwdriver", "unicode": "🪛"},
+        {"name": "gear", "unicode": "⚙️"},
+        {"name": "magnet", "unicode": "🧲"},
+        {"name": "battery", "unicode": "🔋"},
+        {"name": "plug", "unicode": "🔌"},
+        {"name": "lightbulb", "unicode": "💡"},
+        {"name": "flashlight", "unicode": "🔦"},
+        {"name": "microscope", "unicode": "🔬"}
+      ]
+    },
+    {
+      "name": "自然",
+      "icons": [
+        {"name": "tree", "unicode": "🌲"},
+        {"name": "flower", "unicode": "🌸"},
+        {"name": "leaf", "unicode": "🍃"},
+        {"name": "plant", "unicode": "🌱"},
+        {"name": "mountain", "unicode": "⛰️"},
+        {"name": "water", "unicode": "💧"},
+        {"name": "fire-nature", "unicode": "🔥"},
+        {"name": "earth", "unicode": "🌍"},
+        {"name": "star-nature", "unicode": "⭐"},
+        {"name": "sparkle", "unicode": "✨"}
+      ]
+    },
+    {
+      "name": "动物",
+      "icons": [
+        {"name": "dog", "unicode": "🐕"},
+        {"name": "cat", "unicode": "🐈"},
+        {"name": "bird", "unicode": "🐦"},
+        {"name": "fish", "unicode": "🐟"},
+        {"name": "butterfly", "unicode": "🦋"},
+        {"name": "bee", "unicode": "🐝"},
+        {"name": "turtle", "unicode": "🐢"},
+        {"name": "rabbit", "unicode": "🐰"},
+        {"name": "panda", "unicode": "🐼"},
+        {"name": "elephant", "unicode": "🐘"}
+      ]
+    }
+  ]
+}
