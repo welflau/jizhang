@@ -12,9 +12,14 @@
 无
 
 ## 审查的代码
+- backend/app/core/config.py
+- backend/app/database.py
 - backend/app/models/base.py
+- backend/app/models/__init__.py
+- backend/app/models/user.py
+- backend/app/main.py
 - backend/scripts/init_db.py
 - backend/.env.example
-- backend/tests/test_database.py
-- backend/app/main.py
+- backend/requirements.txt
+- backend/README.md
 - docs/Reqs/c3cc9e/f63d8f/dev-notes.md
