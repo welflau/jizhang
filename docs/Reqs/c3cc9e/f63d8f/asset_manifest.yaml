@@ -3,9 +3,229 @@
 assets:
   - id: asset_001
     type: icon
-    description: icon: 待补充
+    description: ## UI Asset List (Logging & Monitoring Context)
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_002
+    type: icon
+    description: ### Icons (for log visualization/monitoring dashboards)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: icon**: database-check (health check success, 16px, solid style, green)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: icon**: database-error (health check failure, 16px, solid style, red)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: icon**: database-loading (connection initializing, 16px, animated spinner, blue)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: icon**: alert-triangle (connection pool warning, 16px, outline style, yellow)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: icon**: alert-circle (connection pool exhausted, 16px, solid style, red)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: icon**: clock (timeout indicator, 16px, outline style, orange)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: icon**: check-circle (transaction committed, 16px, solid style, green)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: icon**: x-circle (transaction rolled back, 16px, solid style, red)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: ### Illustrations (for monitoring dashboard empty/error states)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
     type: illustration
-    description: illustration: 空状态图（400x300）
+    description: illustration**: database-connected (dashboard shows healthy DB, 200x200, isometric style)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: illustration
+    description: illustration**: database-disconnected (dashboard shows DB error, 200x200, isometric style, grayscale
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: illustration
+    description: illustration**: no-metrics (no monitoring data available, 300x200, minimal line art)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: ### Diagrams (for documentation)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: diagram**: connection-pool-architecture (shows pool_size, max_overflow, session lifecycle, 800x600, 
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: diagram**: session-lifecycle-flow (request → get_db → query → commit/rollback → close, 600x400, flow
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: diagram**: error-handling-flow (exception → rollback → log → close, 500x300, flowchart)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: ### Log Message Templates (structured logging)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: log_template**: startup_success
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: Message: "Database connection pool initialized successfully"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: Fields: {pool_size, max_overflow, database_url_masked, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: log_template**: startup_failure
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: Message: "Failed to initialize database connection pool"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: Fields: {error_type, error_message, database_url_masked, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: log_template**: config_missing
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: Message: "DATABASE_URL not found in environment variables"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: Fields: {timestamp, env_vars_checked}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: log_template**: health_check_success
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: Message: "Database health check passed"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: Fields: {response_time_ms, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: log_template**: health_check_failure
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: Message: "Database health check failed"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: Fields: {error_message, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: log_template**: pool_exhausted
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: Message: "Connection pool exhausted, request queued"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: Fields: {active_connections, queue_size, wait_time_ms, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: log_template**: transaction_rollback
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: Message: "Transaction rolled back due to error"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: Fields: {error_type, error_message, session_id, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: log_template**: slow_query
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: Message: "Slow query detected"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: Fields: {query_time_ms, query_hash, timestamp}
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: ### Monitoring Metrics (for Grafana/Prometheus dashboards)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: metric**: db_connection_pool_size (gauge, current active connections)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: metric**: db_connection_pool_overflow (gauge, current overflow connections)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_047
+    type: icon
+    description: metric**: db_health_check_response_time (histogram, milliseconds)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_048
+    type: icon
+    description: metric**: db_health_check_failures_total (counter, cumulative failures)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_049
+    type: icon
+    description: metric**: db_session_duration (histogram, milliseconds per session)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_050
+    type: icon
+    description: metric**: db_transaction_rollbacks_total (counter, cumulative rollbacks)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_051
+    type: icon
+    description: metric**: db_query_duration (histogram, milliseconds per query)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_052
+    type: icon
+    description: metric**: db_pool_timeout_total (counter, cumulative timeout events)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_053
+    type: icon
+    description: ### Documentation Assets
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_054
+    type: photo
+    description: image**: env-file-example (screenshot of .env.example file, 600x400, PNG)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_055
+    type: photo
+    description: image**: alembic-version-table (screenshot of alembic_version table structure, 500x300, PNG)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_056
+    type: icon
+    description: code_snippet**: base-model-usage (example of inheriting from Base, markdown code block)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_057
+    type: icon
+    description: code_snippet**: get-db-dependency (example of using get_db() in FastAPI route, markdown code block)
     status: pending  # 待美术Agent确认来源和规格
