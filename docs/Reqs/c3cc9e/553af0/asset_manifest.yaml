@@ -3,105 +3,185 @@
 assets:
   - id: asset_001
     type: icon
-    description: ## UI 资产清单（后端 API 无 UI 资产需求）
+    description: ## UI 资产清单
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_002
     type: icon
-    description: ### 文档资产
+    description: 本工单为后端 API 服务，无前端 UI 界面，不需要图标、插画、图片等视觉资产。**
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_003
     type: icon
-    description: API 文档**：Swagger UI / ReDoc 自动生成（FastAPI 内置）
+    description: ### 日志和监控相关（非 UI 资产）
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_004
     type: icon
-    description: 错误码表**：Markdown 文档，列出所有业务错误码及说明
+    description: #### 日志格式模板
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_005
     type: icon
-    description: 格式：`| 错误码 | HTTP 状态 | 说明 | 示例场景 |`
+    description: 用途**: 异常处理中间件日志输出
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_006
     type: icon
-    description: 示例：`| 40001 | 400 | 参数缺失 | 必填字段未提供 |`
+    description: 格式**: JSON 结构化日志
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_007
     type: icon
-    description: ### 日志格式模板
+    description: 字段**:
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_008
     type: icon
-    description: 请求日志**：`[{timestamp}] {method} {path} - Client: {ip} - User: {user_id}`
+    description: timestamp: ISO 8601 格式时间戳
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_009
     type: icon
-    description: 异常日志**：`[{timestamp}] ERROR {exception_type}: {message}\n{traceback}`
+    description: level: info/warning/error
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_010
     type: icon
-    description: 响应日志**：`[{timestamp}] Response {status_code} - Duration: {ms}ms`
+    description: request_id: UUID 格式请求 ID
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_011
     type: icon
-    description: ### 配置文件示例
+    description: path: 请求路径
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_012
     type: icon
-    description: 异常映射配置**（JSON/YAML）：
+    description: method: HTTP 方法
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_013
     type: icon
-    description: ```json
+    description: status_code: 响应状态码
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_014
     type: icon
-    description: {
+    description: exception_type: 异常类名（如有）
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_015
     type: icon
-    description: "NotFoundError": {"status_code": 404, "default_message": "Resource not found"},
+    description: exception_message: 异常消息（如有）
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_016
     type: icon
-    description: "ValidationError": {"status_code": 400, "default_message": "Invalid input"}
+    description: stack_trace: 堆栈信息（仅 error 级别）
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_017
     type: icon
-    description: }
+    description: #### 错误消息文案库
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_018
     type: icon
-    description: ```
+    description: 用途**: 标准化错误提示信息
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_019
     type: icon
-    description: ### 测试数据集
+    description: 语言**: 英文（代码中）+ 中文（可选，通过 i18n）
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_020
     type: icon
-    description: 正常响应示例**：各类成功场景的 JSON 样本
+    description: 示例**:
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_021
     type: icon
-    description: 错误响应示例**：各类异常场景的 JSON 样本
+    description: NOT_FOUND: "The requested resource was not found"
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_022
     type: icon
-    description: 边界用例**：空数据、超大数据、特殊字符等测试数据
+    description: VALIDATION_FAILED: "Request validation failed"
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_023
     type: icon
-    description: ### 监控指标
+    description: UNAUTHORIZED: "Authentication required"
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_024
     type: icon
-    description: 异常统计图表**：按异常类型统计发生频率（需对接监控系统）
+    description: FORBIDDEN: "You don't have permission to access this resource"
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_025
     type: icon
-    description: 响应时间分布**：P50/P95/P99 延迟（需对接 APM 工具）
+    description: INTERNAL_ERROR: "An internal server error occurred"
     status: pending  # 待美术Agent确认来源和规格
   - id: asset_026
     type: icon
-    description: 说明**：本工单为纯后端基础设施建设，无传统 UI 资产（图标/插画/图片）需求。主要产出为代码模块、文档和配置文件。
+    description: ### 文档资产（开发者文档）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: #### API 文档示例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: 用途**: OpenAPI/Swagger 文档中的响应示例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: 格式**: JSON Schema + 示例数据
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: 内容**: 每个端点的成功/失败响应示例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: #### 异常处理流程图
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: 用途**: 开发者文档说明异常处理机制
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: 格式**: Mermaid 流程图（已在 interaction_flow 中提供）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: ### 测试资产
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: #### 单元测试 Mock 数据
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: 用途**: 测试异常处理器的各种场景
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: 内容**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: 正常响应 mock 数据
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: 各类异常实例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: 边界情况测试数据
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: #### 集成测试用例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: 用途**: 验证端到端异常处理流程
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: 内容**:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: 触发各类异常的请求样本
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: 预期响应格式验证数据
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: 总结**: 本工单无传统 UI 资产需求，主要资产为日志模板、错误文案库和测试数据。
     status: pending  # 待美术Agent确认来源和规格
