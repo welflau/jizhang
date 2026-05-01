@@ -1,0 +1,405 @@
+# 统计数据聚合 API 接口规范
+
+## 1. 收支趋势查询接口
+
+### 1.1 接口描述
+查询指定时间范围内的收支趋势数据，支持按日、周、月维度聚合。
+
+### 1.2 请求信息
+- **接口地址**: `/api/v1/statistics/trend`
+- **请求方法**: GET
+- **认证方式**: Bearer Token
+
+### 1.3 请求参数
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| dimension | string | 是 | 聚合维度：day(日)、week(周)、month(月) |
+| start_date | string | 是 | 开始日期，格式：YYYY-MM-DD |
+| end_date | string | 是 | 结束日期，格式：YYYY-MM-DD |
+| type | string | 否 | 类型筛选：income(收入)、expense(支出)，不传则返回全部 |
+
+### 1.4 请求示例
+```
+GET /api/v1/statistics/trend?dimension=month&start_date=2024-01-01&end_date=2024-12-31&type=expense
+```
+
+### 1.5 响应格式
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "dimension": "month",
+    "start_date": "2024-01-01",
+    "end_date": "2024-12-31",
+    "items": [
+      {
+        "period": "2024-01",
+        "income": 15000.00,
+        "expense": 8500.00,
+        "balance": 6500.00,
+        "transaction_count": 45
+      },
+      {
+        "period": "2024-02",
+        "income": 16000.00,
+        "expense": 9200.00,
+        "balance": 6800.00,
+        "transaction_count": 52
+      }
+    ],
+    "summary": {
+      "total_income": 186000.00,
+      "total_expense": 105000.00,
+      "total_balance": 81000.00,
+      "avg_income": 15500.00,
+      "avg_expense": 8750.00
+    }
+  }
+}
+```
+
+---
+
+## 2. 分类占比统计接口
+
+### 2.1 接口描述
+统计指定时间范围内各分类的金额占比，支持按收入或支出分别统计。
+
+### 2.2 请求信息
+- **接口地址**: `/api/v1/statistics/category-ratio`
+- **请求方法**: GET
+- **认证方式**: Bearer Token
+
+### 2.3 请求参数
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| type | string | 是 | 类型：income(收入)、expense(支出) |
+| start_date | string | 是 | 开始日期，格式：YYYY-MM-DD |
+| end_date | string | 是 | 结束日期，格式：YYYY-MM-DD |
+| top_n | integer | 否 | 返回前N个分类，默认10，其余归入"其他" |
+
+### 2.4 请求示例
+```
+GET /api/v1/statistics/category-ratio?type=expense&start_date=2024-01-01&end_date=2024-12-31&top_n=5
+```
+
+### 2.5 响应格式
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "type": "expense",
+    "start_date": "2024-01-01",
+    "end_date": "2024-12-31",
+    "total_amount": 105000.00,
+    "categories": [
+      {
+        "category_id": 1,
+        "category_name": "餐饮",
+        "amount": 35000.00,
+        "percentage": 33.33,
+        "transaction_count": 180
+      },
+      {
+        "category_id": 2,
+        "category_name": "交通",
+        "amount": 18000.00,
+        "percentage": 17.14,
+        "transaction_count": 120
+      },
+      {
+        "category_id": 3,
+        "category_name": "购物",
+        "amount": 25000.00,
+        "percentage": 23.81,
+        "transaction_count": 85
+      },
+      {
+        "category_id": 4,
+        "category_name": "娱乐",
+        "amount": 12000.00,
+        "percentage": 11.43,
+        "transaction_count": 45
+      },
+      {
+        "category_id": 5,
+        "category_name": "医疗",
+        "amount": 8000.00,
+        "percentage": 7.62,
+        "transaction_count": 20
+      },
+      {
+        "category_id": 0,
+        "category_name": "其他",
+        "amount": 7000.00,
+        "percentage": 6.67,
+        "transaction_count": 50
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 3. 月度收支对比接口
+
+### 3.1 接口描述
+对比指定月份与上月、去年同月的收支情况。
+
+### 3.2 请求信息
+- **接口地址**: `/api/v1/statistics/monthly-comparison`
+- **请求方法**: GET
+- **认证方式**: Bearer Token
+
+### 3.3 请求参数
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| year | integer | 是 | 年份，如：2024 |
+| month | integer | 是 | 月份，范围：1-12 |
+
+### 3.4 请求示例
+```
+GET /api/v1/statistics/monthly-comparison?year=2024&month=6
+```
+
+### 3.5 响应格式
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "current_month": {
+      "period": "2024-06",
+      "income": 16000.00,
+      "expense": 9500.00,
+      "balance": 6500.00,
+      "transaction_count": 58
+    },
+    "last_month": {
+      "period": "2024-05",
+      "income": 15000.00,
+      "expense": 8800.00,
+      "balance": 6200.00,
+      "transaction_count": 52
+    },
+    "same_month_last_year": {
+      "period": "2023-06",
+      "income": 14000.00,
+      "expense": 8000.00,
+      "balance": 6000.00,
+      "transaction_count": 48
+    },
+    "comparison": {
+      "mom_income_change": 1000.00,
+      "mom_income_change_rate": 6.67,
+      "mom_expense_change": 700.00,
+      "mom_expense_change_rate": 7.95,
+      "yoy_income_change": 2000.00,
+      "yoy_income_change_rate": 14.29,
+      "yoy_expense_change": 1500.00,
+      "yoy_expense_change_rate": 18.75
+    }
+  }
+}
+```
+
+---
+
+## 4. 年度统计总览接口
+
+### 4.1 接口描述
+获取指定年度的完整统计数据，包括月度明细、分类汇总、趋势分析等。
+
+### 4.2 请求信息
+- **接口地址**: `/api/v1/statistics/annual-overview`
+- **请求方法**: GET
+- **认证方式**: Bearer Token
+
+### 4.3 请求参数
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| year | integer | 是 | 年份，如：2024 |
+
+### 4.4 请求示例
+```
+GET /api/v1/statistics/annual-overview?year=2024
+```
+
+### 4.5 响应格式
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "year": 2024,
+    "summary": {
+      "total_income": 186000.00,
+      "total_expense": 105000.00,
+      "total_balance": 81000.00,
+      "avg_monthly_income": 15500.00,
+      "avg_monthly_expense": 8750.00,
+      "total_transaction_count": 620,
+      "savings_rate": 43.55
+    },
+    "monthly_data": [
+      {
+        "month": 1,
+        "income": 15000.00,
+        "expense": 8500.00,
+        "balance": 6500.00,
+        "transaction_count": 45
+      }
+    ],
+    "top_expense_categories": [
+      {
+        "category_id": 1,
+        "category_name": "餐饮",
+        "amount": 35000.00,
+        "percentage": 33.33
+      }
+    ],
+    "top_income_categories": [
+      {
+        "category_id": 10,
+        "category_name": "工资",
+        "amount": 150000.00,
+        "percentage": 80.65
+      }
+    ],
+    "peak_expense_month": {
+      "month": 12,
+      "amount": 12000.00
+    },
+    "peak_income_month": {
+      "month": 12,
+      "amount": 20000.00
+    }
+  }
+}
+```
+
+---
+
+## 5. 关键指标查询接口
+
+### 5.1 接口描述
+快速查询关键财务指标，包括本月总收入、总支出、结余等。
+
+### 5.2 请求信息
+- **接口地址**: `/api/v1/statistics/key-metrics`
+- **请求方法**: GET
+- **认证方式**: Bearer Token
+
+### 5.3 请求参数
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| period | string | 否 | 统计周期：current_month(本月，默认)、current_year(本年)、last_month(上月)、last_year(去年) |
+
+### 5.4 请求示例
+```
+GET /api/v1/statistics/key-metrics?period=current_month
+```
+
+### 5.5 响应格式
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "period": "current_month",
+    "period_label": "2024年6月",
+    "start_date": "2024-06-01",
+    "end_date": "2024-06-30",
+    "metrics": {
+      "total_income": 16000.00,
+      "total_expense": 9500.00,
+      "balance": 6500.00,
+      "savings_rate": 40.63,
+      "transaction_count": 58,
+      "avg_daily_expense": 316.67,
+      "avg_transaction_amount": 439.66
+    },
+    "comparison": {
+      "income_change_rate": 6.67,
+      "expense_change_rate": 7.95,
+      "balance_change_rate": 4.84
+    },
+    "budget_status": {
+      "budget_amount": 10000.00,
+      "used_amount": 9500.00,
+      "remaining_amount": 500.00,
+      "usage_rate": 95.00,
+      "is_exceeded": false
+    },
+    "top_expense_category": {
+      "category_id": 1,
+      "category_name": "餐饮",
+      "amount": 3200.00,
+      "percentage": 33.68
+    }
+  }
+}
+```
+
+---
+
+## 6. 通用错误码
+
+| 错误码 | 说明 |
+|--------|------|
+| 200 | 请求成功 |
+| 400 | 请求参数错误 |
+| 401 | 未授权，Token无效或过期 |
+| 403 | 无权限访问 |
+| 404 | 资源不存在 |
+| 422 | 参数验证失败 |
+| 500 | 服务器内部错误 |
+
+### 6.1 错误响应格式
+```json
+{
+  "code": 400,
+  "message": "参数错误",
+  "errors": {
+    "dimension": ["维度参数必须是 day、week 或 month 之一"],
+    "start_date": ["开始日期格式不正确"]
+  }
+}
+```
+
+---
+
+## 7. 通用说明
+
+### 7.1 日期格式
+- 所有日期参数统一使用 `YYYY-MM-DD` 格式
+- 时间范围查询包含起止日期
+
+### 7.2 金额格式
+- 所有金额字段保留两位小数
+- 金额单位：元（人民币）
+
+### 7.3 百分比格式
+- 百分比字段保留两位小数
+- 数值范围：0.00 - 100.00
+
+### 7.4 分页说明
+- 当数据量较大时，建议使用分页参数
+- 分页参数：`page`（页码，从1开始）、`page_size`（每页数量，默认20，最大100）
+
+### 7.5 缓存策略
+- 统计数据建议缓存5-15分钟
+- 实时性要求高的场景可通过 `Cache-Control: no-cache` 请求头强制刷新
+
+### 7.6 性能优化建议
+- 大时间范围查询建议使用月度维度
+- 避免频繁请求，建议客户端实现本地缓存
+- 年度统计数据较重，建议异步加载
