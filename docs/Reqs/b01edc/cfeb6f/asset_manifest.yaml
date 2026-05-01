@@ -1,0 +1,211 @@
+# asset_manifest.yaml — Initialize Vite + React + TypeScript project scaffold
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI 资产清单
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: ### 图标（Icons）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: 本工单**不需要自定义图标**，使用 Vite 和 React 官方 Logo 即可。
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: vite-logo**: Vite 官方 Logo（SVG 格式，已包含在 Vite 模板中）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: 用途：开发服务器欢迎页顶部展示
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: 尺寸：120x120px（Desktop）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: 风格：渐变色（紫色到黄色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: 来源：`/public/vite.svg`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: react-logo**: React 官方 Logo（SVG 格式，已包含在 Vite 模板中）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: 用途：开发服务器欢迎页顶部展示（与 Vite Logo 并列）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: 尺寸：120x120px（Desktop）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: 风格：蓝色原子图标 + 旋转动画
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: 来源：`/src/assets/react.svg`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: ### 插画（Illustrations）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: 本工单**不需要插画**，为纯技术基础设施搭建。
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: ### 图片（Images）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: 本工单**不需要图片资源**。
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: ### 字体（Fonts）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: 使用系统默认字体栈，无需额外字体文件：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: ```css
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: 'Helvetica Neue', Arial, sans-serif;
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: ### 颜色（Colors）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: 虽然本工单不涉及视觉样式定制，但需确保以下颜色在代码中可用（Vite 默认主题）：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: Primary**: #646cff（Vite 主题色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: React Blue**: #61dafb（React Logo 颜色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: Background**: #242424（深色模式背景）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: Text**: rgba(255, 255, 255, 0.87)（深色模式文字）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: ### 动画资源（Animations）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: React Logo 旋转动画**：已包含在 Vite 模板的 CSS 中（`@keyframes logo-spin`）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: 用途：React Logo 持续旋转效果
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: 时长：20s 无限循环
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: 缓动：linear
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: ### Favicon
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: favicon.svg**: Vite 官方 Favicon（已包含在模板中）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: 用途：浏览器标签页图标
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: 尺寸：32x32px
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: 来源：`/public/vite.svg`（浏览器自动缩放）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: ## 资产获取说明
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: 所有 UI 资产均由 **Vite 官方模板自动生成**，无需手动下载或创建。执行 `npm create vite@latest` 后，以下文件会自动包含：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: `/public/vite.svg`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: `/src/assets/react.svg`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: `/src/App.css`（包含 Logo 动画）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: `/src/index.css`（包含全局样式）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: ## 后续工单资产需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_047
+    type: icon
+    description: 以下资产将在后续业务功能开发时提供：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_048
+    type: icon
+    description: 业务页面图标（导航、操作按钮等）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_049
+    type: icon
+    description: 空状态插画
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_050
+    type: icon
+    description: 错误状态插画
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_051
+    type: icon
+    description: 品牌 Logo（如有）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_052
+    type: icon
+    description: 自定义字体（如有品牌要求）
+    status: pending  # 待美术Agent确认来源和规格
