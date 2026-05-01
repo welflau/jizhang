@@ -1,0 +1,167 @@
+# asset_manifest.yaml — Create unified response format and exception handler middleware
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI 资产清单
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: ### 说明
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: 本工单为纯后端 API 服务开发，**不涉及前端 UI 实现**，因此无需图标、插画、图片等视觉资产。
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: ### 文档资产需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: API 文档自动生成资源**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: Swagger UI 主题配置(使用 FastAPI 默认)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: ReDoc 文档样式(使用默认主题)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: OpenAPI Schema JSON 文件(自动生成)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: 日志输出格式**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: 控制台日志: 彩色输出(开发环境)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: 文件日志: JSON 格式(生产环境)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: 示例:
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: ```json
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: {
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: "timestamp": "2024-01-01T00:00:00Z",
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: "level": "ERROR",
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: "message": "NotFoundError: User not found",
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: "trace_id": "abc123"
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: }
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: 错误响应示例文档**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: 需在 API 文档中展示各类异常的响应示例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: 格式: Markdown 表格 + JSON 代码块
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: 位置: 项目 README.md 或 docs/errors.md
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: ### 开发工具资产
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: Postman Collection**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: 包含所有异常场景的测试用例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: 导出格式: JSON
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: 文件名: `api_exception_tests.postman_collection.json`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: 单元测试 Mock 数据**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: 正常响应示例: `tests/fixtures/success_response.json`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: 异常响应示例: `tests/fixtures/error_responses.json`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: ### 监控资产需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: 日志聚合配置**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: ELK/Loki 日志查询模板
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: 异常统计 Dashboard 配置(Grafana JSON)
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: 告警规则**：
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: 5xx 错误率 > 1% 触发告警
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: 4xx 错误率 > 10% 触发告警
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: 配置文件: `monitoring/alert_rules.yml`
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: 总结**: 本工单无传统 UI 资产需求,主要产出为代码、文档和配置文件。
+    status: pending  # 待美术Agent确认来源和规格
