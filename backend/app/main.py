@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.core.database import init_db, close_db
 from backend.app.core.middleware import JWTAuthMiddleware
-from backend.app.routers import auth
+from backend.app.routers import auth, budgets, categories
 import logging
 
 # Configure logging
@@ -32,6 +32,8 @@ app.add_middleware(JWTAuthMiddleware)
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(budgets.router)
+app.include_router(categories.router)
 
 
 @app.on_event("startup")
