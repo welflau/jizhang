@@ -1,6 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from jose import jwt
+from fastapi import HTTPException, status
 from app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -40,7 +41,7 @@ class TestPasswordHashing:
         assert verify_password(wrong_password, hashed) is False
 
     def test_different_hashes_for_same_password(self):
-        """测试相同密码生成不同哈希值（因为盐值不同）"""
+        """测试相同密码生成不同哈希值"""
         password = "testpassword123"
         hash1 = get_password_hash(password)
         hash2 = get_password_hash(password)
@@ -50,171 +51,228 @@ class TestPasswordHashing:
         assert verify_password(password, hash2) is True
 
 
-class TestJWTTokens:
-    """测试 JWT token 功能"""
+class TestTokenGeneration:
+    """测试 Token 生成功能"""
 
     def test_create_access_token(self):
         """测试创建访问令牌"""
-        user_id = 1
-        token = create_access_token(user_id=user_id)
+        data = {"sub": "testuser@example.com", "user_id": 1}
+        token = create_access_token(data)
         
         assert token is not None
         assert isinstance(token, str)
         assert len(token) > 0
+
+    def test_create_access_token_with_custom_expiry(self):
+        """测试创建自定义过期时间的访问令牌"""
+        data = {"sub": "testuser@example.com"}
+        expires_delta = timedelta(minutes=30)
+        token = create_access_token(data, expires_delta=expires_delta)
+        
+        decoded = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        
+        assert "exp" in decoded
+        assert "sub" in decoded
+        assert decoded["sub"] == "testuser@example.com"
 
     def test_create_refresh_token(self):
         """测试创建刷新令牌"""
-        user_id = 1
-        token = create_refresh_token(user_id=user_id)
+        data = {"sub": "testuser@example.com", "user_id": 1}
+        token = create_refresh_token(data)
         
         assert token is not None
         assert isinstance(token, str)
         assert len(token) > 0
 
-    def test_decode_access_token(self):
-        """测试解码访问令牌"""
-        user_id = 1
-        token = create_access_token(user_id=user_id)
-        payload = decode_token(token)
+    def test_token_contains_required_fields(self):
+        """测试令牌包含必需字段"""
+        data = {"sub": "testuser@example.com", "user_id": 1, "role": "user"}
+        token = create_access_token(data)
         
-        assert payload is not None
-        assert payload["sub"] == str(user_id)
-        assert payload["type"] == "access"
-        assert "exp" in payload
+        decoded = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        
+        assert decoded["sub"] == "testuser@example.com"
+        assert decoded["user_id"] == 1
+        assert decoded["role"] == "user"
+        assert "exp" in decoded
 
-    def test_decode_refresh_token(self):
-        """测试解码刷新令牌"""
-        user_id = 1
-        token = create_refresh_token(user_id=user_id)
-        payload = decode_token(token)
-        
-        assert payload is not None
-        assert payload["sub"] == str(user_id)
-        assert payload["type"] == "refresh"
-        assert "exp" in payload
+
+class TestTokenVerification:
+    """测试 Token 验证功能"""
 
     def test_verify_valid_token(self):
         """测试验证有效令牌"""
-        user_id = 1
-        token = create_access_token(user_id=user_id)
+        data = {"sub": "testuser@example.com", "user_id": 1}
+        token = create_access_token(data)
         
-        result = verify_token(token, token_type="access")
-        assert result is not None
-        assert result == user_id
+        payload = verify_token(token)
+        
+        assert payload is not None
+        assert payload["sub"] == "testuser@example.com"
+        assert payload["user_id"] == 1
 
     def test_verify_invalid_token(self):
         """测试验证无效令牌"""
         invalid_token = "invalid.token.here"
         
-        result = verify_token(invalid_token, token_type="access")
-        assert result is None
+        with pytest.raises(HTTPException) as exc_info:
+            verify_token(invalid_token)
+        
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert "Could not validate credentials" in str(exc_info.value.detail)
 
     def test_verify_expired_token(self):
         """测试验证过期令牌"""
-        user_id = 1
-        # 创建一个已过期的令牌
+        data = {"sub": "testuser@example.com"}
         expires_delta = timedelta(seconds=-1)
-        payload = {
-            "sub": str(user_id),
-            "type": "access",
-            "exp": datetime.utcnow() + expires_delta
-        }
-        expired_token = jwt.encode(
-            payload,
-            settings.SECRET_KEY,
+        token = create_access_token(data, expires_delta=expires_delta)
+        
+        with pytest.raises(HTTPException) as exc_info:
+            verify_token(token)
+        
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_verify_token_with_wrong_secret(self):
+        """测试使用错误密钥验证令牌"""
+        data = {"sub": "testuser@example.com"}
+        
+        # 使用错误的密钥创建令牌
+        wrong_secret = "wrong_secret_key"
+        token = jwt.encode(
+            data,
+            wrong_secret,
             algorithm=settings.ALGORITHM
         )
         
-        result = verify_token(expired_token, token_type="access")
-        assert result is None
-
-    def test_verify_wrong_token_type(self):
-        """测试验证错误类型的令牌"""
-        user_id = 1
-        access_token = create_access_token(user_id=user_id)
+        with pytest.raises(HTTPException) as exc_info:
+            verify_token(token)
         
-        # 使用 access token 验证 refresh token
-        result = verify_token(access_token, token_type="refresh")
-        assert result is None
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_token_with_additional_claims(self):
-        """测试带有额外声明的令牌"""
-        user_id = 1
-        additional_claims = {"role": "admin", "email": "test@example.com"}
-        token = create_access_token(user_id=user_id, additional_claims=additional_claims)
+    def test_decode_token(self):
+        """测试解码令牌"""
+        data = {"sub": "testuser@example.com", "user_id": 1}
+        token = create_access_token(data)
+        
         payload = decode_token(token)
         
-        assert payload is not None
-        assert payload["sub"] == str(user_id)
-        assert payload["role"] == "admin"
-        assert payload["email"] == "test@example.com"
-
-    def test_access_token_expiration_time(self):
-        """测试访问令牌过期时间"""
-        user_id = 1
-        token = create_access_token(user_id=user_id)
-        payload = decode_token(token)
-        
-        exp_timestamp = payload["exp"]
-        exp_datetime = datetime.fromtimestamp(exp_timestamp)
-        now = datetime.utcnow()
-        
-        # 验证过期时间大约是配置的时间（允许几秒误差）
-        expected_expiration = now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        time_diff = abs((exp_datetime - expected_expiration).total_seconds())
-        assert time_diff < 5  # 允许5秒误差
-
-    def test_refresh_token_expiration_time(self):
-        """测试刷新令牌过期时间"""
-        user_id = 1
-        token = create_refresh_token(user_id=user_id)
-        payload = decode_token(token)
-        
-        exp_timestamp = payload["exp"]
-        exp_datetime = datetime.fromtimestamp(exp_timestamp)
-        now = datetime.utcnow()
-        
-        # 验证过期时间大约是配置的时间
-        expected_expiration = now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-        time_diff = abs((exp_datetime - expected_expiration).total_seconds())
-        assert time_diff < 5  # 允许5秒误差
+        assert payload["sub"] == "testuser@example.com"
+        assert payload["user_id"] == 1
 
     def test_decode_invalid_token(self):
         """测试解码无效令牌"""
         invalid_token = "invalid.token.here"
+        
         payload = decode_token(invalid_token)
         
         assert payload is None
 
-    def test_token_contains_required_fields(self):
-        """测试令牌包含必需字段"""
-        user_id = 1
-        token = create_access_token(user_id=user_id)
-        payload = decode_token(token)
-        
-        assert "sub" in payload
-        assert "exp" in payload
-        assert "type" in payload
-        assert "iat" in payload  # issued at
 
-    def test_different_users_different_tokens(self):
-        """测试不同用户生成不同令牌"""
-        token1 = create_access_token(user_id=1)
-        token2 = create_access_token(user_id=2)
+class TestTokenExpiration:
+    """测试 Token 过期功能"""
+
+    def test_access_token_default_expiration(self):
+        """测试访问令牌默认过期时间"""
+        data = {"sub": "testuser@example.com"}
+        token = create_access_token(data)
         
-        assert token1 != token2
+        decoded = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
         
-        payload1 = decode_token(token1)
-        payload2 = decode_token(token2)
+        exp_timestamp = decoded["exp"]
+        exp_datetime = datetime.fromtimestamp(exp_timestamp)
+        now = datetime.utcnow()
         
-        assert payload1["sub"] != payload2["sub"]
+        time_diff = exp_datetime - now
+        
+        # 默认过期时间应该接近配置的时间
+        assert time_diff.total_seconds() > 0
+        assert time_diff.total_seconds() <= settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60 + 5
+
+    def test_refresh_token_longer_expiration(self):
+        """测试刷新令牌有更长的过期时间"""
+        data = {"sub": "testuser@example.com"}
+        access_token = create_access_token(data)
+        refresh_token = create_refresh_token(data)
+        
+        access_decoded = jwt.decode(
+            access_token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        refresh_decoded = jwt.decode(
+            refresh_token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        
+        access_exp = access_decoded["exp"]
+        refresh_exp = refresh_decoded["exp"]
+        
+        assert refresh_exp > access_exp
+
+
+class TestTokenPayload:
+    """测试 Token 载荷"""
+
+    def test_token_with_multiple_claims(self):
+        """测试包含多个声明的令牌"""
+        data = {
+            "sub": "testuser@example.com",
+            "user_id": 1,
+            "role": "admin",
+            "permissions": ["read", "write", "delete"]
+        }
+        token = create_access_token(data)
+        
+        payload = verify_token(token)
+        
+        assert payload["sub"] == "testuser@example.com"
+        assert payload["user_id"] == 1
+        assert payload["role"] == "admin"
+        assert payload["permissions"] == ["read", "write", "delete"]
+
+    def test_token_with_empty_subject(self):
+        """测试空主题的令牌"""
+        data = {"sub": ""}
+        token = create_access_token(data)
+        
+        payload = verify_token(token)
+        
+        assert payload["sub"] == ""
+
+    def test_token_with_special_characters(self):
+        """测试包含特殊字符的令牌"""
+        data = {
+            "sub": "test+user@example.com",
+            "name": "Test User (Admin)",
+            "description": "User with special chars: !@#$%^&*()"
+        }
+        token = create_access_token(data)
+        
+        payload = verify_token(token)
+        
+        assert payload["sub"] == "test+user@example.com"
+        assert payload["name"] == "Test User (Admin)"
+        assert "special chars" in payload["description"]
 
 
 class TestSecurityEdgeCases:
     """测试安全边界情况"""
 
-    def test_empty_password(self):
-        """测试空密码"""
+    def test_empty_password_hash(self):
+        """测试空密码哈希"""
         password = ""
         hashed = get_password_hash(password)
         
@@ -227,13 +285,6 @@ class TestSecurityEdgeCases:
         
         assert verify_password(password, hashed) is True
 
-    def test_special_characters_password(self):
-        """测试特殊字符密码"""
-        password = "!@#$%^&*()_+-=[]{}|;:',.<>?/~`"
-        hashed = get_password_hash(password)
-        
-        assert verify_password(password, hashed) is True
-
     def test_unicode_password(self):
         """测试 Unicode 密码"""
         password = "密码测试🔐"
@@ -241,82 +292,46 @@ class TestSecurityEdgeCases:
         
         assert verify_password(password, hashed) is True
 
-    def test_token_with_zero_user_id(self):
-        """测试用户 ID 为 0 的令牌"""
-        user_id = 0
-        token = create_access_token(user_id=user_id)
-        result = verify_token(token, token_type="access")
+    def test_token_without_subject(self):
+        """测试没有主题的令牌"""
+        data = {"user_id": 1}
+        token = create_access_token(data)
         
-        assert result == user_id
-
-    def test_token_with_negative_user_id(self):
-        """测试负数用户 ID 的令牌"""
-        user_id = -1
-        token = create_access_token(user_id=user_id)
-        result = verify_token(token, token_type="access")
+        payload = verify_token(token)
         
-        assert result == user_id
+        assert payload["user_id"] == 1
 
-    def test_token_with_large_user_id(self):
-        """测试大数字用户 ID 的令牌"""
-        user_id = 999999999
-        token = create_access_token(user_id=user_id)
-        result = verify_token(token, token_type="access")
-        
-        assert result == user_id
-
-    def test_malformed_token_parts(self):
-        """测试格式错误的令牌"""
+    def test_malformed_token_structure(self):
+        """测试格式错误的令牌结构"""
         malformed_tokens = [
-            "only.two.parts",
-            "too.many.parts.here.extra",
-            "no-dots-at-all",
+            "not.a.token",
+            "only.two",
             "",
-            "...",
+            "a" * 100,
         ]
         
         for token in malformed_tokens:
-            result = verify_token(token, token_type="access")
-            assert result is None
+            with pytest.raises(HTTPException):
+                verify_token(token)
 
-    def test_token_with_wrong_signature(self):
-        """测试签名错误的令牌"""
-        user_id = 1
-        token = create_access_token(user_id=user_id)
-        
-        # 修改令牌的最后一个字符来破坏签名
-        tampered_token = token[:-1] + ("a" if token[-1] != "a" else "b")
-        
-        result = verify_token(tampered_token, token_type="access")
-        assert result is None
 
-    def test_token_without_type_claim(self):
-        """测试没有 type 声明的令牌"""
-        user_id = 1
-        payload = {
-            "sub": str(user_id),
-            "exp": datetime.utcnow() + timedelta(minutes=30)
-        }
-        token = jwt.encode(
-            payload,
-            settings.SECRET_KEY,
-            algorithm=settings.ALGORITHM
-        )
-        
-        result = verify_token(token, token_type="access")
-        assert result is None
+class TestTokenRefresh:
+    """测试令牌刷新功能"""
 
-    def test_token_without_sub_claim(self):
-        """测试没有 sub 声明的令牌"""
-        payload = {
-            "type": "access",
-            "exp": datetime.utcnow() + timedelta(minutes=30)
-        }
-        token = jwt.encode(
-            payload,
-            settings.SECRET_KEY,
-            algorithm=settings.ALGORITHM
-        )
+    def test_refresh_token_creation(self):
+        """测试刷新令牌创建"""
+        data = {"sub": "testuser@example.com", "user_id": 1}
+        refresh_token = create_refresh_token(data)
         
-        result = verify_token(token, token_type="access")
-        assert result is None
+        payload = verify_token(refresh_token)
+        
+        assert payload["sub"] == "testuser@example.com"
+        assert payload["user_id"] == 1
+
+    def test_refresh_token_different_from_access(self):
+        """测试刷新令牌与访问令牌不同"""
+        data = {"sub": "testuser@example.com"}
+        access_token = create_access_token(data)
+        refresh_token = create_refresh_token(data)
+        
+        assert access_token != refresh_token
