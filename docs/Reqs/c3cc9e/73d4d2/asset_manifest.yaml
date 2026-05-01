@@ -1,0 +1,69 @@
+# asset_manifest.yaml — Implement JWT authentication middleware
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: auth_checkmark_circle
+    type: icon
+    description: Authentication success indicator, 16px, outline style
+    source_hint: iconify:heroicons:check-circle
+    status: pending
+  - id: auth_x_circle
+    type: icon
+    description: Authentication failure indicator, 16px, outline style
+    source_hint: iconify:heroicons:x-circle
+    status: pending
+  - id: auth_clock
+    type: icon
+    description: Token expiration timer icon, 14-16px, outline style
+    source_hint: iconify:heroicons:clock
+    status: pending
+  - id: auth_alert_circle
+    type: icon
+    description: Error message icon, 20px, outline style
+    source_hint: iconify:heroicons:exclamation-circle
+    status: pending
+  - id: auth_clipboard
+    type: icon
+    description: Copy token to clipboard icon, 16px, outline style
+    source_hint: iconify:heroicons:clipboard-copy
+    status: pending
+  - id: auth_lock_closed
+    type: icon
+    description: Protected route indicator, 16px, outline style
+    source_hint: iconify:heroicons:lock-closed
+    status: pending
+  - id: auth_refresh
+    type: icon
+    description: Refresh token button icon, 16px, outline style
+    source_hint: iconify:heroicons:arrow-path
+    status: pending
+  - id: auth_shield_check
+    type: icon
+    description: Security badge icon, 20px, outline style
+    source_hint: iconify:heroicons:shield-check
+    status: pending
+  - id: auth_key
+    type: icon
+    description: API key or token icon, 18px, outline style
+    source_hint: iconify:heroicons:key
+    status: pending
+  - id: auth_user_circle
+    type: icon
+    description: User profile icon for JWT payload display, 20px, outline style
+    source_hint: iconify:heroicons:user-circle
+    status: pending
+  - id: auth_secure_connection
+    type: illustration
+    description: Illustration showing secure JWT handshake, 400x300, flat style with primary color accent
+    source_hint: ai_generate
+    status: pending
+  - id: auth_expired_token
+    type: illustration
+    description: Illustration for token expiration state, 300x200, warning color theme
+    source_hint: ai_generate
+    status: pending
+  - id: auth_unauthorized
+    type: illustration
+    description: 401 error page illustration, 400x300, error color theme with lock icon
+    source_hint: ai_generate
+    status: pending
