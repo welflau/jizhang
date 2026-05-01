@@ -3,10 +3,10 @@
 > 2026-05-02 00:59 | LLM
 
 ## 产出文件
-- [backend/main.py](/app#repo?file=backend/main.py) (10870 chars)
-- [frontend/index.html](/app#repo?file=frontend/index.html) (19948 chars)
+- [backend/main.py](/app#repo?file=backend/main.py) (10969 chars)
 - [backend/requirements.txt](/app#repo?file=backend/requirements.txt) (128 chars)
-- [README.md](/app#repo?file=README.md) (4828 chars)
+- [frontend/index.html](/app#repo?file=frontend/index.html) (22081 chars)
+- [README.md](/app#repo?file=README.md) (4107 chars)
 
 ## 自测: 自测 5/6 通过 ⚠️
 
@@ -21,39 +21,39 @@
 
 ## 代码变更 (Diff)
 
-### backend/main.py (新建, 10870 chars)
+### backend/main.py (新建, 10969 chars)
 ```
 + import os
 + import logging
 + from datetime import datetime, timedelta
 + from typing import Optional
 + 
++ import aiosqlite
++ import bcrypt
 + from fastapi import FastAPI, HTTPException, Depends, status
 + from fastapi.middleware.cors import CORSMiddleware
 + from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-+ from pydantic import BaseModel, Field, field_validator
-+ import aiosqlite
-+ import bcrypt
++ from pydantic import BaseModel, Field
 + import jwt
 + 
-+ # Configure logging
++ # Logging setup
 + logging.basicConfig(level=logging.INFO)
 + logger = logging.getLogger(__name__)
 + 
-+ app = FastAPI(title="User Management API")
-+ 
-+ # CORS configuration
++ # Constants
++ DATABASE_PATH = "app.db"
++ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
 + ... (更多)
 ```
 
-### frontend/index.html (新建, 19948 chars)
+### frontend/index.html (新建, 22081 chars)
 ```
 + <!DOCTYPE html>
 + <html lang="zh-CN">
 + <head>
 +     <meta charset="UTF-8">
 +     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-+     <title>User Profile Management</title>
++     <title>User Management System</title>
 +     <style>
 +         * {
 +             box-sizing: border-box;
@@ -62,11 +62,11 @@
 +         }
 + 
 +         :root {
-+             --primary: #1a73e8;
-+             --primary-dark: #1557b0;
-+             --success: #34a853;
-+             --danger: #ea4335;
-+             --warning: #fbbc04;
-+             --bg: #f8f9fa;
++             --primary: #1a1a2e;
++             --secondary: #16213e;
++             --accent: #0f3460;
++             --highlight: #e94560;
++             --text: #eee;
++             --text-muted: #aaa;
 + ... (更多)
 ```
