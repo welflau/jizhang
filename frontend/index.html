@@ -1,532 +1,412 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile Management</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #1557b0;
-            --success: #34a853;
-            --danger: #ea4335;
-            --border: #dadce0;
-            --bg-light: #f8f9fa;
-            --text-primary: #202124;
-            --text-secondary: #5f6368;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-light);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-
-        h1, h2 {
-            margin-bottom: 16px;
-            color: var(--text-primary);
-        }
-
-        h1 {
-            font-size: 28px;
-        }
-
-        h2 {
-            font-size: 20px;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="url"],
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-            font-family: inherit;
-        }
-
-        .btn {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c5221f;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin-bottom: 16px;
-            font-size: 14px;
-        }
-
-        .alert-success {
-            background: #e6f4ea;
-            color: #137333;
-            border: 1px solid var(--success);
-        }
-
-        .alert-error {
-            background: #fce8e6;
-            color: #c5221f;
-            border: 1px solid var(--danger);
-        }
-
-        .avatar-preview {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--border);
-            margin: 16px 0;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .user-details {
-            flex: 1;
-        }
-
-        .user-details p {
-            margin: 4px 0;
-            color: var(--text-secondary);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .auth-container {
-            max-width: 400px;
-            margin: 100px auto;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 12px;
-            background: white;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            text-align: center;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .auth-tab:first-child {
-            border-radius: 4px 0 0 0;
-        }
-
-        .auth-tab:last-child {
-            border-radius: 0 4px 0 0;
-        }
-
-        .auth-tab.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .logout-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px auto;
-            }
-
-            .user-info {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>访客追踪系统</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #16213e;
+      --accent: #0f3460;
+      --highlight: #e94560;
+      --text: #eee;
+      --border: #444;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .stats-card {
+      background: var(--accent);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+    
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--highlight);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+    
+    .btn-primary {
+      background: var(--highlight);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #d63651;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(233, 69, 96, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #2a9d8f;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #238276;
+      transform: translateY(-2px);
+    }
+    
+    .btn-danger {
+      background: #e76f51;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #d65a3f;
+      transform: translateY(-2px);
+    }
+    
+    .records-table {
+      background: var(--accent);
+      border-radius: 12px;
+      padding: 25px;
+      overflow-x: auto;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      background: rgba(255,255,255,0.05);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+    
+    tr:hover {
+      background: rgba(255,255,255,0.03);
+    }
+    
+    .visit-counter {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: var(--highlight);
+      color: white;
+      border-radius: 25px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+      z-index: 1000;
+    }
+    
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      display: none;
+    }
+    
+    .message.success {
+      background: rgba(42, 157, 143, 0.2);
+      border-left: 4px solid #2a9d8f;
+    }
+    
+    .message.error {
+      background: rgba(231, 111, 81, 0.2);
+      border-left: 4px solid #e76f51;
+    }
+    
+    .message.show {
+      display: block;
+    }
+    
+    input[type="file"] {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Auth Section -->
-    <div id="auth-section" class="auth-container">
-        <div class="card">
-            <h1 style="text-align: center; margin-bottom: 24px;">User Management</h1>
-            <div class="auth-tabs">
-                <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
-                <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
-            </div>
-
-            <div id="auth-alert"></div>
-
-            <!-- Login Form -->
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-            </form>
-
-            <!-- Register Form -->
-            <form id="register-form" class="hidden">
-                <div class="form-group">
-                    <label for="register-username">Username</label>
-                    <input type="text" id="register-username" pattern="[a-zA-Z0-9_]{3,30}" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Password (min 6 chars)</label>
-                    <input type="password" id="register-password" minlength="6" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
-            </form>
+  <div class="container">
+    <h1>🌐 访客追踪系统</h1>
+    
+    <div class="stats-card">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="total-visits">0</div>
+          <div class="stat-label">总访问次数</div>
         </div>
+        <div class="stat-item">
+          <div class="stat-value" id="local-visits">0</div>
+          <div class="stat-label">本地访问次数</div>
+        </div>
+      </div>
+      
+      <div id="message" class="message"></div>
+      
+      <div class="actions">
+        <button class="btn-primary" onclick="exportData()">📥 导出数据</button>
+        <button class="btn-secondary" onclick="document.getElementById('import-file').click()">📤 导入数据</button>
+        <button class="btn-danger" onclick="clearData()">🗑️ 清空数据</button>
+        <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+      </div>
     </div>
-
-    <!-- Profile Section -->
-    <div id="profile-section" class="container hidden">
-        <button class="btn btn-danger logout-btn" onclick="logout()">Logout</button>
-
-        <div class="card">
-            <h1>User Profile</h1>
-            <div class="user-info">
-                <img id="current-avatar" src="https://via.placeholder.com/120" alt="Avatar" class="avatar-preview">
-                <div class="user-details">
-                    <h2 id="current-nickname">Loading...</h2>
-                    <p><strong>Username:</strong> <span id="current-username"></span></p>
-                    <p><strong>Email:</strong> <span id="current-email"></span></p>
-                    <p><strong>Member since:</strong> <span id="current-created"></span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Update Profile -->
-        <div class="card">
-            <h2>Update Profile</h2>
-            <div id="profile-alert"></div>
-            <form id="profile-form">
-                <div class="form-group">
-                    <label for="nickname">Nickname</label>
-                    <input type="text" id="nickname" maxlength="50">
-                </div>
-                <div class="form-group">
-                    <label for="avatar-url">Avatar URL</label>
-                    <input type="url" id="avatar-url" placeholder="https://example.com/avatar.jpg">
-                </div>
-                <div class="form-group">
-                    <label for="preferences">Preferences (JSON format)</label>
-                    <textarea id="preferences" placeholder='{"theme": "dark", "language": "en"}'></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
-        </div>
-
-        <!-- Change Password -->
-        <div class="card">
-            <h2>Change Password</h2>
-            <div id="password-alert"></div>
-            <form id="password-form">
-                <div class="form-group">
-                    <label for="old-password">Current Password</label>
-                    <input type="password" id="old-password" required>
-                </div>
-                <div class="form-group">
-                    <label for="new-password">New Password (min 6 chars)</label>
-                    <input type="password" id="new-password" minlength="6" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Password</button>
-            </form>
-        </div>
+    
+    <div class="records-table">
+      <h2 style="margin-bottom: 20px;">📊 最近访问记录</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>时间</th>
+            <th>IP地址</th>
+            <th>访问路径</th>
+          </tr>
+        </thead>
+        <tbody id="records-body">
+          <tr>
+            <td colspan="4" style="text-align: center; opacity: 0.6;">加载中...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <script>
-        const API_BASE = 'http://localhost:8080/api';
-        let authToken = localStorage.getItem('auth_token');
-
-        // Auth tab switching
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const tabs = document.querySelectorAll('.auth-tab');
-
-            tabs.forEach(t => t.classList.remove('active'));
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                tabs[0].classList.add('active');
-            } else {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                tabs[1].classList.add('active');
-            }
-            document.getElementById('auth-alert').innerHTML = '';
+  </div>
+  
+  <div class="visit-counter">
+    访问次数: <span id="visit-count">0</span>
+  </div>
+  
+  <script>
+    // Local visit counter
+    const localCount = parseInt(localStorage.visits || "0") + 1;
+    localStorage.visits = localCount;
+    document.getElementById("visit-count").textContent = localCount;
+    document.getElementById("local-visits").textContent = localCount;
+    
+    // Show message helper
+    function showMessage(text, type = 'success') {
+      const msgEl = document.getElementById('message');
+      msgEl.textContent = text;
+      msgEl.className = `message ${type} show`;
+      setTimeout(() => {
+        msgEl.classList.remove('show');
+      }, 5000);
+    }
+    
+    // Load statistics
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/stats');
+        if (!response.ok) throw new Error('Failed to load stats');
+        
+        const data = await response.json();
+        document.getElementById('total-visits').textContent = data.total_visits;
+        
+        // Update recent records table
+        const tbody = document.getElementById('records-body');
+        if (data.recent_visits.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; opacity: 0.6;">暂无记录</td></tr>';
+        } else {
+          tbody.innerHTML = data.recent_visits.map(visit => `
+            <tr>
+              <td>${visit.id}</td>
+              <td>${visit.timestamp}</td>
+              <td>${visit.ip}</td>
+              <td>${visit.path}</td>
+            </tr>
+          `).join('');
         }
-
-        // Show alert
-        function showAlert(containerId, message, type = 'success') {
-            const container = document.getElementById(containerId);
-            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(() => container.innerHTML = '', 5000);
-        }
-
-        // API request helper
-        async function apiRequest(endpoint, options = {}) {
-            const headers = {
-                'Content-Type': 'application/json',
-                ...options.headers
-            };
-
-            if (authToken && !options.skipAuth) {
-                headers['Authorization'] = `Bearer ${authToken}`;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}${endpoint}`, {
-                    ...options,
-                    headers
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.detail || 'Request failed');
-                }
-
-                return data;
-            } catch (error) {
-                console.error('API Error:', error);
-                throw error;
-            }
-        }
-
-        // Login
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                const data = await apiRequest('/auth/login', {
-                    method: 'POST',
-                    body: JSON.stringify({ username, password }),
-                    skipAuth: true
-                });
-
-                authToken = data.access_token;
-                localStorage.setItem('auth_token', authToken);
-                showAuthenticatedView(data.user);
-            } catch (error) {
-                showAlert('auth-alert', error.message, 'error');
-            }
+      } catch (error) {
+        console.error('Load stats error:', error);
+        showMessage('加载统计数据失败', 'error');
+      }
+    }
+    
+    // Export data
+    async function exportData() {
+      try {
+        const response = await fetch('/api/export');
+        if (!response.ok) throw new Error('Export failed');
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `visitor_records_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showMessage('数据导出成功！', 'success');
+      } catch (error) {
+        console.error('Export error:', error);
+        showMessage('导出失败: ' + error.message, 'error');
+      }
+    }
+    
+    // Import data
+    async function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/api/import', {
+          method: 'POST',
+          body: formData
         });
-
-        // Register
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            try {
-                const data = await apiRequest('/auth/register', {
-                    method: 'POST',
-                    body: JSON.stringify({ username, email, password }),
-                    skipAuth: true
-                });
-
-                authToken = data.access_token;
-                localStorage.setItem('auth_token', authToken);
-                showAuthenticatedView(data.user);
-            } catch (error) {
-                showAlert('auth-alert', error.message, 'error');
-            }
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.error || 'Import failed');
+        }
+        
+        showMessage(
+          `导入成功！导入 ${result.imported_count} 条，跳过 ${result.skipped_count} 条`,
+          'success'
+        );
+        
+        if (result.errors.length > 0) {
+          console.warn('Import errors:', result.errors);
+        }
+        
+        // Reload stats
+        await loadStats();
+        
+      } catch (error) {
+        console.error('Import error:', error);
+        showMessage('导入失败: ' + error.message, 'error');
+      } finally {
+        // Reset file input
+        event.target.value = '';
+      }
+    }
+    
+    // Clear data
+    async function clearData() {
+      if (!confirm('确定要清空所有访问记录吗？此操作不可恢复！')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/clear', {
+          method: 'POST',
+          headers: {
+            'X-Clear-Token': 'dev_clear_token_12345'
+          }
         });
-
-        // Load user profile
-        async function loadUserProfile() {
-            try {
-                const user = await apiRequest('/users/me');
-                displayUserProfile(user);
-            } catch (error) {
-                console.error('Failed to load profile:', error);
-                logout();
-            }
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.error || 'Clear failed');
         }
-
-        // Display user profile
-        function displayUserProfile(user) {
-            document.getElementById('current-username').textContent = user.username;
-            document.getElementById('current-email').textContent = user.email;
-            document.getElementById('current-nickname').textContent = user.nickname || user.username;
-            document.getElementById('current-created').textContent = new Date(user.created_at).toLocaleDateString();
-            document.getElementById('current-avatar').src = user.avatar_url || 'https://via.placeholder.com/120';
-
-            document.getElementById('nickname').value = user.nickname || '';
-            document.getElementById('avatar-url').value = user.avatar_url || '';
-            document.getElementById('preferences').value = JSON.stringify(user.preferences, null, 2);
-        }
-
-        // Update profile
-        document.getElementById('profile-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nickname = document.getElementById('nickname').value;
-            const avatar_url = document.getElementById('avatar-url').value;
-            const preferencesText = document.getElementById('preferences').value;
-
-            let preferences = {};
-            if (preferencesText.trim()) {
-                try {
-                    preferences = JSON.parse(preferencesText);
-                } catch (error) {
-                    showAlert('profile-alert', 'Invalid JSON format in preferences', 'error');
-                    return;
-                }
-            }
-
-            try {
-                const user = await apiRequest('/users/me', {
-                    method: 'PATCH',
-                    body: JSON.stringify({ nickname, avatar_url, preferences })
-                });
-
-                displayUserProfile(user);
-                showAlert('profile-alert', 'Profile updated successfully!');
-            } catch (error) {
-                showAlert('profile-alert', error.message, 'error');
-            }
-        });
-
-        // Change password
-        document.getElementById('password-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const old_password = document.getElementById('old-password').value;
-            const new_password = document.getElementById('new-password').value;
-
-            try {
-                await apiRequest('/users/me/password', {
-                    method: 'PUT',
-                    body: JSON.stringify({ old_password, new_password })
-                });
-
-                showAlert('password-alert', 'Password updated successfully!');
-                document.getElementById('password-form').reset();
-            } catch (error) {
-                showAlert('password-alert', error.message, 'error');
-            }
-        });
-
-        // Logout
-        function logout() {
-            authToken = null;
-            localStorage.removeItem('auth_token');
-            document.getElementById('auth-section').classList.remove('hidden');
-            document.getElementById('profile-section').classList.add('hidden');
-            document.getElementById('login-form').reset();
-            document.getElementById('register-form').reset();
-        }
-
-        // Show authenticated view
-        function showAuthenticatedView(user) {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('profile-section').classList.remove('hidden');
-            displayUserProfile(user);
-        }
-
-        // Initialize
-        if (authToken) {
-            loadUserProfile();
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('profile-section').classList.remove('hidden');
-        }
-    </script>
+        
+        showMessage(`成功清空 ${result.deleted_count} 条记录`, 'success');
+        
+        // Reload stats
+        await loadStats();
+        
+      } catch (error) {
+        console.error('Clear error:', error);
+        showMessage('清空失败: ' + error.message, 'error');
+      }
+    }
+    
+    // Initial load
+    loadStats();
+    
+    // Auto refresh every 30 seconds
+    setInterval(loadStats, 30000);
+  </script>
 </body>
 </html>

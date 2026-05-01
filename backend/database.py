@@ -1,42 +1,50 @@
-"""Database connection and initialization."""
-import aiosqlite
-import os
+"""Database initialization and connection management."""
+import sqlite3
 import logging
-from contextlib import asynccontextmanager
 
 logger = logging.getLogger(__name__)
-
-DB_PATH = os.getenv("DB_PATH", "app.db")
-BUSY_TIMEOUT = 5000  # 5 seconds
+DB_PATH = 'visitor_data.db'
 
 
-@asynccontextmanager
-async def get_db():
-    """Async context manager for database connections.
+def get_db_connection():
+    """Get SQLite database connection.
     
-    Yields:
-        aiosqlite.Connection: Database connection with foreign keys enabled
+    Returns:
+        sqlite3.Connection: Database connection with row factory
     """
-    conn = await aiosqlite.connect(DB_PATH, timeout=BUSY_TIMEOUT)
-    conn.row_factory = aiosqlite.Row  # Enable dict-like row access
-    
+    conn = sqlite3.connect(DB_PATH, timeout=5.0)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db():
+    """Initialize database schema."""
     try:
-        # Enable foreign key constraints
-        await conn.execute("PRAGMA foreign_keys = ON")
-        # Enable WAL mode for better concurrency
-        await conn.execute("PRAGMA journal_mode = WAL")
-        yield conn
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS visits (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                ip TEXT NOT NULL,
+                user_agent TEXT,
+                path TEXT,
+                method TEXT
+            )
+        """)
+        
+        # Create index on timestamp for faster sorting
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_visits_timestamp
+            ON visits(timestamp)
+        """)
+        
+        conn.commit()
+        conn.close()
+        
+        logger.info("Database initialized successfully")
+        
     except Exception as e:
-        logger.error(f"Database error: {e}")
+        logger.exception(f"Database initialization failed: {e}")
         raise
-    finally:
-        await conn.close()
-
-
-async def init_db():
-    """Initialize database by running migrations."""
-    from backend.migrations.run_migrations import run_migrations
-    
-    logger.info("Initializing database...")
-    await run_migrations()
-    logger.info("Database initialized successfully")
