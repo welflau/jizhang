@@ -5,42 +5,42 @@ middleware_layer
 
 ## 技术栈
 
+- **language**: Python 3.9+
 - **framework**: FastAPI
 - **validation**: Pydantic v2
-- **exception_handling**: FastAPI exception handlers + custom middleware
-- **response_format**: Generic Pydantic model with TypeVar
 - **logging**: Python logging (already configured)
+- **dependencies**: fastapi, pydantic, starlette
 
 ## 模块设计
 
 ### 
-职责: Define unified response models and generic wrapper
-- ResponseModel.model_validate() for serialization
-- Type hints: ResponseModel[UserSchema], ResponseModel[List[Item]]
+职责: Define unified response models and standard response codes
+- success(data, message): Create success response
+- error(code, message, data=None): Create error response
+- paginated(items, total, page, page_size): Create paginated response
 
 ### 
 职责: Define custom business exception classes
-- raise NotFoundException(detail='User not found')
-- All exceptions inherit from BaseAPIException
+- __init__(detail, status_code, headers=None)
+- to_response(): Convert exception to ResponseModel
 
 ### 
-职责: Register global exception handlers for FastAPI
-- Called in app/main.py: register_exception_handlers(app)
-- Returns JSONResponse with ResponseModel structure
+职责: Global exception handler middleware
+- dispatch(request, call_next): Catch all exceptions and convert to unified response
+- _handle_api_exception(exc): Handle custom business exceptions
+- _handle_validation_error(exc): Handle Pydantic ValidationError
+- _handle_http_exception(exc): Handle FastAPI HTTPException
+- _handle_generic_exception(exc): Handle unexpected exceptions
 
 ### 
-职责: Optional middleware for exception logging and preprocessing
-- app.add_middleware(ExceptionLoggingMiddleware)
-- Integrates with app/core/logger.py
+职责: Register exception handlers and middleware
 
 ### 
-职责: Refactor health check to use ResponseModel
-- GET /api/health returns {code: 200, message: 'success', data: {status: 'ok'}}
+职责: Helper functions for common response patterns
 
 ## 关键决策
-- {'decision': 'Use Generic Pydantic model (ResponseModel[T]) instead of dict', 'reason': 'Type safety for response data, automatic validation, better IDE support, consistent with FastAPI/Pydantic ecosystem'}
-- {'decision': 'Separate exception classes (app/core/exceptions.py) from handlers (app/core/exception_handlers.py)', 'reason': 'Clear separation of concerns: exceptions define business errors, handlers define HTTP responses. Easier to test and extend'}
-- {'decision': "Use FastAPI's built-in exception handler registration instead of pure middleware", 'reason': "FastAPI's @app.exception_handler() is more idiomatic, supports async, and integrates with OpenAPI docs. Middleware is only for logging"}
-- {'decision': 'Define ResponseCode as IntEnum instead of string constants', 'reason': 'HTTP status codes are integers, IntEnum provides type checking and prevents magic numbers'}
-- {'decision': 'Keep success code as 200 (not 0 or custom codes)', 'reason': 'Align with HTTP standards, avoid confusion. Business-specific codes can be added in data field if needed'}
-- {'decision': 'Log all exceptions in middleware before handler processes them', 'reason': 'Centralized logging with request context (path, method, IP) for debugging. Handlers focus on response formatting'}
+- {'decision': 'Use Generic Pydantic model ResponseModel[T] for type safety', 'rationale': 'Provides IDE autocomplete and type checking for response data, better than plain dict', 'alternatives': 'Plain dict response - rejected due to lack of type safety'}
+- {'decision': 'Implement middleware instead of dependency injection for exception handling', 'rationale': 'Middleware catches ALL exceptions including those outside route handlers (e.g., middleware chain errors), more comprehensive than @app.exception_handler decorators alone', 'alternatives': 'Only use @app.exception_handler - rejected as it misses some edge cases'}
+- {'decision': "Keep HTTP status codes in response headers, also include 'code' field in JSON body", 'rationale': 'HTTP status for protocol compliance, JSON code field for frontend business logic (e.g., 4001 for token expired vs 4002 for invalid token, both 401 status)', 'alternatives': 'Only use HTTP status - rejected as insufficient granularity for business errors'}
+- {'decision': 'Log all 5xx errors with full traceback, log 4xx errors without traceback', 'rationale': '5xx indicates server bugs needing investigation, 4xx is expected client errors not needing stack traces', 'alternatives': 'Log everything with traceback - rejected as too noisy'}
+- {'decision': 'Inherit custom exceptions from Python Exception, not FastAPI HTTPException', 'rationale': 'HTTPException is FastAPI-specific and bypasses middleware, custom exceptions give full control over response format', 'alternatives': "Use HTTPException - rejected as it doesn't go through our middleware"}
