@@ -1,92 +1,67 @@
+#!/usr/bin/env python3
+"""Database initialization script.
+
+This script creates all database tables defined in models.
+Run this script manually to initialize or reset the database:
+
+    python scripts/init_db.py
+"""
+
 import asyncio
 import sys
 from pathlib import Path
 
-# Add project root to Python path
-project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root))
+# Add parent directory to path to import app modules
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from sqlalchemy.ext.asyncio import create_async_engine
-from app.core.config import settings
+from app.database import init_db, close_db, engine
 from app.models.base import Base
-from app.core.database import engine
+from app.core.config import get_settings
+import logging
 
-
-async def init_db():
-    """Initialize database by creating all tables"""
-    print("Starting database initialization...")
-    print(f"Database URL: {settings.DATABASE_URL}")
-    
-    try:
-        # Create all tables
-        async with engine.begin() as conn:
-            print("Dropping existing tables...")
-            await conn.run_sync(Base.metadata.drop_all)
-            
-            print("Creating tables...")
-            await conn.run_sync(Base.metadata.create_all)
-        
-        print("✓ Database tables created successfully!")
-        
-        # Verify connection
-        async with engine.connect() as conn:
-            result = await conn.execute("SELECT 1")
-            await result.fetchone()
-            print("✓ Database connection verified!")
-        
-        return True
-        
-    except Exception as e:
-        print(f"✗ Error initializing database: {e}")
-        return False
-    finally:
-        await engine.dispose()
-
-
-async def check_db_connection():
-    """Check if database connection is working"""
-    print("Checking database connection...")
-    
-    try:
-        async with engine.connect() as conn:
-            result = await conn.execute("SELECT version()")
-            version = await result.fetchone()
-            print(f"✓ Connected to PostgreSQL: {version[0]}")
-            return True
-    except Exception as e:
-        print(f"✗ Database connection failed: {e}")
-        return False
-    finally:
-        await engine.dispose()
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 async def main():
-    """Main function to run database initialization"""
-    print("=" * 60)
-    print("Database Initialization Script")
-    print("=" * 60)
+    """Main initialization function."""
+    settings = get_settings()
     
-    # Check connection first
-    connection_ok = await check_db_connection()
-    if not connection_ok:
-        print("\nPlease check your database configuration:")
-        print(f"  - DATABASE_URL: {settings.DATABASE_URL}")
-        print("  - Ensure PostgreSQL is running")
-        print("  - Verify database credentials")
-        sys.exit(1)
+    logger.info("=" * 60)
+    logger.info("Database Initialization Script")
+    logger.info("=" * 60)
+    logger.info(f"Database URL: {settings.DATABASE_URL}")
+    logger.info(f"Tables to create: {list(Base.metadata.tables.keys())}")
+    logger.info("=" * 60)
     
-    print("\n" + "=" * 60)
-    
-    # Initialize database
-    init_ok = await init_db()
-    
-    print("=" * 60)
-    if init_ok:
-        print("Database initialization completed successfully!")
-        sys.exit(0)
-    else:
-        print("Database initialization failed!")
-        sys.exit(1)
+    try:
+        # Initialize database and create all tables
+        await init_db()
+        
+        # Verify tables were created
+        async with engine.begin() as conn:
+            def get_table_names(connection):
+                from sqlalchemy import inspect
+                inspector = inspect(connection)
+                return inspector.get_table_names()
+            
+            tables = await conn.run_sync(get_table_names)
+            logger.info(f"Created tables: {tables}")
+        
+        logger.info("=" * 60)
+        logger.info("✓ Database initialization completed successfully")
+        logger.info("=" * 60)
+        
+    except Exception as e:
+        logger.error("=" * 60)
+        logger.error(f"✗ Database initialization failed: {e}")
+        logger.error("=" * 60)
+        raise
+    finally:
+        await close_db()
 
 
 if __name__ == "__main__":

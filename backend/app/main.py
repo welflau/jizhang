@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from backend.app.core.config import settings
-from backend.app.core.database import init_db, close_db
-from backend.app.core.middleware import JWTAuthMiddleware
-from backend.app.routers import auth
+from contextlib import asynccontextmanager
 import logging
+import os
+
+from app.core.config import get_settings
+from app.database import init_db, close_db
 
 # Configure logging
 logging.basicConfig(
@@ -13,54 +13,67 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+settings = get_settings()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager.
+    
+    Handles startup and shutdown events:
+    - Startup: Initialize database connection and create tables
+    - Shutdown: Close database connections gracefully
+    """
+    # Startup
+    logger.info(f"Starting {settings.APP_NAME}...")
+    try:
+        await init_db()
+        logger.info("Database connection pool initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+        raise
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down application...")
+    await close_db()
+    logger.info("Application shutdown complete")
+
+
 app = FastAPI(
     title=settings.APP_NAME,
-    debug=settings.DEBUG
+    lifespan=lifespan,
+    debug=settings.DEBUG,
 )
-
-# CORS middleware for frontend access
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# JWT authentication middleware
-app.add_middleware(JWTAuthMiddleware)
-
-# Include routers
-app.include_router(auth.router)
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database on application startup."""
-    logger.info("Initializing database...")
-    await init_db()
-    logger.info("Database initialized successfully")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Close database connection pool on application shutdown."""
-    logger.info("Closing database connection pool...")
-    await close_db()
-    logger.info("Database connection pool closed successfully")
 
 
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"status": "ok", "app": settings.APP_NAME}
+    return {
+        "status": "ok",
+        "app": settings.APP_NAME,
+        "database": "connected"
+    }
+
+
+@app.get("/health")
+async def health_check():
+    """Detailed health check endpoint."""
+    return {
+        "status": "healthy",
+        "database_url": settings.DATABASE_URL.split("@")[-1] if "@" in settings.DATABASE_URL else "sqlite",
+        "debug_mode": settings.DEBUG
+    }
 
 
 if __name__ == "__main__":
     import uvicorn
+    
     uvicorn.run(
-        "backend.app.main:app",
+        "app.main:app",
         host=settings.HOST,
         port=settings.PORT,
-        reload=settings.DEBUG
+        reload=settings.DEBUG,
     )
