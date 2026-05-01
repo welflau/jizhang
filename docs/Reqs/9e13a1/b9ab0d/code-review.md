@@ -12,8 +12,6 @@
 无
 
 ## 审查的代码
-- backend/migrations/002_create_budgets_table.sql
-- backend/migrations/001_init_schema.sql
-- backend/db/migrate.py
-- backend/README.md
+- backend/alembic/versions/002_create_budgets_table.py
+- backend/app/models/budget.py
 - docs/Reqs/9e13a1/b9ab0d/dev-notes.md
