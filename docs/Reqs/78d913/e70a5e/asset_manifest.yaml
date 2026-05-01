@@ -1,0 +1,239 @@
+# asset_manifest.yaml — Design transaction data model and database schema
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## 图标资产（Icons）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: 数据库相关**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: icon: database（数据库表示，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: icon: table（表结构图标，24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: icon: index（索引图标，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: icon: key（主键/外键图标，20px，solid 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: 状态指示**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: icon: check-circle（成功状态，24px，solid 风格，绿色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: icon: x-circle（错误状态，24px，solid 风格，红色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: icon: alert-triangle（警告状态，24px，outline 风格，黄色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: icon: loader（加载中动画，24px，spinning）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: 操作类**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: icon: play（执行迁移，20px，solid 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: icon: rotate-ccw（回滚迁移，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: icon: refresh（重新加载，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: icon: code（查看 SQL，20px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: ## 插画资产（Illustrations）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: 空状态**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: illustration
+    description: illustration: empty-database（数据库为空时显示，400x300，扁平风格，灰蓝色调）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: 描述：一个空的数据库图标 + "暂无数据表" 文字
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: 错误状态**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: illustration
+    description: illustration: migration-failed（迁移失败时显示，400x300，扁平风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: 描述：断裂的数据库连接线 + 错误符号
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: 成功状态**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: illustration
+    description: illustration: migration-success（迁移成功时显示，300x200，扁平风格，绿色调）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: 描述：数据库图标 + 向上箭头 + 勾选标记
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: ## 图表资产（Diagrams）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: ER 图**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: diagram: transactions-er-diagram（实体关系图，SVG 格式，可缩放）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: 内容：transactions 表与 users、categories 表的关系
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: 显示：字段名、数据类型、主外键关系线
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: 索引结构图**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: diagram: index-structure（B-Tree 索引示意图，PNG，800x400）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: icon
+    description: 内容：展示复合索引 (user_id, date DESC) 的树状结构
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: icon
+    description: ## 代码片段资产（Code Snippets）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: SQL 示例**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_037
+    type: icon
+    description: code: create-table-sql（CREATE TABLE 语句，语法高亮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_038
+    type: icon
+    description: code: create-index-sql（CREATE INDEX 语句，语法高亮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_039
+    type: icon
+    description: Python 示例**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_040
+    type: icon
+    description: code: sqlalchemy-model（Transaction 模型类定义，语法高亮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_041
+    type: icon
+    description: code: alembic-migration（迁移文件模板，语法高亮）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_042
+    type: icon
+    description: ## 文档资产（Documentation）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_043
+    type: icon
+    description: 字段说明表格**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_044
+    type: icon
+    description: table: field-definitions（字段定义表格，Markdown 格式）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_045
+    type: icon
+    description: 列：字段名 | 类型 | 约束 | 说明 | 示例值
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_046
+    type: icon
+    description: 索引性能对比表**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_047
+    type: icon
+    description: table: index-performance（索引性能对比，Markdown 格式）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_048
+    type: icon
+    description: 列：查询类型 | 无索引耗时 | 有索引耗时 | 优化比例
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_049
+    type: icon
+    description: ## 日志输出资产（Log Examples）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_050
+    type: icon
+    description: 成功日志**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_051
+    type: icon
+    description: log: upgrade-success（alembic upgrade 成功输出，等宽字体）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_052
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_053
+    type: icon
+    description: INFO  [alembic.runtime.migration] Running upgrade  -> a1b2c3d4e5f6, create_transactions_table
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_054
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_055
+    type: icon
+    description: 错误日志**
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_056
+    type: icon
+    description: log: constraint-error（外键约束错误输出，等宽字体，红色）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_057
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_058
+    type: icon
+    description: ERROR [sqlalchemy.exc.IntegrityError] FOREIGN KEY constraint failed
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_059
+    type: icon
+    description: ```
+    status: pending  # 待美术Agent确认来源和规格
