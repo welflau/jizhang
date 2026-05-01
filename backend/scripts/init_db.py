@@ -71,22 +71,23 @@ async def main():
     if not connection_ok:
         print("\nPlease check your database configuration:")
         print(f"  - DATABASE_URL: {settings.DATABASE_URL}")
-        print("  - Ensure PostgreSQL is running")
-        print("  - Verify database credentials")
+        print(f"  - Host: {settings.POSTGRES_HOST}")
+        print(f"  - Port: {settings.POSTGRES_PORT}")
+        print(f"  - Database: {settings.POSTGRES_DB}")
+        print(f"  - User: {settings.POSTGRES_USER}")
         sys.exit(1)
     
-    print("\n" + "=" * 60)
+    print()
     
     # Initialize database
     init_ok = await init_db()
-    
-    print("=" * 60)
-    if init_ok:
-        print("Database initialization completed successfully!")
-        sys.exit(0)
-    else:
-        print("Database initialization failed!")
+    if not init_ok:
         sys.exit(1)
+    
+    print()
+    print("=" * 60)
+    print("Database initialization completed successfully!")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
