@@ -1,0 +1,49 @@
+# asset_manifest.yaml — Implement responsive layout breakpoints and grid system
+# 由美术 Agent 完整生成，覆盖 UX Agent 的初稿
+# status: pending=待生产 / sourced=已从资产库获取 / generated=已AI生成
+assets:
+  - id: breakpoint_desktop
+    type: icon
+    description: 桌面断点指示图标 16px outline
+    source_hint: iconify:mdi:monitor
+    status: pending
+  - id: breakpoint_tablet
+    type: icon
+    description: 平板断点指示图标 16px outline
+    source_hint: iconify:mdi:tablet
+    status: pending
+  - id: breakpoint_mobile
+    type: icon
+    description: 移动断点指示图标 16px outline
+    source_hint: iconify:mdi:cellphone
+    status: pending
+  - id: grid_view
+    type: icon
+    description: 栅格视图切换图标 20px outline
+    source_hint: iconify:mdi:grid
+    status: pending
+  - id: layout_columns
+    type: icon
+    description: 列布局图标 20px outline
+    source_hint: iconify:mdi:view-column
+    status: pending
+  - id: grid_overlay
+    type: illustration
+    description: 栅格叠加层示意图 1440x900 半透明网格
+    source_hint: ai_generate
+    status: pending
+  - id: breakpoint_demo
+    type: illustration
+    description: 断点切换演示图 1200x600 三屏对比
+    source_hint: ai_generate
+    status: pending
+  - id: responsive_flow
+    type: diagram
+    description: 响应式布局流程图 800x600
+    source_hint: mermaid_export
+    status: pending
+  - id: grid_structure
+    type: diagram
+    description: 栅格系统结构图 1000x400
+    source_hint: figma_export
+    status: pending
