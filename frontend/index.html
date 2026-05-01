@@ -1,673 +1,535 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Authentication System</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #1557b0;
-            --error: #d93025;
-            --success: #1e8e3e;
-            --border: #dadce0;
-            --bg-light: #f8f9fa;
-            --text-primary: #202124;
-            --text-secondary: #5f6368;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            padding: 40px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo h1 {
-            color: var(--primary);
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        input[type="email"],
-        input[type="password"],
-        input[type="tel"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        input.error {
-            border-color: var(--error);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .success-message {
-            color: var(--success);
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 8px;
-            width: 16px;
-            height: 16px;
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            font-weight: 400;
-            font-size: 14px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        button:hover {
-            background: var(--primary-dark);
-        }
-
-        button:disabled {
-            background: var(--border);
-            cursor: not-allowed;
-        }
-
-        .link-button {
-            background: none;
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 14px;
-            padding: 0;
-            margin-top: 16px;
-            text-align: center;
-            display: block;
-        }
-
-        .link-button:hover {
-            text-decoration: underline;
-            background: none;
-        }
-
-        .tabs {
-            display: flex;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .user-info {
-            text-align: center;
-        }
-
-        .user-info h2 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-
-        .user-info p {
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .alert.error {
-            background: #fce8e6;
-            color: var(--error);
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert.success {
-            background: #e6f4ea;
-            color: var(--success);
-            border: 1px solid #c3e6cb;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Layout System</title>
+  
+  <!-- Ant Design CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.12.0/dist/reset.css">
+  
+  <style>
+    /* ============================================
+       Global Responsive Variables & Breakpoints
+       ============================================ */
+    :root {
+      /* Breakpoint values */
+      --breakpoint-mobile: 768px;
+      --breakpoint-tablet: 1024px;
+      
+      /* Container max-widths */
+      --container-mobile: 100%;
+      --container-tablet: 720px;
+      --container-desktop: 1200px;
+      
+      /* Spacing scale (responsive) */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-xxl: 48px;
+      
+      /* Typography scale */
+      --font-size-base: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 20px;
+      --font-size-xxl: 24px;
+      
+      /* Grid gutter */
+      --grid-gutter: 16px;
+      
+      /* Primary colors */
+      --color-primary: #1890ff;
+      --color-text: #262626;
+      --color-text-secondary: #8c8c8c;
+      --color-border: #d9d9d9;
+      --color-bg: #ffffff;
+      --color-bg-secondary: #fafafa;
+    }
+    
+    /* Tablet adjustments (768px - 1023px) */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      :root {
+        --spacing-md: 20px;
+        --spacing-lg: 28px;
+        --spacing-xl: 40px;
+        --spacing-xxl: 56px;
+        --font-size-base: 15px;
+        --font-size-lg: 18px;
+        --grid-gutter: 20px;
+      }
+    }
+    
+    /* Desktop adjustments (>=1024px) */
+    @media (min-width: 1024px) {
+      :root {
+        --spacing-md: 24px;
+        --spacing-lg: 32px;
+        --spacing-xl: 48px;
+        --spacing-xxl: 64px;
+        --font-size-base: 16px;
+        --font-size-lg: 20px;
+        --grid-gutter: 24px;
+      }
+    }
+    
+    /* ============================================
+       Base Reset & Box Model
+       ============================================ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      font-size: var(--font-size-base);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--color-text);
+      background-color: var(--color-bg-secondary);
+      line-height: 1.5715;
+    }
+    
+    /* ============================================
+       Responsive Container System
+       ============================================ */
+    .container {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+    }
+    
+    /* Mobile: full width with padding */
+    @media (max-width: 767px) {
+      .container {
+        max-width: var(--container-mobile);
+      }
+    }
+    
+    /* Tablet: constrained width */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .container {
+        max-width: var(--container-tablet);
+      }
+    }
+    
+    /* Desktop: max constrained width */
+    @media (min-width: 1024px) {
+      .container {
+        max-width: var(--container-desktop);
+      }
+    }
+    
+    /* Fluid container (no max-width) */
+    .container-fluid {
+      width: 100%;
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+    }
+    
+    /* ============================================
+       Custom Grid System (Ant Design Compatible)
+       ============================================ */
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: calc(var(--grid-gutter) / -2);
+      margin-right: calc(var(--grid-gutter) / -2);
+    }
+    
+    .col {
+      padding-left: calc(var(--grid-gutter) / 2);
+      padding-right: calc(var(--grid-gutter) / 2);
+      flex: 1;
+    }
+    
+    /* Column width classes (mobile-first) */
+    .col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+    .col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .col-3 { flex: 0 0 25%; max-width: 25%; }
+    .col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+    .col-6 { flex: 0 0 50%; max-width: 50%; }
+    .col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+    .col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-9 { flex: 0 0 75%; max-width: 75%; }
+    .col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+    .col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+    .col-12 { flex: 0 0 100%; max-width: 100%; }
+    
+    /* Tablet breakpoint columns (md-) */
+    @media (min-width: 768px) {
+      .col-md-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+      .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+      .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+      .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+      .col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+      .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+      .col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+      .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+      .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+      .col-md-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+      .col-md-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+      .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+    }
+    
+    /* Desktop breakpoint columns (lg-) */
+    @media (min-width: 1024px) {
+      .col-lg-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+      .col-lg-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+      .col-lg-3 { flex: 0 0 25%; max-width: 25%; }
+      .col-lg-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+      .col-lg-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+      .col-lg-6 { flex: 0 0 50%; max-width: 50%; }
+      .col-lg-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+      .col-lg-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+      .col-lg-9 { flex: 0 0 75%; max-width: 75%; }
+      .col-lg-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+      .col-lg-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+      .col-lg-12 { flex: 0 0 100%; max-width: 100%; }
+    }
+    
+    /* ============================================
+       Responsive Utility Classes
+       ============================================ */
+    
+    /* Display utilities */
+    .d-none { display: none !important; }
+    .d-block { display: block !important; }
+    .d-flex { display: flex !important; }
+    .d-inline { display: inline !important; }
+    .d-inline-block { display: inline-block !important; }
+    
+    /* Mobile display utilities */
+    @media (max-width: 767px) {
+      .d-mobile-none { display: none !important; }
+      .d-mobile-block { display: block !important; }
+      .d-mobile-flex { display: flex !important; }
+    }
+    
+    /* Tablet display utilities */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .d-tablet-none { display: none !important; }
+      .d-tablet-block { display: block !important; }
+      .d-tablet-flex { display: flex !important; }
+    }
+    
+    /* Desktop display utilities */
+    @media (min-width: 1024px) {
+      .d-desktop-none { display: none !important; }
+      .d-desktop-block { display: block !important; }
+      .d-desktop-flex { display: flex !important; }
+    }
+    
+    /* Spacing utilities (margin & padding) */
+    .m-0 { margin: 0 !important; }
+    .m-1 { margin: var(--spacing-xs) !important; }
+    .m-2 { margin: var(--spacing-sm) !important; }
+    .m-3 { margin: var(--spacing-md) !important; }
+    .m-4 { margin: var(--spacing-lg) !important; }
+    .m-5 { margin: var(--spacing-xl) !important; }
+    
+    .mt-0 { margin-top: 0 !important; }
+    .mt-1 { margin-top: var(--spacing-xs) !important; }
+    .mt-2 { margin-top: var(--spacing-sm) !important; }
+    .mt-3 { margin-top: var(--spacing-md) !important; }
+    .mt-4 { margin-top: var(--spacing-lg) !important; }
+    .mt-5 { margin-top: var(--spacing-xl) !important; }
+    
+    .mb-0 { margin-bottom: 0 !important; }
+    .mb-1 { margin-bottom: var(--spacing-xs) !important; }
+    .mb-2 { margin-bottom: var(--spacing-sm) !important; }
+    .mb-3 { margin-bottom: var(--spacing-md) !important; }
+    .mb-4 { margin-bottom: var(--spacing-lg) !important; }
+    .mb-5 { margin-bottom: var(--spacing-xl) !important; }
+    
+    .p-0 { padding: 0 !important; }
+    .p-1 { padding: var(--spacing-xs) !important; }
+    .p-2 { padding: var(--spacing-sm) !important; }
+    .p-3 { padding: var(--spacing-md) !important; }
+    .p-4 { padding: var(--spacing-lg) !important; }
+    .p-5 { padding: var(--spacing-xl) !important; }
+    
+    /* Text alignment */
+    .text-left { text-align: left !important; }
+    .text-center { text-align: center !important; }
+    .text-right { text-align: right !important; }
+    
+    @media (max-width: 767px) {
+      .text-mobile-center { text-align: center !important; }
+    }
+    
+    /* ============================================
+       Demo Section Styles
+       ============================================ */
+    .demo-section {
+      background: var(--color-bg);
+      padding: var(--spacing-xxl) 0;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .demo-box {
+      background: var(--color-primary);
+      color: white;
+      padding: var(--spacing-lg);
+      border-radius: 8px;
+      text-align: center;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+    }
+    
+    .demo-header {
+      font-size: var(--font-size-xxl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+      color: var(--color-text);
+    }
+    
+    .demo-description {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xl);
+      line-height: 1.8;
+    }
+    
+    .breakpoint-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 9999;
+      font-family: 'Courier New', monospace;
+    }
+    
+    /* Show different indicator text based on breakpoint */
+    .breakpoint-indicator::before {
+      content: 'Mobile (<768px)';
+    }
+    
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .breakpoint-indicator::before {
+        content: 'Tablet (768-1023px)';
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .breakpoint-indicator::before {
+        content: 'Desktop (≥1024px)';
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        const API_BASE = 'http://localhost:8080';
-
-        function App() {
-            const [view, setView] = useState('login'); // 'login', 'register', 'reset', 'dashboard'
-            const [token, setToken] = useState(localStorage.getItem('auth_token'));
-            const [user, setUser] = useState(null);
-            const [error, setError] = useState('');
-            const [success, setSuccess] = useState('');
-
-            useEffect(() => {
-                if (token) {
-                    fetchUserInfo();
-                }
-            }, [token]);
-
-            const fetchUserInfo = async () => {
-                try {
-                    const response = await fetch(`${API_BASE}/api/auth/me`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        setUser(data);
-                        setView('dashboard');
-                    } else {
-                        localStorage.removeItem('auth_token');
-                        setToken(null);
-                    }
-                } catch (err) {
-                    console.error('Failed to fetch user info:', err);
-                    localStorage.removeItem('auth_token');
-                    setToken(null);
-                }
-            };
-
-            const handleLogout = async () => {
-                try {
-                    await fetch(`${API_BASE}/api/auth/logout`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                } catch (err) {
-                    console.error('Logout error:', err);
-                }
-                localStorage.removeItem('auth_token');
-                setToken(null);
-                setUser(null);
-                setView('login');
-            };
-
-            if (view === 'dashboard' && user) {
-                return (
-                    <div className="container">
-                        <div className="user-info">
-                            <h2>Welcome!</h2>
-                            <p><strong>Email:</strong> {user.email}</p>
-                            {user.phone && <p><strong>Phone:</strong> {user.phone}</p>}
-                            <p><strong>Member since:</strong> {new Date(user.created_at).toLocaleDateString()}</p>
-                            <button onClick={handleLogout} style={{marginTop: '20px'}}>Logout</button>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="container">
-                    <div className="logo">
-                        <h1>🔐 Auth System</h1>
-                    </div>
-
-                    {view === 'reset' ? (
-                        <ResetPasswordForm 
-                            setView={setView} 
-                            setError={setError}
-                            setSuccess={setSuccess}
-                            error={error}
-                            success={success}
-                        />
-                    ) : (
-                        <>
-                            <div className="tabs">
-                                <button 
-                                    className={`tab ${view === 'login' ? 'active' : ''}`}
-                                    onClick={() => {
-                                        setView('login');
-                                        setError('');
-                                        setSuccess('');
-                                    }}
-                                >
-                                    Login
-                                </button>
-                                <button 
-                                    className={`tab ${view === 'register' ? 'active' : ''}`}
-                                    onClick={() => {
-                                        setView('register');
-                                        setError('');
-                                        setSuccess('');
-                                    }}
-                                >
-                                    Register
-                                </button>
-                            </div>
-
-                            {view === 'login' ? (
-                                <LoginForm 
-                                    setToken={setToken} 
-                                    setView={setView}
-                                    setError={setError}
-                                    error={error}
-                                />
-                            ) : (
-                                <RegisterForm 
-                                    setToken={setToken}
-                                    setView={setView}
-                                    setError={setError}
-                                    error={error}
-                                />
-                            )}
-                        </>
-                    )}
+  
+  <!-- Breakpoint Indicator (visible in all viewports) -->
+  <div class="breakpoint-indicator"></div>
+  
+  <!-- Demo Section 1: Container System -->
+  <div class="demo-section">
+    <div class="container">
+      <h1 class="demo-header">Responsive Container System</h1>
+      <p class="demo-description">
+        This container adapts to different screen sizes:<br>
+        Mobile (&lt;768px): Full width with padding<br>
+        Tablet (768-1023px): Max 720px<br>
+        Desktop (≥1024px): Max 1200px
+      </p>
+      <div class="demo-box">Responsive Container</div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 2: Grid System -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">12-Column Grid System</h2>
+      <p class="demo-description">
+        Mobile: Stack vertically (col-12)<br>
+        Tablet: 2 columns (col-md-6)<br>
+        Desktop: 3 columns (col-lg-4)
+      </p>
+      
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #52c41a;">Column 1</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #faad14;">Column 2</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #f5222d;">Column 3</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #722ed1;">Column 4</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #13c2c2;">Column 5</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #eb2f96;">Column 6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 3: Responsive Utilities -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Responsive Display Utilities</h2>
+      <p class="demo-description">
+        Different content shown based on viewport size
+      </p>
+      
+      <div class="row">
+        <div class="col-12 mb-3">
+          <div class="demo-box d-mobile-block d-tablet-none d-desktop-none" style="background: #52c41a;">
+            📱 Visible on Mobile Only
+          </div>
+          <div class="demo-box d-mobile-none d-tablet-block d-desktop-none" style="background: #faad14;">
+            📱 Visible on Tablet Only
+          </div>
+          <div class="demo-box d-mobile-none d-tablet-none d-desktop-block" style="background: #1890ff;">
+            🖥️ Visible on Desktop Only
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-12 col-md-4 mb-3">
+          <div class="demo-box" style="background: #722ed1; min-height: 150px;">
+            <div>
+              <div style="font-size: var(--font-size-xl); margin-bottom: 8px;">Spacing</div>
+              <div style="font-size: var(--font-size-base); opacity: 0.9;">Auto-adjusts by viewport</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="demo-box" style="background: #13c2c2; min-height: 150px;">
+            <div>
+              <div style="font-size: var(--font-size-xl); margin-bottom: 8px;">Typography</div>
+              <div style="font-size: var(--font-size-base); opacity: 0.9;">Scales responsively</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="demo-box" style="background: #eb2f96; min-height: 150px;">
+            <div>
+              <div style="font-size: var(--font-size-xl); margin-bottom: 8px;">Grid Gutter</div>
+              <div style="font-size: var(--font-size-base); opacity: 0.9;">Adapts to screen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 4: Nested Grid -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Nested Grid Example</h2>
+      <p class="demo-description">
+        Grids can be nested for complex layouts
+      </p>
+      
+      <div class="row">
+        <div class="col-12 col-lg-8 mb-3">
+          <div class="demo-box" style="background: #1890ff; padding: var(--spacing-lg);">
+            <div style="width: 100%;">
+              <div style="margin-bottom: var(--spacing-md);">Main Content (8 cols on desktop)</div>
+              <div class="row" style="margin: 0;">
+                <div class="col-6" style="padding: var(--spacing-sm);">
+                  <div style="background: rgba(255,255,255,0.3); padding: var(--spacing-md); border-radius: 4px;">
+                    Nested 1
+                  </div>
                 </div>
-            );
-        }
-
-        function LoginForm({ setToken, setView, setError, error }) {
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-            const [rememberMe, setRememberMe] = useState(false);
-            const [loading, setLoading] = useState(false);
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setError('');
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/api/auth/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email, password, remember_me: rememberMe })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        localStorage.setItem('auth_token', data.access_token);
-                        setToken(data.access_token);
-                    } else {
-                        setError(data.detail || 'Login failed');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <form onSubmit={handleSubmit}>
-                    {error && <div className="alert error">{error}</div>}
-                    
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="checkbox-group">
-                        <input
-                            type="checkbox"
-                            id="remember"
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                        <label htmlFor="remember">Remember me</label>
-                    </div>
-
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-
-                    <button 
-                        type="button" 
-                        className="link-button"
-                        onClick={() => setView('reset')}
-                    >
-                        Forgot password?
-                    </button>
-                </form>
-            );
-        }
-
-        function RegisterForm({ setToken, setView, setError, error }) {
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-            const [phone, setPhone] = useState('');
-            const [loading, setLoading] = useState(false);
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setError('');
-
-                if (password.length < 8) {
-                    setError('Password must be at least 8 characters');
-                    return;
-                }
-
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/api/auth/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            email, 
-                            password, 
-                            phone: phone || null 
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        localStorage.setItem('auth_token', data.access_token);
-                        setToken(data.access_token);
-                    } else {
-                        setError(data.detail || 'Registration failed');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <form onSubmit={handleSubmit}>
-                    {error && <div className="alert error">{error}</div>}
-                    
-                    <div className="form-group">
-                        <label htmlFor="reg-email">Email</label>
-                        <input
-                            type="email"
-                            id="reg-email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="reg-phone">Phone (optional)</label>
-                        <input
-                            type="tel"
-                            id="reg-phone"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+1234567890"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="reg-password">Password</label>
-                        <input
-                            type="password"
-                            id="reg-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength="8"
-                        />
-                        <div className="success-message">Minimum 8 characters</div>
-                    </div>
-
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Creating account...' : 'Register'}
-                    </button>
-                </form>
-            );
-        }
-
-        function ResetPasswordForm({ setView, setError, setSuccess, error, success }) {
-            const [step, setStep] = useState(1); // 1: request, 2: confirm
-            const [email, setEmail] = useState('');
-            const [token, setToken] = useState('');
-            const [newPassword, setNewPassword] = useState('');
-            const [loading, setLoading] = useState(false);
-
-            const handleRequestReset = async (e) => {
-                e.preventDefault();
-                setError('');
-                setSuccess('');
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/api/auth/reset-password`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        setSuccess(data.message);
-                        setStep(2);
-                    } else {
-                        setError(data.detail || 'Request failed');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            const handleConfirmReset = async (e) => {
-                e.preventDefault();
-                setError('');
-                setSuccess('');
-
-                if (newPassword.length < 8) {
-                    setError('Password must be at least 8 characters');
-                    return;
-                }
-
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/api/auth/reset-password/confirm`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ token, new_password: newPassword })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        setSuccess('Password reset successfully! Redirecting to login...');
-                        setTimeout(() => setView('login'), 2000);
-                    } else {
-                        setError(data.detail || 'Reset failed');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <div>
-                    <h2 style={{marginBottom: '20px', textAlign: 'center'}}>Reset Password</h2>
-                    
-                    {error && <div className="alert error">{error}</div>}
-                    {success && <div className="alert success">{success}</div>}
-
-                    {step === 1 ? (
-                        <form onSubmit={handleRequestReset}>
-                            <div className="form-group">
-                                <label htmlFor="reset-email">Email</label>
-                                <input
-                                    type="email"
-                                    id="reset-email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <button type="submit" disabled={loading}>
-                                {loading ? 'Sending...' : 'Send Reset Link'}
-                            </button>
-                        </form>
-                    ) : (
-                        <form onSubmit={handleConfirmReset}>
-                            <div className="form-group">
-                                <label htmlFor="reset-token">Reset Token</label>
-                                <input
-                                    type="text"
-                                    id="reset-token"
-                                    value={token}
-                                    onChange={(e) => setToken(e.target.value)}
-                                    required
-                                    placeholder="Check server logs for token"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="new-password">New Password</label>
-                                <input
-                                    type="password"
-                                    id="new-password"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    required
-                                    minLength="8"
-                                />
-                            </div>
-                            <button type="submit" disabled={loading}>
-                                {loading ? 'Resetting...' : 'Reset Password'}
-                            </button>
-                        </form>
-                    )}
-
-                    <button 
-                        type="button" 
-                        className="link-button"
-                        onClick={() => setView('login')}
-                    >
-                        Back to Login
-                    </button>
+                <div class="col-6" style="padding: var(--spacing-sm);">
+                  <div style="background: rgba(255,255,255,0.3); padding: var(--spacing-md); border-radius: 4px;">
+                    Nested 2
+                  </div>
                 </div>
-            );
-        }
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #52c41a;">
+            Sidebar (4 cols on desktop)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 5: Responsive Spacing -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Responsive Spacing System</h2>
+      <p class="demo-description">
+        Spacing automatically adjusts based on viewport size
+      </p>
+      
+      <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+          <div class="demo-box p-3" style="background: #722ed1;">
+            Padding: p-3 (responsive)
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <div class="demo-box p-5" style="background: #eb2f96;">
+            Padding: p-5 (responsive)
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-5">
+        <div class="demo-box" style="background: #faad14;">
+          Margin Top: mt-5 (responsive)
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 6: Text Alignment -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Responsive Text Alignment</h2>
+      <p class="demo-description">
+        Text alignment can change based on viewport
+      </p>
+      
+      <div class="row">
+        <div class="col-12 mb-3">
+          <div class="demo-box text-mobile-center text-left" style="background: #13c2c2;">
+            Left on tablet/desktop, centered on mobile
+          </div>
+        </div>
+        <div class="col-12 mb-3">
+          <div class="demo-box text-center" style="background: #f5222d;">
+            Always centered
+          </div>
+        </div>
+        <div class="col-12 mb-3">
+          <div class="demo-box text-right" style="background: #52c41a;">
+            Always right-aligned
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
 </body>
 </html>
