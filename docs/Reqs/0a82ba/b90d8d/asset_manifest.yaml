@@ -1,0 +1,147 @@
+# asset_manifest.yaml — Implement responsive layout breakpoints and grid system
+# 由 UX Agent 自动生成初稿，美术 Agent 会补全和确认
+assets:
+  - id: asset_001
+    type: icon
+    description: ## UI 资产需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_002
+    type: icon
+    description: ### 图标（Icons）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_003
+    type: icon
+    description: 暂无图标需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_004
+    type: icon
+    description: [说明] 本工单为纯布局基础设施，不涉及可视化图标
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_005
+    type: icon
+    description: ### 插画（Illustrations）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_006
+    type: icon
+    description: 暂无插画需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_007
+    type: icon
+    description: [说明] 空状态插画由后续具体页面工单提供
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_008
+    type: icon
+    description: ### 图片（Images）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_009
+    type: icon
+    description: 暂无图片需求
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_010
+    type: icon
+    description: ### 调试辅助资产（开发阶段临时使用）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_011
+    type: icon
+    description: 断点指示器**（开发工具）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_012
+    type: icon
+    description: 类型：浮动标签组件
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_013
+    type: icon
+    description: 内容：显示当前断点名称（Mobile/Tablet/Desktop）和窗口宽度
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_014
+    type: icon
+    description: 位置：右下角固定定位
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_015
+    type: icon
+    description: 样式：半透明背景 + 等宽字体
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_016
+    type: icon
+    description: 用途：开发时实时查看断点状态
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_017
+    type: icon
+    description: 生产环境：通过环境变量移除
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_018
+    type: icon
+    description: 栅格可视化覆盖层**（开发工具）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_019
+    type: icon
+    description: 类型：半透明网格叠加层
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_020
+    type: icon
+    description: 内容：显示当前断点的栅格列（6/12/24 列）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_021
+    type: icon
+    description: 颜色：rgba(255, 0, 0, 0.1) 列背景 + rgba(0, 0, 255, 0.2) gutter
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_022
+    type: icon
+    description: 触发：按 `Ctrl+Shift+G` 切换显示
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_023
+    type: icon
+    description: 用途：验证栅格对齐
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_024
+    type: icon
+    description: 生产环境：完全移除
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_025
+    type: icon
+    description: ## 后续工单可能需要的资产
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_026
+    type: icon
+    description: ### 移动端导航相关（未来需求）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_027
+    type: icon
+    description: icon: menu-hamburger（汉堡菜单，24x24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_028
+    type: icon
+    description: icon: close（关闭菜单，24x24px，outline 风格）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_029
+    type: icon
+    description: icon: chevron-down（展开子菜单，16x16px）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_030
+    type: icon
+    description: ### 平板端侧边栏相关（未来需求）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_031
+    type: icon
+    description: icon: sidebar-collapse（收起侧边栏，20x20px）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_032
+    type: icon
+    description: icon: sidebar-expand（展开侧边栏，20x20px）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_033
+    type: icon
+    description: ### 空状态插画（未来需求）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_034
+    type: illustration
+    description: illustration: empty-list-mobile（移动端优化版，宽度 ≤ 300px）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_035
+    type: illustration
+    description: illustration: empty-list-desktop（桌面端版本，宽度 400-500px）
+    status: pending  # 待美术Agent确认来源和规格
+  - id: asset_036
+    type: icon
+    description: [假设] 以上资产需求将在后续响应式组件开发工单中明确，本工单仅搭建布局框架。
+    status: pending  # 待美术Agent确认来源和规格
