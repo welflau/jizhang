@@ -1,127 +1,203 @@
 # User Authentication System
 
-A full-stack user authentication system with JWT tokens, built with FastAPI (backend) and React (frontend).
+JWT-based user registration and login system with FastAPI backend and vanilla JavaScript frontend.
 
 ## Features
 
-- ✅ User registration with email validation
-- ✅ Secure login with JWT tokens (access + refresh)
-- ✅ Password hashing with bcrypt
-- ✅ Remember me functionality
-- ✅ Password reset flow
+- ✅ User registration with email or phone number
+- ✅ Password validation (min 8 chars, letters + numbers)
+- ✅ Secure password hashing with bcrypt
+- ✅ JWT token authentication
+- ✅ Login with email or phone
+- ✅ Token expiration handling
 - ✅ Logout functionality
-- ✅ Responsive UI
+- ✅ Responsive UI design
 
 ## Tech Stack
 
 **Backend:**
-- FastAPI (async Python web framework)
-- SQLAlchemy (async ORM)
-- SQLite (database)
-- Pydantic v2 (data validation)
-- python-jose (JWT)
-- passlib + bcrypt (password hashing)
+- Python 3.11+
+- FastAPI
+- SQLite (async with aiosqlite)
+- bcrypt for password hashing
+- PyJWT for token generation
+- Pydantic v2 for validation
 
 **Frontend:**
-- React 18 (via CDN)
-- Vanilla CSS
-- Single HTML file (no build step)
+- Vanilla JavaScript (no build tools)
+- Single-file HTML with inline CSS/JS
+- LocalStorage for token persistence
 
-## Setup
+## Quick Start
 
-### 1. Install Dependencies
+### 1. Backend Setup
 
 ```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
-
-Copy `.env.example` to `.env` and set your JWT secret:
+### 2. Environment Configuration
 
 ```bash
 cp .env.example .env
+# Edit .env and set JWT_SECRET_KEY (use: openssl rand -hex 32)
 ```
-
-Generate a secure secret key:
-
-```bash
-openssl rand -hex 32
-```
-
-Paste the output into `.env` as `JWT_SECRET_KEY`.
 
 ### 3. Run Backend
 
 ```bash
-python backend/app/main.py
+python -m app.main
+# Server starts at http://localhost:8080
 ```
 
-Backend will start at `http://localhost:8000`
+### 4. Run Frontend
 
-### 4. Open Frontend
-
-Open `frontend/index.html` in your browser, or serve it:
+Open `frontend/index.html` in your browser, or serve with:
 
 ```bash
-python -m http.server 3000 --directory frontend
+cd frontend
+python -m http.server 3000
+# Visit http://localhost:3000
 ```
-
-Then visit `http://localhost:3000`
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login and get tokens |
-| POST | `/api/auth/refresh` | Refresh access token |
-| POST | `/api/auth/logout` | Logout (client-side) |
-| POST | `/api/auth/password-reset` | Request password reset |
 
 ## Testing
 
-Run tests with pytest:
-
 ```bash
+cd backend
 pytest tests/ -v
 ```
 
-## Security Notes
+**Test Coverage:**
+- ✅ User registration (email/phone)
+- ✅ Duplicate user detection
+- ✅ Password validation
+- ✅ Login authentication
+- ✅ Invalid credentials handling
 
-- **Never commit `.env` file** (already in `.gitignore`)
-- Use strong JWT secret in production (min 32 chars)
-- HTTPS required in production
-- Consider adding rate limiting for auth endpoints
-- Implement token blacklist for logout in production
-- Add email verification for registration
+## API Endpoints
+
+### POST `/api/auth/register`
+Register a new user.
+
+**Request:**
+```json
+{
+  "email": "user@example.com",  // optional if phone provided
+  "phone": "13800138000",        // optional if email provided
+  "password": "SecurePass123"
+}
+```
+
+**Response (201):**
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "phone": "13800138000",
+  "created_at": "2024-01-01T00:00:00",
+  "is_active": true
+}
+```
+
+### POST `/api/auth/login`
+Authenticate and get JWT token.
+
+**Request:**
+```json
+{
+  "identifier": "user@example.com",  // email or phone
+  "password": "SecurePass123"
+}
+```
+
+**Response (200):**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer",
+  "expires_in": 86400
+}
+```
+
+### POST `/api/auth/logout`
+Logout (client-side token removal).
+
+**Response (200):**
+```json
+{
+  "message": "logged out successfully"
+}
+```
+
+## Security Features
+
+- ✅ Passwords hashed with bcrypt (12 rounds)
+- ✅ JWT tokens with expiration
+- ✅ No sensitive data in responses
+- ✅ Environment variables for secrets
+- ✅ Input validation with Pydantic
+- ✅ SQL injection prevention (parameterized queries)
 
 ## Project Structure
 
 ```
 .
 ├── backend/
-│   └── app/
-│       ├── main.py              # FastAPI app entry
-│       ├── core/
-│       │   ├── config.py        # Settings management
-│       │   ├── database.py      # DB connection
-│       │   └── security.py      # Password & JWT utils
-│       ├── models/
-│       │   └── user.py          # User SQLAlchemy model
-│       ├── routers/
-│       │   └── auth.py          # Auth endpoints
-│       └── schemas/
-│           └── auth.py          # Pydantic schemas
+│   ├── app/
+│   │   ├── main.py              # FastAPI app entry
+│   │   ├── database.py          # DB connection & init
+│   │   ├── models/
+│   │   │   └── user.py          # Pydantic schemas
+│   │   ├── routers/
+│   │   │   └── auth.py          # Auth endpoints
+│   │   └── utils/
+│   │       ├── password.py      # bcrypt helpers
+│   │       └── jwt_handler.py   # JWT creation/validation
+│   ├── tests/
+│   │   ├── test_auth_register.py
+│   │   └── test_auth_login.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── .gitignore
 ├── frontend/
-│   └── index.html               # Single-file React app
-├── tests/
-│   ├── test_auth_register.py
-│   └── test_auth_login.py
-├── requirements.txt
-├── .env.example
+│   └── index.html               # Single-file UI
 └── README.md
 ```
+
+## Configuration
+
+**Environment Variables (.env):**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| JWT_SECRET_KEY | (required) | Secret key for JWT signing |
+| JWT_EXPIRE_MINUTES | 1440 | Token expiration (24 hours) |
+| DATABASE_PATH | app.db | SQLite database file path |
+| PORT | 8080 | Backend server port |
+
+## Development Notes
+
+- All backend routes use `async def` for consistency
+- Database uses aiosqlite for async operations
+- Frontend stores JWT in localStorage (consider httpOnly cookies for production)
+- CORS enabled for all origins (restrict in production)
+- SQLite busy_timeout set to 5000ms for concurrent writes
+
+## Production Checklist
+
+- [ ] Change JWT_SECRET_KEY to strong random value
+- [ ] Set specific CORS origins
+- [ ] Use HTTPS for all requests
+- [ ] Implement rate limiting
+- [ ] Add refresh token mechanism
+- [ ] Use httpOnly cookies instead of localStorage
+- [ ] Set up proper logging
+- [ ] Add monitoring/alerting
+- [ ] Database backups
+- [ ] Consider PostgreSQL for production
 
 ## License
 

@@ -1,23 +1,66 @@
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.sql import func
-from backend.app.core.database import Base
+from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, EmailStr, Field, field_validator
+import re
 
 
-class User(Base):
-    """User model for authentication system.
-    
-    Attributes:
-        id: Primary key
-        email: Unique email address for login
-        hashed_password: bcrypt hashed password
-        created_at: Timestamp of account creation
-    """
-    __tablename__ = "users"
+class UserBase(BaseModel):
+    """Base user schema with common fields."""
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = Field(None, min_length=11, max_length=11)
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(255), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    @field_validator('phone')
+    @classmethod
+    def validate_phone(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        if not re.match(r'^1[3-9]\d{9}$', v):
+            raise ValueError('invalid phone number format')
+        return v
 
-    def __repr__(self):
-        return f"<User(id={self.id}, email={self.email})>"
+
+class UserCreate(UserBase):
+    """Schema for user registration request."""
+    password: str = Field(min_length=8, max_length=128)
+
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        if not re.search(r'[A-Za-z]', v):
+            raise ValueError('password must contain at least one letter')
+        if not re.search(r'\d', v):
+            raise ValueError('password must contain at least one digit')
+        return v
+
+    def model_post_init(self, __context) -> None:
+        """Ensure at least one of email or phone is provided."""
+        if not self.email and not self.phone:
+            raise ValueError('either email or phone must be provided')
+
+
+class UserInDB(UserBase):
+    """User model as stored in database."""
+    id: int
+    hashed_password: str
+    created_at: datetime
+    is_active: bool = True
+
+
+class UserResponse(UserBase):
+    """Public user response schema (no sensitive data)."""
+    id: int
+    created_at: datetime
+    is_active: bool
+
+
+class LoginRequest(BaseModel):
+    """Schema for login request."""
+    identifier: str = Field(description="email or phone number")
+    password: str
+
+
+class TokenResponse(BaseModel):
+    """JWT token response."""
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int = Field(description="token expiration time in seconds")
