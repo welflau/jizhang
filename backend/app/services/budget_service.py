@@ -9,7 +9,7 @@ from fastapi import HTTPException, status
 
 
 class BudgetService:
-    """预算管理服务类"""
+    """预算管理服务"""
 
     @staticmethod
     def create_budget(db: Session, budget_data: BudgetCreate, user_id: int) -> Budget:
@@ -22,7 +22,7 @@ class BudgetService:
             user_id: 用户ID
             
         Returns:
-            创建的预算对象
+            Budget: 创建的预算对象
             
         Raises:
             HTTPException: 参数校验失败或创建失败
@@ -41,7 +41,7 @@ class BudgetService:
                 detail="period 格式错误，应为 YYYY-MM 格式"
             )
         
-        # 检查是否已存在相同 category_id 和 period 的预算
+        # 检查是否已存在相同分类和周期的预算
         existing_budget = db.query(Budget).filter(
             and_(
                 Budget.user_id == user_id,
@@ -74,8 +74,7 @@ class BudgetService:
     def get_budgets(
         db: Session, 
         user_id: int, 
-        period: Optional[str] = None,
-        category_id: Optional[int] = None
+        period: Optional[str] = None
     ) -> List[Budget]:
         """
         查询用户预算列表
@@ -84,13 +83,13 @@ class BudgetService:
             db: 数据库会话
             user_id: 用户ID
             period: 可选的周期筛选 (YYYY-MM)
-            category_id: 可选的分类ID筛选
             
         Returns:
-            预算列表
+            List[Budget]: 预算列表
         """
         query = db.query(Budget).filter(Budget.user_id == user_id)
         
+        # 按 period 筛选
         if period:
             if not BudgetService._validate_period_format(period):
                 raise HTTPException(
@@ -99,10 +98,7 @@ class BudgetService:
                 )
             query = query.filter(Budget.period == period)
         
-        if category_id:
-            query = query.filter(Budget.category_id == category_id)
-        
-        budgets = query.order_by(Budget.period.desc(), Budget.category_id).all()
+        budgets = query.all()
         
         # 计算每个预算的使用进度
         for budget in budgets:
@@ -123,7 +119,7 @@ class BudgetService:
             user_id: 用户ID
             
         Returns:
-            预算对象
+            Budget: 预算对象
             
         Raises:
             HTTPException: 预算不存在或无权限访问
@@ -136,7 +132,7 @@ class BudgetService:
                 detail="预算不存在"
             )
         
-        # 权限校验
+        # 权限校验：仅能访问自己的预算
         if budget.user_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -167,12 +163,25 @@ class BudgetService:
             user_id: 用户ID
             
         Returns:
-            更新后的预算对象
+            Budget: 更新后的预算对象
             
         Raises:
             HTTPException: 预算不存在、无权限或参数校验失败
         """
-        budget = BudgetService.get_budget_by_id(db, budget_id, user_id)
+        budget = db.query(Budget).filter(Budget.id == budget_id).first()
+        
+        if not budget:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="预算不存在"
+            )
+        
+        # 权限校验：仅能更新自己的预算
+        if budget.user_id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="无权修改此预算"
+            )
         
         # 参数校验
         if budget_data.amount is not None and budget_data.amount <= 0:
@@ -188,39 +197,36 @@ class BudgetService:
                     detail="period 格式错误，应为 YYYY-MM 格式"
                 )
             
-            # 检查更新后是否与其他预算冲突
-            if budget_data.period != budget.period or (
-                budget_data.category_id and budget_data.category_id != budget.category_id
-            ):
-                check_category_id = budget_data.category_id if budget_data.category_id else budget.category_id
-                check_period = budget_data.period if budget_data.period else budget.period
-                
-                existing_budget = db.query(Budget).filter(
-                    and_(
-                        Budget.user_id == user_id,
-                        Budget.category_id == check_category_id,
-                        Budget.period == check_period,
-                        Budget.id != budget_id
-                    )
-                ).first()
-                
-                if existing_budget:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="该分类在此周期已存在预算"
-                    )
+            # 检查是否与其他预算冲突
+            existing_budget = db.query(Budget).filter(
+                and_(
+                    Budget.user_id == user_id,
+                    Budget.category_id == budget_data.category_id if budget_data.category_id else budget.category_id,
+                    Budget.period == budget_data.period,
+                    Budget.id != budget_id
+                )
+            ).first()
+            
+            if existing_budget:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="该分类在此周期已存在预算"
+                )
         
         # 更新字段
-        update_data = budget_data.dict(exclude_unset=True)
-        for field, value in update_data.items():
-            setattr(budget, field, value)
+        if budget_data.category_id is not None:
+            budget.category_id = budget_data.category_id
+        if budget_data.amount is not None:
+            budget.amount = budget_data.amount
+        if budget_data.period is not None:
+            budget.period = budget_data.period
         
         budget.updated_at = datetime.utcnow()
         
         db.commit()
         db.refresh(budget)
         
-        # 重新计算使用进度
+        # 计算使用进度
         budget.spent = BudgetService._calculate_spent(db, budget)
         budget.remaining = budget.amount - budget.spent
         budget.percentage = (budget.spent / budget.amount * 100) if budget.amount > 0 else 0
@@ -238,9 +244,22 @@ class BudgetService:
             user_id: 用户ID
             
         Raises:
-            HTTPException: 预算不存在或无权限
+            HTTPException: 预算不存在或无权限删除
         """
-        budget = BudgetService.get_budget_by_id(db, budget_id, user_id)
+        budget = db.query(Budget).filter(Budget.id == budget_id).first()
+        
+        if not budget:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="预算不存在"
+            )
+        
+        # 权限校验：仅能删除自己的预算
+        if budget.user_id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="无权删除此预算"
+            )
         
         db.delete(budget)
         db.commit()
@@ -254,7 +273,7 @@ class BudgetService:
             period: 周期字符串
             
         Returns:
-            是否有效
+            bool: 格式是否正确
         """
         try:
             datetime.strptime(period, "%Y-%m")
@@ -272,29 +291,29 @@ class BudgetService:
             budget: 预算对象
             
         Returns:
-            已使用金额
+            float: 已使用金额
         """
+        # 解析 period (YYYY-MM)
         try:
-            # 解析 period (YYYY-MM)
             year, month = map(int, budget.period.split('-'))
-            
-            # 查询该周期内该分类的所有支出交易
-            spent = db.query(Transaction).filter(
-                and_(
-                    Transaction.user_id == budget.user_id,
-                    Transaction.category_id == budget.category_id,
-                    Transaction.type == 'expense',
-                    extract('year', Transaction.date) == year,
-                    extract('month', Transaction.date) == month
-                )
-            ).with_entities(Transaction.amount).all()
-            
-            # 计算总支出
-            total_spent = sum([amount[0] for amount in spent]) if spent else 0.0
-            
-            return float(total_spent)
-        except Exception:
+        except ValueError:
             return 0.0
+        
+        # 查询该周期内该分类的所有支出交易
+        spent = db.query(Transaction).filter(
+            and_(
+                Transaction.user_id == budget.user_id,
+                Transaction.category_id == budget.category_id,
+                Transaction.type == 'expense',
+                extract('year', Transaction.date) == year,
+                extract('month', Transaction.date) == month
+            )
+        ).with_entities(Transaction.amount).all()
+        
+        # 计算总支出
+        total_spent = sum([amount[0] for amount in spent]) if spent else 0.0
+        
+        return total_spent
 
     @staticmethod
     def get_budget_summary(db: Session, user_id: int, period: str) -> dict:
@@ -307,7 +326,7 @@ class BudgetService:
             period: 周期 (YYYY-MM)
             
         Returns:
-            预算汇总字典
+            dict: 预算汇总信息
         """
         if not BudgetService._validate_period_format(period):
             raise HTTPException(
@@ -320,13 +339,14 @@ class BudgetService:
         total_budget = sum([b.amount for b in budgets])
         total_spent = sum([b.spent for b in budgets])
         total_remaining = total_budget - total_spent
+        overall_percentage = (total_spent / total_budget * 100) if total_budget > 0 else 0
         
         return {
             "period": period,
             "total_budget": total_budget,
             "total_spent": total_spent,
             "total_remaining": total_remaining,
-            "percentage": (total_spent / total_budget * 100) if total_budget > 0 else 0,
-            "budgets_count": len(budgets),
-            "over_budget_count": len([b for b in budgets if b.spent > b.amount])
+            "overall_percentage": overall_percentage,
+            "budget_count": len(budgets),
+            "budgets": budgets
         }
