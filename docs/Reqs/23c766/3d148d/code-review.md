@@ -12,6 +12,12 @@
 无
 
 ## 审查的代码
-- backend/startup_test.sh
+- backend/requirements.txt
+- backend/pytest.ini
+- backend/tests/__init__.py
+- backend/tests/test_health.py
+- backend/run.sh
+- backend/.gitignore
 - backend/main.py
+- frontend/index.html
 - docs/Reqs/23c766/3d148d/dev-notes.md
