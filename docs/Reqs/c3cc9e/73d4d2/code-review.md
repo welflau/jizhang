@@ -12,5 +12,7 @@
 无
 
 ## 审查的代码
-- backend/app/core/deps.py
+- backend/requirements.txt
+- backend/.env.example
+- backend/tests/test_security.py
 - docs/Reqs/c3cc9e/73d4d2/dev-notes.md
