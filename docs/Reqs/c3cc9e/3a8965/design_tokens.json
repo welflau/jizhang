@@ -1,0 +1,16 @@
+{
+  "colors": {
+    "primary": "#4F46E5",
+    "bg": "#F9FAFB",
+    "text": "#111827"
+  },
+  "typography": {
+    "base": "14px"
+  },
+  "spacing": {
+    "md": "16px"
+  },
+  "radius": {
+    "md": "8px"
+  }
+}
