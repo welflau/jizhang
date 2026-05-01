@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from backend.app.core.config import settings
 from backend.app.core.database import init_db
-from backend.app.routers import auth, backup, categories
+from backend.app.routers import auth, backup
+from backend.app.middleware.jwt_middleware import jwt_auth_middleware
 import logging
 
 # Configure logging
@@ -28,6 +29,13 @@ app.add_middleware(
 )
 
 
+# JWT authentication middleware
+@app.middleware("http")
+async def jwt_middleware(request: Request, call_next):
+    """JWT authentication middleware."""
+    return await jwt_auth_middleware(request, call_next)
+
+
 # Exception handler middleware
 @app.middleware("http")
 async def exception_handler_middleware(request: Request, call_next):
@@ -50,7 +58,6 @@ async def exception_handler_middleware(request: Request, call_next):
 # Include routers
 app.include_router(auth.router)
 app.include_router(backup.router)
-app.include_router(categories.router)
 
 
 @app.on_event("startup")
