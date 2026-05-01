@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management System</title>
+    <title>User Authentication System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -12,615 +15,725 @@
         }
 
         :root {
-            --primary: #1a1a2e;
-            --secondary: #16213e;
-            --accent: #0f3460;
-            --highlight: #e94560;
-            --text: #eee;
-            --text-muted: #aaa;
-            --border: #333;
-            --success: #2ecc71;
-            --error: #e74c3c;
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --danger: #d93025;
+            --success: #1e8e3e;
+            --border: #dadce0;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --bg: #ffffff;
+            --bg-secondary: #f8f9fa;
+            
+            --category-work: #4285f4;
+            --category-personal: #34a853;
+            --category-shopping: #fbbc04;
+            --category-health: #ea4335;
+            --category-finance: #9334e6;
+            --category-education: #ff6d00;
+            --category-travel: #00bcd4;
+            --category-entertainment: #e91e63;
+            --category-food: #ff9800;
+            --category-other: #607d8b;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             padding: 20px;
+            color: var(--text);
         }
 
-        .container {
+        .app-container {
             width: 100%;
-            max-width: 500px;
-            background: var(--secondary);
+            max-width: 450px;
+        }
+
+        .card {
+            background: var(--bg);
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            margin-bottom: 20px;
         }
 
-        .header {
-            background: var(--accent);
-            padding: 24px;
+        .logo {
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        .header h1 {
-            font-size: 24px;
+        .logo h1 {
+            font-size: 28px;
+            color: var(--primary);
             margin-bottom: 8px;
         }
 
-        .header p {
-            color: var(--text-muted);
+        .logo p {
+            color: var(--text-secondary);
             font-size: 14px;
-        }
-
-        .content {
-            padding: 32px 24px;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 8px;
+            font-weight: 500;
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--text);
         }
 
-        .form-group input,
-        .form-group textarea {
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="text"] {
             width: 100%;
-            padding: 12px;
-            background: var(--primary);
+            padding: 12px 16px;
             border: 1px solid var(--border);
             border-radius: 6px;
-            color: var(--text);
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: all 0.2s;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
+        input:focus {
             outline: none;
-            border-color: var(--highlight);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-            font-family: 'Courier New', monospace;
+        input.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
         }
 
         .btn {
             width: 100%;
             padding: 12px;
-            background: var(--highlight);
-            color: white;
             border: none;
             border-radius: 6px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
+            transition: all 0.2s;
         }
 
-        .btn:hover {
-            background: #d63851;
+        .btn-primary {
+            background: var(--primary);
+            color: white;
         }
 
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn:disabled {
-            background: var(--border);
-            cursor: not-allowed;
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
         }
 
         .btn-secondary {
-            background: var(--accent);
-            margin-top: 12px;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--border);
         }
 
-        .btn-secondary:hover {
-            background: #0d2a4d;
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-secondary);
         }
 
-        .message {
-            padding: 12px;
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .link-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+            padding: 0;
+            margin-top: 16px;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .link-button:hover {
+            color: var(--primary-dark);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .user-info {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-info h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .user-info p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 12px 16px;
             border-radius: 6px;
             margin-bottom: 20px;
             font-size: 14px;
         }
 
-        .message.success {
-            background: rgba(46, 204, 113, 0.2);
-            border: 1px solid var(--success);
+        .alert-error {
+            background: #fce8e6;
+            color: var(--danger);
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #e6f4ea;
             color: var(--success);
+            border: 1px solid #c3e6cb;
         }
 
-        .message.error {
-            background: rgba(231, 76, 60, 0.2);
-            border: 1px solid var(--error);
-            color: var(--error);
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 14px;
-            transition: color 0.3s, border-color 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-
-        .tab.active {
-            color: var(--highlight);
-            border-bottom-color: var(--highlight);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .user-info {
-            background: var(--primary);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-        }
-
-        .user-info .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
+        .category-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            margin: 0 auto 16px;
-            overflow: hidden;
-        }
-
-        .user-info .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-info .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .user-info .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .user-info .label {
-            color: var(--text-muted);
+            border-radius: 6px;
             font-size: 14px;
+            margin-right: 8px;
         }
 
-        .user-info .value {
-            color: var(--text);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .hidden {
-            display: none;
-        }
+        .category-work { background-color: var(--category-work); color: white; }
+        .category-personal { background-color: var(--category-personal); color: white; }
+        .category-shopping { background-color: var(--category-shopping); color: white; }
+        .category-health { background-color: var(--category-health); color: white; }
+        .category-finance { background-color: var(--category-finance); color: white; }
+        .category-education { background-color: var(--category-education); color: white; }
+        .category-travel { background-color: var(--category-travel); color: white; }
+        .category-entertainment { background-color: var(--category-entertainment); color: white; }
+        .category-food { background-color: var(--category-food); color: white; }
+        .category-other { background-color: var(--category-other); color: white; }
 
         @media (max-width: 768px) {
-            .container {
-                max-width: 100%;
+            .card {
+                padding: 24px;
             }
 
-            .content {
-                padding: 24px 16px;
+            .logo h1 {
+                font-size: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>User Management</h1>
-            <p id="header-subtitle">Welcome back</p>
-        </div>
-        <div class="content">
-            <!-- Auth View (Login/Register) -->
-            <div id="auth-view">
-                <div class="tabs">
-                    <button class="tab active" data-tab="login">Login</button>
-                    <button class="tab" data-tab="register">Register</button>
-                </div>
+    <div id="root"></div>
 
-                <div id="message-container"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-                <!-- Login Tab -->
-                <div id="login-tab" class="tab-content active">
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label for="login-username">Username or Email</label>
-                            <input type="text" id="login-username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" required>
-                        </div>
-                        <button type="submit" class="btn">Login</button>
-                    </form>
-                </div>
-
-                <!-- Register Tab -->
-                <div id="register-tab" class="tab-content">
-                    <form id="register-form">
-                        <div class="form-group">
-                            <label for="register-username">Username</label>
-                            <input type="text" id="register-username" minlength="3" maxlength="30" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="register-email">Email</label>
-                            <input type="email" id="register-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="register-password">Password</label>
-                            <input type="password" id="register-password" minlength="6" required>
-                        </div>
-                        <button type="submit" class="btn">Register</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Profile View (After Login) -->
-            <div id="profile-view" class="hidden">
-                <div class="user-info">
-                    <div class="avatar" id="user-avatar">
-                        <span id="avatar-placeholder">👤</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Username:</span>
-                        <span class="value" id="info-username">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Email:</span>
-                        <span class="value" id="info-email">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Nickname:</span>
-                        <span class="value" id="info-nickname">-</span>
-                    </div>
-                </div>
-
-                <div class="tabs">
-                    <button class="tab active" data-tab="profile-edit">Edit Profile</button>
-                    <button class="tab" data-tab="password-change">Change Password</button>
-                    <button class="tab" data-tab="preferences">Preferences</button>
-                </div>
-
-                <div id="profile-message-container"></div>
-
-                <!-- Edit Profile Tab -->
-                <div id="profile-edit-tab" class="tab-content active">
-                    <form id="profile-edit-form">
-                        <div class="form-group">
-                            <label for="edit-nickname">Nickname</label>
-                            <input type="text" id="edit-nickname" maxlength="50">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-avatar">Avatar URL</label>
-                            <input type="url" id="edit-avatar" maxlength="500">
-                        </div>
-                        <button type="submit" class="btn">Update Profile</button>
-                    </form>
-                </div>
-
-                <!-- Change Password Tab -->
-                <div id="password-change-tab" class="tab-content">
-                    <form id="password-change-form">
-                        <div class="form-group">
-                            <label for="current-password">Current Password</label>
-                            <input type="password" id="current-password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="new-password">New Password</label>
-                            <input type="password" id="new-password" minlength="6" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm-password">Confirm New Password</label>
-                            <input type="password" id="confirm-password" minlength="6" required>
-                        </div>
-                        <button type="submit" class="btn">Change Password</button>
-                    </form>
-                </div>
-
-                <!-- Preferences Tab -->
-                <div id="preferences-tab" class="tab-content">
-                    <form id="preferences-form">
-                        <div class="form-group">
-                            <label for="preferences-json">Preferences (JSON format)</label>
-                            <textarea id="preferences-json" placeholder='{"theme": "dark", "language": "en"}'></textarea>
-                        </div>
-                        <button type="submit" class="btn">Save Preferences</button>
-                    </form>
-                </div>
-
-                <button id="logout-btn" class="btn btn-secondary">Logout</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
         const API_BASE = 'http://localhost:8080/api';
-        let currentToken = localStorage.getItem('access_token');
-        let currentUser = null;
 
-        // Utility functions
-        function showMessage(message, type = 'success', container = 'message-container') {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.textContent = message;
-            const containerEl = document.getElementById(container);
-            containerEl.innerHTML = '';
-            containerEl.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 5000);
+        const CATEGORY_ICONS = {
+            work: '💼',
+            personal: '👤',
+            shopping: '🛒',
+            health: '❤️',
+            finance: '💰',
+            education: '📚',
+            travel: '✈️',
+            entertainment: '🎬',
+            food: '🍔',
+            other: '📌'
+        };
+
+        // Custom hook for localStorage
+        function useLocalStorage(key, initialValue) {
+            const [value, setValue] = useState(() => {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : initialValue;
+                } catch (error) {
+                    console.error('Error reading from localStorage:', error);
+                    return initialValue;
+                }
+            });
+
+            useEffect(() => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (error) {
+                    console.error('Error writing to localStorage:', error);
+                }
+            }, [key, value]);
+
+            return [value, setValue];
         }
 
-        async function apiRequest(endpoint, options = {}) {
-            const headers = {
-                'Content-Type': 'application/json',
-                ...options.headers
+        // Auth context
+        function useAuth() {
+            const [accessToken, setAccessToken] = useLocalStorage('access_token', null);
+            const [refreshToken, setRefreshToken] = useLocalStorage('refresh_token', null);
+            const [user, setUser] = useState(null);
+
+            const login = (tokens) => {
+                setAccessToken(tokens.access_token);
+                setRefreshToken(tokens.refresh_token);
             };
 
-            if (currentToken && !options.skipAuth) {
-                headers['Authorization'] = `Bearer ${currentToken}`;
-            }
+            const logout = () => {
+                setAccessToken(null);
+                setRefreshToken(null);
+                setUser(null);
+            };
 
-            try {
-                const response = await fetch(`${API_BASE}${endpoint}`, {
-                    ...options,
-                    headers
-                });
+            const fetchUser = async () => {
+                if (!accessToken) return;
 
-                const data = await response.json();
+                try {
+                    const response = await fetch(`${API_BASE}/auth/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    });
 
-                if (!response.ok) {
-                    throw new Error(data.detail || 'Request failed');
-                }
-
-                return data;
-            } catch (error) {
-                console.error('API request failed:', error);
-                throw error;
-            }
-        }
-
-        function switchView(viewId) {
-            document.getElementById('auth-view').classList.toggle('hidden', viewId !== 'auth-view');
-            document.getElementById('profile-view').classList.toggle('hidden', viewId !== 'profile-view');
-        }
-
-        function updateUserInfo(user) {
-            currentUser = user;
-            document.getElementById('info-username').textContent = user.username;
-            document.getElementById('info-email').textContent = user.email;
-            document.getElementById('info-nickname').textContent = user.nickname || 'Not set';
-            document.getElementById('header-subtitle').textContent = `Welcome, ${user.nickname || user.username}`;
-
-            // Update avatar
-            const avatarContainer = document.getElementById('user-avatar');
-            const placeholder = document.getElementById('avatar-placeholder');
-            if (user.avatar_url) {
-                avatarContainer.innerHTML = `<img src="${user.avatar_url}" alt="Avatar">`;
-            } else {
-                avatarContainer.innerHTML = '<span id="avatar-placeholder">👤</span>';
-            }
-
-            // Populate edit form
-            document.getElementById('edit-nickname').value = user.nickname || '';
-            document.getElementById('edit-avatar').value = user.avatar_url || '';
-
-            // Populate preferences
-            if (user.preferences) {
-                document.getElementById('preferences-json').value = JSON.stringify(user.preferences, null, 2);
-            }
-        }
-
-        async function loadUserProfile() {
-            try {
-                const user = await apiRequest('/users/me');
-                updateUserInfo(user);
-                switchView('profile-view');
-            } catch (error) {
-                console.error('Failed to load user profile:', error);
-                logout();
-            }
-        }
-
-        function logout() {
-            currentToken = null;
-            currentUser = null;
-            localStorage.removeItem('access_token');
-            switchView('auth-view');
-            document.getElementById('header-subtitle').textContent = 'Welcome back';
-        }
-
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.dataset.tab;
-                const parentTabs = tab.parentElement;
-                const container = parentTabs.nextElementSibling;
-
-                // Update active tab
-                parentTabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                // Update active content
-                const contents = container.parentElement.querySelectorAll('.tab-content');
-                contents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === `${tabName}-tab`) {
-                        content.classList.add('active');
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUser(userData);
+                    } else if (response.status === 401) {
+                        // Token expired, try refresh
+                        await refreshAccessToken();
                     }
-                });
-            });
-        });
-
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                const response = await apiRequest('/auth/login', {
-                    method: 'POST',
-                    body: JSON.stringify({ username, password }),
-                    skipAuth: true
-                });
-
-                currentToken = response.access_token;
-                localStorage.setItem('access_token', currentToken);
-                updateUserInfo(response.user);
-                switchView('profile-view');
-                showMessage('Login successful!', 'success', 'profile-message-container');
-            } catch (error) {
-                showMessage(error.message, 'error');
-            }
-        });
-
-        // Register form
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            try {
-                const response = await apiRequest('/auth/register', {
-                    method: 'POST',
-                    body: JSON.stringify({ username, email, password }),
-                    skipAuth: true
-                });
-
-                currentToken = response.access_token;
-                localStorage.setItem('access_token', currentToken);
-                updateUserInfo(response.user);
-                switchView('profile-view');
-                showMessage('Registration successful!', 'success', 'profile-message-container');
-            } catch (error) {
-                showMessage(error.message, 'error');
-            }
-        });
-
-        // Profile edit form
-        document.getElementById('profile-edit-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nickname = document.getElementById('edit-nickname').value;
-            const avatar_url = document.getElementById('edit-avatar').value;
-
-            try {
-                const updateData = {};
-                if (nickname) updateData.nickname = nickname;
-                if (avatar_url) updateData.avatar_url = avatar_url;
-
-                const user = await apiRequest('/users/me', {
-                    method: 'PUT',
-                    body: JSON.stringify(updateData)
-                });
-
-                updateUserInfo(user);
-                showMessage('Profile updated successfully!', 'success', 'profile-message-container');
-            } catch (error) {
-                showMessage(error.message, 'error', 'profile-message-container');
-            }
-        });
-
-        // Password change form
-        document.getElementById('password-change-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (newPassword !== confirmPassword) {
-                showMessage('New passwords do not match', 'error', 'profile-message-container');
-                return;
-            }
-
-            try {
-                await apiRequest('/users/me', {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        current_password: currentPassword,
-                        new_password: newPassword
-                    })
-                });
-
-                showMessage('Password changed successfully!', 'success', 'profile-message-container');
-                document.getElementById('password-change-form').reset();
-            } catch (error) {
-                showMessage(error.message, 'error', 'profile-message-container');
-            }
-        });
-
-        // Preferences form
-        document.getElementById('preferences-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const preferencesText = document.getElementById('preferences-json').value;
-
-            try {
-                const preferences = JSON.parse(preferencesText);
-                const user = await apiRequest('/users/me', {
-                    method: 'PUT',
-                    body: JSON.stringify({ preferences })
-                });
-
-                updateUserInfo(user);
-                showMessage('Preferences saved successfully!', 'success', 'profile-message-container');
-            } catch (error) {
-                if (error instanceof SyntaxError) {
-                    showMessage('Invalid JSON format', 'error', 'profile-message-container');
-                } else {
-                    showMessage(error.message, 'error', 'profile-message-container');
+                } catch (error) {
+                    console.error('Error fetching user:', error);
                 }
-            }
-        });
+            };
 
-        // Logout button
-        document.getElementById('logout-btn').addEventListener('click', logout);
+            const refreshAccessToken = async () => {
+                if (!refreshToken) {
+                    logout();
+                    return;
+                }
 
-        // Initialize on page load
-        if (currentToken) {
-            loadUserProfile();
+                try {
+                    const response = await fetch(`${API_BASE}/auth/refresh`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${refreshToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const tokens = await response.json();
+                        login(tokens);
+                    } else {
+                        logout();
+                    }
+                } catch (error) {
+                    console.error('Error refreshing token:', error);
+                    logout();
+                }
+            };
+
+            useEffect(() => {
+                if (accessToken) {
+                    fetchUser();
+                }
+            }, [accessToken]);
+
+            return { user, accessToken, login, logout, isAuthenticated: !!accessToken };
         }
+
+        // Login component
+        function LoginForm({ onSwitchToRegister, onSwitchToReset }) {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [rememberMe, setRememberMe] = useState(false);
+            const [error, setError] = useState('');
+            const [loading, setLoading] = useState(false);
+            const { login } = useAuth();
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password, remember_me: rememberMe })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        login(data);
+                    } else {
+                        setError(data.detail || 'Login failed');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="card">
+                    <div className="logo">
+                        <h1>Welcome Back</h1>
+                        <p>Sign in to your account</p>
+                    </div>
+
+                    {error && <div className="alert alert-error">{error}</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                autoComplete="email"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                autoComplete="current-password"
+                            />
+                        </div>
+
+                        <div className="checkbox-group">
+                            <input
+                                type="checkbox"
+                                id="remember"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                            />
+                            <label htmlFor="remember">Remember me</label>
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" disabled={loading}>
+                            {loading ? 'Signing in...' : 'Sign In'}
+                        </button>
+                    </form>
+
+                    <button className="link-button" onClick={onSwitchToReset}>
+                        Forgot password?
+                    </button>
+
+                    <div className="divider">Don't have an account?</div>
+
+                    <button className="btn btn-secondary" onClick={onSwitchToRegister}>
+                        Create Account
+                    </button>
+                </div>
+            );
+        }
+
+        // Register component
+        function RegisterForm({ onSwitchToLogin }) {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [confirmPassword, setConfirmPassword] = useState('');
+            const [phone, setPhone] = useState('');
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState(false);
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+                setSuccess(false);
+
+                if (password !== confirmPassword) {
+                    setError('Passwords do not match');
+                    return;
+                }
+
+                if (password.length < 8) {
+                    setError('Password must be at least 8 characters');
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/auth/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email,
+                            password,
+                            phone: phone || null
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setSuccess(true);
+                        setTimeout(() => onSwitchToLogin(), 2000);
+                    } else {
+                        setError(data.detail || 'Registration failed');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="card">
+                    <div className="logo">
+                        <h1>Create Account</h1>
+                        <p>Sign up to get started</p>
+                    </div>
+
+                    {error && <div className="alert alert-error">{error}</div>}
+                    {success && <div className="alert alert-success">Registration successful! Redirecting to login...</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                autoComplete="email"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="phone">Phone (optional)</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                autoComplete="tel"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                autoComplete="new-password"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="confirmPassword">Confirm Password</label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                                autoComplete="new-password"
+                            />
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" disabled={loading}>
+                            {loading ? 'Creating Account...' : 'Sign Up'}
+                        </button>
+                    </form>
+
+                    <div className="divider">Already have an account?</div>
+
+                    <button className="btn btn-secondary" onClick={onSwitchToLogin}>
+                        Sign In
+                    </button>
+                </div>
+            );
+        }
+
+        // Reset Password component
+        function ResetPasswordForm({ onSwitchToLogin }) {
+            const [email, setEmail] = useState('');
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState(false);
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+                setSuccess(false);
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE}/auth/reset-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setSuccess(true);
+                    } else {
+                        setError(data.detail || 'Failed to send reset email');
+                    }
+                } catch (err) {
+                    setError('Network error. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="card">
+                    <div className="logo">
+                        <h1>Reset Password</h1>
+                        <p>Enter your email to receive reset instructions</p>
+                    </div>
+
+                    {error && <div className="alert alert-error">{error}</div>}
+                    {success && <div className="alert alert-success">Reset instructions sent to your email!</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                autoComplete="email"
+                            />
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" disabled={loading}>
+                            {loading ? 'Sending...' : 'Send Reset Link'}
+                        </button>
+                    </form>
+
+                    <button className="link-button" onClick={onSwitchToLogin}>
+                        Back to Sign In
+                    </button>
+                </div>
+            );
+        }
+
+        // Dashboard component
+        function Dashboard() {
+            const { user, logout } = useAuth();
+
+            return (
+                <div className="card">
+                    <div className="user-info">
+                        <h2>Welcome, {user?.email}!</h2>
+                        <p><strong>User ID:</strong> {user?.id}</p>
+                        {user?.phone && <p><strong>Phone:</strong> {user.phone}</p>}
+                        <p><strong>Email Verified:</strong> {user?.email_verified ? 'Yes' : 'No'}</p>
+                        <p><strong>Member Since:</strong> {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</p>
+                    </div>
+
+                    <button className="btn btn-primary" onClick={logout}>
+                        Sign Out
+                    </button>
+                </div>
+            );
+        }
+
+        // Main App component
+        function App() {
+            const [view, setView] = useState('login');
+            const { isAuthenticated } = useAuth();
+
+            if (isAuthenticated) {
+                return (
+                    <div className="app-container">
+                        <Dashboard />
+                    </div>
+                );
+            }
+
+            return (
+                <div className="app-container">
+                    {view === 'login' && (
+                        <LoginForm
+                            onSwitchToRegister={() => setView('register')}
+                            onSwitchToReset={() => setView('reset')}
+                        />
+                    )}
+                    {view === 'register' && (
+                        <RegisterForm onSwitchToLogin={() => setView('login')} />
+                    )}
+                    {view === 'reset' && (
+                        <ResetPasswordForm onSwitchToLogin={() => setView('login')} />
+                    )}
+                </div>
+            );
+        }
+
+        // Render app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
