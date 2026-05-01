@@ -1,97 +1,70 @@
 # 开发笔记 — Create budgets table schema and migration
 
-> 2026-05-02 00:58 | LLM
+> 2026-05-02 01:11 | LLM
 
 ## 产出文件
-- [backend/migrations/002_create_budgets_table.sql](/app#repo?file=backend/migrations/002_create_budgets_table.sql) (1859 chars)
-- [backend/migrations/001_init_schema.sql](/app#repo?file=backend/migrations/001_init_schema.sql) (2237 chars)
-- [backend/db/migrate.py](/app#repo?file=backend/db/migrate.py) (5058 chars)
-- [backend/README.md](/app#repo?file=backend/README.md) (2117 chars)
+- [backend/alembic/versions/002_create_budgets_table.py](/app#repo?file=backend/alembic/versions/002_create_budgets_table.py) (2138 chars)
+- [backend/app/models/budget.py](/app#repo?file=backend/app/models/budget.py) (1296 chars)
 
 ## 自测: 自测 5/6 通过 ⚠️
 
 | 检查项 | 结果 | 说明 |
 |--------|------|------|
-| 文件产出 | ✅ | 4 个文件 |
+| 文件产出 | ✅ | 2 个文件 |
 | 入口文件 | ❌ | 缺少 |
 | 代码非空 | ✅ | 通过 |
 | 语法检查 | ✅ | 通过 |
 | 文件名规范 | ✅ | 全英文 |
-| 磁盘落地 | ✅ | 4 个文件已落盘 |
+| 磁盘落地 | ✅ | 2 个文件已落盘 |
 
 ## 代码变更 (Diff)
 
-### backend/migrations/002_create_budgets_table.sql (新建, 1859 chars)
+### backend/alembic/versions/002_create_budgets_table.py (新建, 2138 chars)
 ```
-+ -- Migration: Create budgets table
-+ -- Description: Add budgets table with user_id, category_id, amount, period, and timestamps
-+ -- Author: DevAgent
-+ -- Date: 2024
++ """create budgets table
 + 
-+ -- Create budgets table
-+ CREATE TABLE IF NOT EXISTS budgets (
-+     id INTEGER PRIMARY KEY AUTOINCREMENT,
-+     user_id INTEGER NOT NULL,
-+     category_id INTEGER,
-+     amount DECIMAL(10, 2) NOT NULL CHECK(amount >= 0),
-+     period VARCHAR(7) NOT NULL CHECK(period GLOB '[0-9][0-9][0-9][0-9]-[0-1][0-9]'),
-+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-+     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-+     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
-+ );
++ Revision ID: 002
++ Revises: 001
++ Create Date: 2024-01-01 00:00:00.000000
 + 
-+ -- Create index on user_id for faster user-specific queries
-+ CREATE INDEX IF NOT EXISTS idx_budgets_user_id ON budgets(user_id);
++ """
++ from alembic import op
++ import sqlalchemy as sa
++ from sqlalchemy.dialects import postgresql
++ 
++ # revision identifiers, used by Alembic.
++ revision = '002'
++ down_revision = '001'
++ branch_labels = None
++ depends_on = None
++ 
++ 
++ def upgrade() -> None:
++     # Create budgets table
 + ... (更多)
 ```
 
-### backend/migrations/001_init_schema.sql (新建, 2237 chars)
+### backend/app/models/budget.py (新建, 1296 chars)
 ```
-+ -- Migration: Initialize database schema
-+ -- Description: Create initial tables for users, categories, transactions, and migration tracking
-+ -- Author: DevAgent
-+ -- Date: 2024
++ from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, Index
++ from sqlalchemy.orm import relationship
++ from sqlalchemy.sql import func
++ from app.database import Base
 + 
-+ -- Create schema_migrations table to track applied migrations
-+ CREATE TABLE IF NOT EXISTS schema_migrations (
-+     version VARCHAR(10) PRIMARY KEY,
-+     description VARCHAR(255) NOT NULL,
-+     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-+ );
 + 
-+ -- Create users table
-+ CREATE TABLE IF NOT EXISTS users (
-+     id INTEGER PRIMARY KEY AUTOINCREMENT,
-+     username VARCHAR(50) UNIQUE NOT NULL,
-+     email VARCHAR(100) UNIQUE NOT NULL,
-+     password_hash VARCHAR(255) NOT NULL,
-+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-+ ... (更多)
-```
-
-### backend/db/migrate.py (新建, 5058 chars)
-```
-+ #!/usr/bin/env python3
-+ """
-+ Database migration runner for SQLite.
++ class Budget(Base):
++     __tablename__ = "budgets"
 + 
-+ Usage:
-+     python migrate.py          # Run all pending migrations
-+     python migrate.py --reset  # Drop all tables and re-run migrations
-+ """
++     id = Column(Integer, primary_key=True, index=True)
++     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
++     category_id = Column(Integer, ForeignKey("categories.id", ondelete="SET NULL"), nullable=True)
++     amount = Column(Numeric(10, 2), nullable=False)
++     period = Column(String(7), nullable=False)  # Format: YYYY-MM
++     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 + 
-+ import asyncio
-+ import os
-+ import sys
-+ from pathlib import Path
-+ import aiosqlite
-+ import logging
++     # Relationships
++     user = relationship("User", back_populates="budgets")
++     category = relationship("Category", back_populates="budgets")
 + 
-+ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-+ logger = logging.getLogger(__name__)
-+ 
-+ # Database configuration
 + ... (更多)
 ```
