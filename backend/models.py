@@ -23,12 +23,14 @@ Base = declarative_base()
 
 class CategoryType(str, enum.Enum):
     """Category type enumeration."""
+
     INCOME = "income"
     EXPENSE = "expense"
 
 
 class PaymentMethodType(str, enum.Enum):
     """Payment method type enumeration."""
+
     CASH = "cash"
     CREDIT_CARD = "credit_card"
     DEBIT_CARD = "debit_card"
@@ -39,7 +41,7 @@ class PaymentMethodType(str, enum.Enum):
 
 class User(Base):
     """User account model.
-    
+
     Attributes:
         id: Primary key
         username: Unique username (3-30 chars)
@@ -48,78 +50,60 @@ class User(Base):
         created_at: Account creation timestamp
         updated_at: Last update timestamp
     """
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(30), unique=True, nullable=False, index=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-        nullable=False,
+        DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
     # Relationships
     categories = relationship(
-        "Category",
-        back_populates="user",
-        cascade="all, delete-orphan",
-        lazy="select",
+        "Category", back_populates="user", cascade="all, delete-orphan"
     )
     transactions = relationship(
-        "Transaction",
-        back_populates="user",
-        cascade="all, delete-orphan",
-        lazy="select",
+        "Transaction", back_populates="user", cascade="all, delete-orphan"
     )
     payment_methods = relationship(
-        "PaymentMethod",
-        back_populates="user",
-        cascade="all, delete-orphan",
-        lazy="select",
+        "PaymentMethod", back_populates="user", cascade="all, delete-orphan"
     )
 
     def __repr__(self):
-        return f"<User(id={self.id}, username='{self.username}')>"
+        return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
 
 
 class Category(Base):
     """Transaction category model.
-    
+
     Attributes:
         id: Primary key
         user_id: Foreign key to users table
-        name: Category name (e.g., 'Food', 'Salary')
+        name: Category name (e.g., 'Salary', 'Food', 'Transport')
         type: CategoryType enum (income/expense)
-        icon: Icon identifier (e.g., 'food', 'salary')
+        icon: Icon identifier (e.g., 'icon-food', 'icon-salary')
         color: Hex color code (e.g., '#FF5733')
         created_at: Creation timestamp
     """
+
     __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(
-        Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True,
-    )
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(50), nullable=False)
     type = Column(SQLEnum(CategoryType), nullable=False, index=True)
     icon = Column(String(50), nullable=True)
     color = Column(String(7), nullable=True)  # Hex color: #RRGGBB
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     # Relationships
     user = relationship("User", back_populates="categories")
     transactions = relationship(
-        "Transaction",
-        back_populates="category",
-        cascade="all, delete-orphan",
-        lazy="select",
+        "Transaction", back_populates="category", cascade="all, delete-orphan"
     )
 
     def __repr__(self):
@@ -128,83 +112,62 @@ class Category(Base):
 
 class PaymentMethod(Base):
     """Payment method model.
-    
+
     Attributes:
         id: Primary key
         user_id: Foreign key to users table
-        name: Payment method name (e.g., 'My Visa Card')
+        name: Payment method name (e.g., 'My Visa Card', 'Cash Wallet')
         type: PaymentMethodType enum
         created_at: Creation timestamp
     """
+
     __tablename__ = "payment_methods"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(
-        Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True,
-    )
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(100), nullable=False)
     type = Column(SQLEnum(PaymentMethodType), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     # Relationships
     user = relationship("User", back_populates="payment_methods")
-    transactions = relationship(
-        "Transaction",
-        back_populates="payment_method",
-        lazy="select",
-    )
+    transactions = relationship("Transaction", back_populates="payment_method")
 
     def __repr__(self):
         return f"<PaymentMethod(id={self.id}, name='{self.name}', type='{self.type.value}')>"
 
 
 class Transaction(Base):
-    """Transaction record model.
-    
+    """Financial transaction model.
+
     Attributes:
         id: Primary key
         user_id: Foreign key to users table
         category_id: Foreign key to categories table
         payment_method_id: Foreign key to payment_methods table (nullable)
-        amount: Transaction amount (positive for income, negative for expense)
+        amount: Transaction amount (Decimal for precision)
         date: Transaction date
-        description: Optional description/note
+        description: Optional transaction description
         created_at: Record creation timestamp
         updated_at: Last update timestamp
     """
+
     __tablename__ = "transactions"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(
-        Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True,
-    )
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     category_id = Column(
-        Integer,
-        ForeignKey("categories.id", ondelete="RESTRICT"),
-        nullable=False,
-        index=True,
+        Integer, ForeignKey("categories.id", ondelete="RESTRICT"), nullable=False, index=True
     )
     payment_method_id = Column(
-        Integer,
-        ForeignKey("payment_methods.id", ondelete="SET NULL"),
-        nullable=True,
-        index=True,
+        Integer, ForeignKey("payment_methods.id", ondelete="SET NULL"), nullable=True, index=True
     )
-    amount = Column(Numeric(15, 2), nullable=False)  # Max: 9,999,999,999,999.99
-    date = Column(DateTime, nullable=False, index=True)
+    amount = Column(Numeric(15, 2), nullable=False)  # Precision: 15 digits, 2 decimals
+    date = Column(DateTime, nullable=False, index=True, default=datetime.utcnow)
     description = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-        nullable=False,
+        DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
     # Relationships
@@ -213,4 +176,4 @@ class Transaction(Base):
     payment_method = relationship("PaymentMethod", back_populates="transactions")
 
     def __repr__(self):
-        return f"<Transaction(id={self.id}, amount={self.amount}, date='{self.date}')>"
+        return f"<Transaction(id={self.id}, amount={self.amount}, date='{self.date}', category_id={self.category_id})>"

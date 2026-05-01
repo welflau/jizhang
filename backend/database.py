@@ -1,62 +1,42 @@
-"""Database connection and session management.
-
-Provides async SQLAlchemy engine and session factory for database operations.
-"""
-
+"""Database connection and initialization."""
+import aiosqlite
 import os
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.pool import NullPool
-from models import Base
+import logging
+from contextlib import asynccontextmanager
 
-# Database URL from environment variable or default to SQLite
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "sqlite+aiosqlite:///./finance_tracker.db"
-)
+logger = logging.getLogger(__name__)
 
-# Create async engine
-# NullPool for SQLite to avoid "database is locked" issues
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=os.getenv("SQL_ECHO", "false").lower() == "true",
-    poolclass=NullPool if "sqlite" in DATABASE_URL else None,
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
-)
+DB_PATH = os.getenv("DB_PATH", "app.db")
+BUSY_TIMEOUT = 5000  # 5 seconds
 
-# Session factory
-AsyncSessionLocal = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
+
+@asynccontextmanager
+async def get_db():
+    """Async context manager for database connections.
+    
+    Yields:
+        aiosqlite.Connection: Database connection with foreign keys enabled
+    """
+    conn = await aiosqlite.connect(DB_PATH, timeout=BUSY_TIMEOUT)
+    conn.row_factory = aiosqlite.Row  # Enable dict-like row access
+    
+    try:
+        # Enable foreign key constraints
+        await conn.execute("PRAGMA foreign_keys = ON")
+        # Enable WAL mode for better concurrency
+        await conn.execute("PRAGMA journal_mode = WAL")
+        yield conn
+    except Exception as e:
+        logger.error(f"Database error: {e}")
+        raise
+    finally:
+        await conn.close()
 
 
 async def init_db():
-    """Initialize database tables.
+    """Initialize database by running migrations."""
+    from backend.migrations.run_migrations import run_migrations
     
-    Creates all tables defined in Base metadata if they don't exist.
-    Should be called on application startup.
-    """
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-async def get_db():
-    """Dependency for FastAPI routes to get database session.
-    
-    Yields:
-        AsyncSession: Database session that auto-closes after request.
-    
-    Example:
-        @app.get("/users")
-        async def list_users(db: AsyncSession = Depends(get_db)):
-            result = await db.execute(select(User))
-            return result.scalars().all()
-    """
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
+    logger.info("Initializing database...")
+    await run_migrations()
+    logger.info("Database initialized successfully")
