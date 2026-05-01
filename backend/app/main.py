@@ -1,26 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-import os
+from backend.app.core.config import settings
+from backend.app.core.database import init_db
+from backend.app.routers import auth, bills, budgets
+import logging
 
-from .database import init_db
-from .routers import auth
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager."""
-    # Startup: initialize database
-    await init_db()
-    yield
-    # Shutdown: cleanup if needed
-
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="User Authentication API",
-    description="JWT-based user registration and login system",
-    version="1.0.0",
-    lifespan=lifespan
+    title=settings.APP_NAME,
+    debug=settings.DEBUG
 )
 
 # CORS middleware for frontend access
@@ -34,19 +28,29 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(bills.router)
+app.include_router(budgets.router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on application startup."""
+    logger.info("Initializing database...")
+    await init_db()
+    logger.info("Database initialized successfully")
 
 
 @app.get("/")
 async def root():
-    return {"message": "User Authentication API", "version": "1.0.0"}
+    """Health check endpoint."""
+    return {"status": "ok", "app": settings.APP_NAME}
 
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", 8080))
     uvicorn.run(
-        "app.main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=True
+        "backend.app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.DEBUG
     )
