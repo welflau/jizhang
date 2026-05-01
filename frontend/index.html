@@ -1,739 +1,498 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Authentication System</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #1557b0;
-            --danger: #d93025;
-            --success: #1e8e3e;
-            --border: #dadce0;
-            --text: #202124;
-            --text-secondary: #5f6368;
-            --bg: #ffffff;
-            --bg-secondary: #f8f9fa;
-            
-            --category-work: #4285f4;
-            --category-personal: #34a853;
-            --category-shopping: #fbbc04;
-            --category-health: #ea4335;
-            --category-finance: #9334e6;
-            --category-education: #ff6d00;
-            --category-travel: #00bcd4;
-            --category-entertainment: #e91e63;
-            --category-food: #ff9800;
-            --category-other: #607d8b;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: var(--text);
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .card {
-            background: var(--bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            padding: 40px;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo h1 {
-            font-size: 28px;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .logo p {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            color: var(--text);
-        }
-
-        input[type="email"],
-        input[type="password"],
-        input[type="tel"],
-        input[type="text"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-
-        input.error {
-            border-color: var(--danger);
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .success-message {
-            color: var(--success);
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 8px;
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            font-weight: normal;
-            cursor: pointer;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--bg-secondary);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .link-button {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: underline;
-            padding: 0;
-            margin-top: 16px;
-            display: block;
-            width: 100%;
-            text-align: center;
-        }
-
-        .link-button:hover {
-            color: var(--primary-dark);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 24px 0;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .user-info {
-            background: var(--bg-secondary);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .user-info h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .user-info p {
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .alert-error {
-            background: #fce8e6;
-            color: var(--danger);
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-success {
-            background: #e6f4ea;
-            color: var(--success);
-            border: 1px solid #c3e6cb;
-        }
-
-        .category-icon {
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-right: 8px;
-        }
-
-        .category-work { background-color: var(--category-work); color: white; }
-        .category-personal { background-color: var(--category-personal); color: white; }
-        .category-shopping { background-color: var(--category-shopping); color: white; }
-        .category-health { background-color: var(--category-health); color: white; }
-        .category-finance { background-color: var(--category-finance); color: white; }
-        .category-education { background-color: var(--category-education); color: white; }
-        .category-travel { background-color: var(--category-travel); color: white; }
-        .category-entertainment { background-color: var(--category-entertainment); color: white; }
-        .category-food { background-color: var(--category-food); color: white; }
-        .category-other { background-color: var(--category-other); color: white; }
-
-        @media (max-width: 768px) {
-            .card {
-                padding: 24px;
-            }
-
-            .logo h1 {
-                font-size: 24px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Layout System</title>
+  
+  <!-- Ant Design CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.12.0/dist/reset.css">
+  
+  <style>
+    /* ============================================
+       Global Responsive Variables & Breakpoints
+       ============================================ */
+    :root {
+      /* Breakpoint values */
+      --breakpoint-mobile: 768px;
+      --breakpoint-tablet: 1024px;
+      
+      /* Container max-widths */
+      --container-mobile: 100%;
+      --container-tablet: 720px;
+      --container-desktop: 1200px;
+      
+      /* Spacing scale (responsive) */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-xxl: 48px;
+      
+      /* Typography scale */
+      --font-size-base: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 20px;
+      --font-size-xxl: 24px;
+      
+      /* Grid gutter */
+      --grid-gutter: 16px;
+      
+      /* Primary colors */
+      --color-primary: #1890ff;
+      --color-text: #262626;
+      --color-text-secondary: #8c8c8c;
+      --color-border: #d9d9d9;
+      --color-bg: #ffffff;
+      --color-bg-secondary: #fafafa;
+    }
+    
+    /* Tablet adjustments (768px - 1023px) */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      :root {
+        --spacing-md: 20px;
+        --spacing-lg: 28px;
+        --spacing-xl: 40px;
+        --spacing-xxl: 56px;
+        --font-size-base: 15px;
+        --font-size-lg: 18px;
+        --grid-gutter: 20px;
+      }
+    }
+    
+    /* Desktop adjustments (>=1024px) */
+    @media (min-width: 1024px) {
+      :root {
+        --spacing-md: 24px;
+        --spacing-lg: 32px;
+        --spacing-xl: 48px;
+        --spacing-xxl: 64px;
+        --font-size-base: 16px;
+        --font-size-lg: 20px;
+        --grid-gutter: 24px;
+      }
+    }
+    
+    /* ============================================
+       Base Reset & Box Model
+       ============================================ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      font-size: var(--font-size-base);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--color-text);
+      background-color: var(--color-bg-secondary);
+      line-height: 1.5715;
+    }
+    
+    /* ============================================
+       Responsive Container System
+       ============================================ */
+    .container {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+    }
+    
+    /* Mobile: full width with padding */
+    @media (max-width: 767px) {
+      .container {
+        max-width: var(--container-mobile);
+      }
+    }
+    
+    /* Tablet: constrained width */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .container {
+        max-width: var(--container-tablet);
+      }
+    }
+    
+    /* Desktop: max constrained width */
+    @media (min-width: 1024px) {
+      .container {
+        max-width: var(--container-desktop);
+      }
+    }
+    
+    /* Fluid container (no max-width) */
+    .container-fluid {
+      width: 100%;
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+    }
+    
+    /* ============================================
+       Custom Grid System (Ant Design Compatible)
+       ============================================ */
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: calc(var(--grid-gutter) / -2);
+      margin-right: calc(var(--grid-gutter) / -2);
+    }
+    
+    .col {
+      padding-left: calc(var(--grid-gutter) / 2);
+      padding-right: calc(var(--grid-gutter) / 2);
+      flex: 1;
+    }
+    
+    /* Column width classes (mobile-first) */
+    .col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+    .col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .col-3 { flex: 0 0 25%; max-width: 25%; }
+    .col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+    .col-6 { flex: 0 0 50%; max-width: 50%; }
+    .col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+    .col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-9 { flex: 0 0 75%; max-width: 75%; }
+    .col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+    .col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+    .col-12 { flex: 0 0 100%; max-width: 100%; }
+    
+    /* Tablet breakpoint columns (md-) */
+    @media (min-width: 768px) {
+      .col-md-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+      .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+      .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+      .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+      .col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+      .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+      .col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+      .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+      .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+      .col-md-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+      .col-md-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+      .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+    }
+    
+    /* Desktop breakpoint columns (lg-) */
+    @media (min-width: 1024px) {
+      .col-lg-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+      .col-lg-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+      .col-lg-3 { flex: 0 0 25%; max-width: 25%; }
+      .col-lg-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+      .col-lg-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+      .col-lg-6 { flex: 0 0 50%; max-width: 50%; }
+      .col-lg-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+      .col-lg-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+      .col-lg-9 { flex: 0 0 75%; max-width: 75%; }
+      .col-lg-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+      .col-lg-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+      .col-lg-12 { flex: 0 0 100%; max-width: 100%; }
+    }
+    
+    /* ============================================
+       Responsive Utility Classes
+       ============================================ */
+    
+    /* Display utilities */
+    .d-none { display: none !important; }
+    .d-block { display: block !important; }
+    .d-flex { display: flex !important; }
+    .d-inline { display: inline !important; }
+    .d-inline-block { display: inline-block !important; }
+    
+    /* Mobile display utilities */
+    @media (max-width: 767px) {
+      .d-mobile-none { display: none !important; }
+      .d-mobile-block { display: block !important; }
+      .d-mobile-flex { display: flex !important; }
+    }
+    
+    /* Tablet display utilities */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .d-tablet-none { display: none !important; }
+      .d-tablet-block { display: block !important; }
+      .d-tablet-flex { display: flex !important; }
+    }
+    
+    /* Desktop display utilities */
+    @media (min-width: 1024px) {
+      .d-desktop-none { display: none !important; }
+      .d-desktop-block { display: block !important; }
+      .d-desktop-flex { display: flex !important; }
+    }
+    
+    /* Spacing utilities (margin & padding) */
+    .m-0 { margin: 0 !important; }
+    .m-1 { margin: var(--spacing-xs) !important; }
+    .m-2 { margin: var(--spacing-sm) !important; }
+    .m-3 { margin: var(--spacing-md) !important; }
+    .m-4 { margin: var(--spacing-lg) !important; }
+    .m-5 { margin: var(--spacing-xl) !important; }
+    
+    .mt-0 { margin-top: 0 !important; }
+    .mt-1 { margin-top: var(--spacing-xs) !important; }
+    .mt-2 { margin-top: var(--spacing-sm) !important; }
+    .mt-3 { margin-top: var(--spacing-md) !important; }
+    .mt-4 { margin-top: var(--spacing-lg) !important; }
+    .mt-5 { margin-top: var(--spacing-xl) !important; }
+    
+    .mb-0 { margin-bottom: 0 !important; }
+    .mb-1 { margin-bottom: var(--spacing-xs) !important; }
+    .mb-2 { margin-bottom: var(--spacing-sm) !important; }
+    .mb-3 { margin-bottom: var(--spacing-md) !important; }
+    .mb-4 { margin-bottom: var(--spacing-lg) !important; }
+    .mb-5 { margin-bottom: var(--spacing-xl) !important; }
+    
+    .p-0 { padding: 0 !important; }
+    .p-1 { padding: var(--spacing-xs) !important; }
+    .p-2 { padding: var(--spacing-sm) !important; }
+    .p-3 { padding: var(--spacing-md) !important; }
+    .p-4 { padding: var(--spacing-lg) !important; }
+    .p-5 { padding: var(--spacing-xl) !important; }
+    
+    /* Text alignment */
+    .text-left { text-align: left !important; }
+    .text-center { text-align: center !important; }
+    .text-right { text-align: right !important; }
+    
+    @media (max-width: 767px) {
+      .text-mobile-center { text-align: center !important; }
+    }
+    
+    /* ============================================
+       Demo Section Styles
+       ============================================ */
+    .demo-section {
+      background: var(--color-bg);
+      padding: var(--spacing-xxl) 0;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .demo-box {
+      background: var(--color-primary);
+      color: white;
+      padding: var(--spacing-lg);
+      border-radius: 8px;
+      text-align: center;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+    }
+    
+    .demo-header {
+      font-size: var(--font-size-xxl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+      color: var(--color-text);
+    }
+    
+    .demo-description {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xl);
+      line-height: 1.8;
+    }
+    
+    .breakpoint-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 9999;
+      font-family: 'Courier New', monospace;
+    }
+    
+    /* Show different indicator text based on breakpoint */
+    .breakpoint-indicator::before {
+      content: 'Mobile (<768px)';
+    }
+    
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .breakpoint-indicator::before {
+        content: 'Tablet (768-1023px)';
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .breakpoint-indicator::before {
+        content: 'Desktop (≥1024px)';
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        const API_BASE = 'http://localhost:8080/api';
-
-        const CATEGORY_ICONS = {
-            work: '💼',
-            personal: '👤',
-            shopping: '🛒',
-            health: '❤️',
-            finance: '💰',
-            education: '📚',
-            travel: '✈️',
-            entertainment: '🎬',
-            food: '🍔',
-            other: '📌'
-        };
-
-        // Custom hook for localStorage
-        function useLocalStorage(key, initialValue) {
-            const [value, setValue] = useState(() => {
-                try {
-                    const item = localStorage.getItem(key);
-                    return item ? JSON.parse(item) : initialValue;
-                } catch (error) {
-                    console.error('Error reading from localStorage:', error);
-                    return initialValue;
-                }
-            });
-
-            useEffect(() => {
-                try {
-                    localStorage.setItem(key, JSON.stringify(value));
-                } catch (error) {
-                    console.error('Error writing to localStorage:', error);
-                }
-            }, [key, value]);
-
-            return [value, setValue];
-        }
-
-        // Auth context
-        function useAuth() {
-            const [accessToken, setAccessToken] = useLocalStorage('access_token', null);
-            const [refreshToken, setRefreshToken] = useLocalStorage('refresh_token', null);
-            const [user, setUser] = useState(null);
-
-            const login = (tokens) => {
-                setAccessToken(tokens.access_token);
-                setRefreshToken(tokens.refresh_token);
-            };
-
-            const logout = () => {
-                setAccessToken(null);
-                setRefreshToken(null);
-                setUser(null);
-            };
-
-            const fetchUser = async () => {
-                if (!accessToken) return;
-
-                try {
-                    const response = await fetch(`${API_BASE}/auth/me`, {
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const userData = await response.json();
-                        setUser(userData);
-                    } else if (response.status === 401) {
-                        // Token expired, try refresh
-                        await refreshAccessToken();
-                    }
-                } catch (error) {
-                    console.error('Error fetching user:', error);
-                }
-            };
-
-            const refreshAccessToken = async () => {
-                if (!refreshToken) {
-                    logout();
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`${API_BASE}/auth/refresh`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${refreshToken}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const tokens = await response.json();
-                        login(tokens);
-                    } else {
-                        logout();
-                    }
-                } catch (error) {
-                    console.error('Error refreshing token:', error);
-                    logout();
-                }
-            };
-
-            useEffect(() => {
-                if (accessToken) {
-                    fetchUser();
-                }
-            }, [accessToken]);
-
-            return { user, accessToken, login, logout, isAuthenticated: !!accessToken };
-        }
-
-        // Login component
-        function LoginForm({ onSwitchToRegister, onSwitchToReset }) {
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-            const [rememberMe, setRememberMe] = useState(false);
-            const [error, setError] = useState('');
-            const [loading, setLoading] = useState(false);
-            const { login } = useAuth();
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setError('');
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/auth/login`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password, remember_me: rememberMe })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        login(data);
-                    } else {
-                        setError(data.detail || 'Login failed');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <div className="card">
-                    <div className="logo">
-                        <h1>Welcome Back</h1>
-                        <p>Sign in to your account</p>
-                    </div>
-
-                    {error && <div className="alert alert-error">{error}</div>}
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                autoComplete="email"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                autoComplete="current-password"
-                            />
-                        </div>
-
-                        <div className="checkbox-group">
-                            <input
-                                type="checkbox"
-                                id="remember"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                            />
-                            <label htmlFor="remember">Remember me</label>
-                        </div>
-
-                        <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? 'Signing in...' : 'Sign In'}
-                        </button>
-                    </form>
-
-                    <button className="link-button" onClick={onSwitchToReset}>
-                        Forgot password?
-                    </button>
-
-                    <div className="divider">Don't have an account?</div>
-
-                    <button className="btn btn-secondary" onClick={onSwitchToRegister}>
-                        Create Account
-                    </button>
+  
+  <!-- Breakpoint Indicator (visible in all viewports) -->
+  <div class="breakpoint-indicator"></div>
+  
+  <!-- Demo Section 1: Container System -->
+  <div class="demo-section">
+    <div class="container">
+      <h1 class="demo-header">Responsive Container System</h1>
+      <p class="demo-description">
+        This container adapts to different screen sizes:<br>
+        Mobile (&lt;768px): Full width with padding<br>
+        Tablet (768-1023px): Max 720px<br>
+        Desktop (≥1024px): Max 1200px
+      </p>
+      <div class="demo-box">Responsive Container</div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 2: Grid System -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">12-Column Grid System</h2>
+      <p class="demo-description">
+        Mobile: Stack vertically (col-12)<br>
+        Tablet: 2 columns (col-md-6)<br>
+        Desktop: 3 columns (col-lg-4)
+      </p>
+      
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #52c41a;">Column 1</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #faad14;">Column 2</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #f5222d;">Column 3</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #722ed1;">Column 4</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #13c2c2;">Column 5</div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #eb2f96;">Column 6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 3: Responsive Utilities -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Responsive Display Utilities</h2>
+      <p class="demo-description">
+        Different content shown based on viewport size
+      </p>
+      
+      <div class="row">
+        <div class="col-12 mb-3">
+          <div class="demo-box d-mobile-block d-tablet-none d-desktop-none" style="background: #52c41a;">
+            📱 Visible on Mobile Only
+          </div>
+          <div class="demo-box d-mobile-none d-tablet-block d-desktop-none" style="background: #faad14;">
+            📱 Visible on Tablet Only
+          </div>
+          <div class="demo-box d-mobile-none d-tablet-none d-desktop-block" style="background: #1890ff;">
+            🖥️ Visible on Desktop Only
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-12 col-md-4 mb-3">
+          <div class="demo-box" style="background: #722ed1; min-height: 150px;">
+            <div>
+              <div style="font-size: var(--font-size-xl); margin-bottom: 8px;">Spacing</div>
+              <div style="font-size: var(--font-size-base); opacity: 0.9;">Auto-adjusts by viewport</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="demo-box" style="background: #13c2c2; min-height: 150px;">
+            <div>
+              <div style="font-size: var(--font-size-xl); margin-bottom: 8px;">Typography</div>
+              <div style="font-size: var(--font-size-base); opacity: 0.9;">Scales responsively</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="demo-box" style="background: #eb2f96; min-height: 150px;">
+            <div>
+              <div style="font-size: var(--font-size-xl); margin-bottom: 8px;">Grid Gutter</div>
+              <div style="font-size: var(--font-size-base); opacity: 0.9;">Adapts to screen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 4: Nested Grid -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Nested Grid Example</h2>
+      <p class="demo-description">
+        Grids can be nested for complex layouts
+      </p>
+      
+      <div class="row">
+        <div class="col-12 col-lg-8 mb-3">
+          <div class="demo-box" style="background: #1890ff; min-height: 200px;">
+            <div style="width: 100%;">
+              Main Content Area (col-lg-8)
+              <div class="row" style="margin-top: 16px;">
+                <div class="col-6">
+                  <div style="background: rgba(255,255,255,0.3); padding: 16px; border-radius: 4px;">
+                    Nested 1
+                  </div>
                 </div>
-            );
-        }
-
-        // Register component
-        function RegisterForm({ onSwitchToLogin }) {
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-            const [confirmPassword, setConfirmPassword] = useState('');
-            const [phone, setPhone] = useState('');
-            const [error, setError] = useState('');
-            const [success, setSuccess] = useState(false);
-            const [loading, setLoading] = useState(false);
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setError('');
-                setSuccess(false);
-
-                if (password !== confirmPassword) {
-                    setError('Passwords do not match');
-                    return;
-                }
-
-                if (password.length < 8) {
-                    setError('Password must be at least 8 characters');
-                    return;
-                }
-
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/auth/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email,
-                            password,
-                            phone: phone || null
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        setSuccess(true);
-                        setTimeout(() => onSwitchToLogin(), 2000);
-                    } else {
-                        setError(data.detail || 'Registration failed');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <div className="card">
-                    <div className="logo">
-                        <h1>Create Account</h1>
-                        <p>Sign up to get started</p>
-                    </div>
-
-                    {error && <div className="alert alert-error">{error}</div>}
-                    {success && <div className="alert alert-success">Registration successful! Redirecting to login...</div>}
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                autoComplete="email"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="phone">Phone (optional)</label>
-                            <input
-                                type="tel"
-                                id="phone"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                autoComplete="tel"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                autoComplete="new-password"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                                autoComplete="new-password"
-                            />
-                        </div>
-
-                        <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? 'Creating Account...' : 'Sign Up'}
-                        </button>
-                    </form>
-
-                    <div className="divider">Already have an account?</div>
-
-                    <button className="btn btn-secondary" onClick={onSwitchToLogin}>
-                        Sign In
-                    </button>
+                <div class="col-6">
+                  <div style="background: rgba(255,255,255,0.3); padding: 16px; border-radius: 4px;">
+                    Nested 2
+                  </div>
                 </div>
-            );
-        }
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4 mb-3">
+          <div class="demo-box" style="background: #52c41a; min-height: 200px;">
+            Sidebar (col-lg-4)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Demo Section 5: Responsive Spacing -->
+  <div class="demo-section">
+    <div class="container">
+      <h2 class="demo-header">Responsive Spacing System</h2>
+      <p class="demo-description">
+        Spacing automatically adjusts based on viewport size
+      </p>
+      
+      <div class="demo-box mb-3" style="background: #faad14;">
+        Margin Bottom 3 (responsive)
+      </div>
+      <div class="demo-box mb-4" style="background: #f5222d;">
+        Margin Bottom 4 (responsive)
+      </div>
+      <div class="demo-box mb-5" style="background: #722ed1;">
+        Margin Bottom 5 (responsive)
+      </div>
+    </div>
+  </div>
 
-        // Reset Password component
-        function ResetPasswordForm({ onSwitchToLogin }) {
-            const [email, setEmail] = useState('');
-            const [error, setError] = useState('');
-            const [success, setSuccess] = useState(false);
-            const [loading, setLoading] = useState(false);
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setError('');
-                setSuccess(false);
-                setLoading(true);
-
-                try {
-                    const response = await fetch(`${API_BASE}/auth/reset-password`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        setSuccess(true);
-                    } else {
-                        setError(data.detail || 'Failed to send reset email');
-                    }
-                } catch (err) {
-                    setError('Network error. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <div className="card">
-                    <div className="logo">
-                        <h1>Reset Password</h1>
-                        <p>Enter your email to receive reset instructions</p>
-                    </div>
-
-                    {error && <div className="alert alert-error">{error}</div>}
-                    {success && <div className="alert alert-success">Reset instructions sent to your email!</div>}
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                autoComplete="email"
-                            />
-                        </div>
-
-                        <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? 'Sending...' : 'Send Reset Link'}
-                        </button>
-                    </form>
-
-                    <button className="link-button" onClick={onSwitchToLogin}>
-                        Back to Sign In
-                    </button>
-                </div>
-            );
-        }
-
-        // Dashboard component
-        function Dashboard() {
-            const { user, logout } = useAuth();
-
-            return (
-                <div className="card">
-                    <div className="user-info">
-                        <h2>Welcome, {user?.email}!</h2>
-                        <p><strong>User ID:</strong> {user?.id}</p>
-                        {user?.phone && <p><strong>Phone:</strong> {user.phone}</p>}
-                        <p><strong>Email Verified:</strong> {user?.email_verified ? 'Yes' : 'No'}</p>
-                        <p><strong>Member Since:</strong> {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</p>
-                    </div>
-
-                    <button className="btn btn-primary" onClick={logout}>
-                        Sign Out
-                    </button>
-                </div>
-            );
-        }
-
-        // Main App component
-        function App() {
-            const [view, setView] = useState('login');
-            const { isAuthenticated } = useAuth();
-
-            if (isAuthenticated) {
-                return (
-                    <div className="app-container">
-                        <Dashboard />
-                    </div>
-                );
-            }
-
-            return (
-                <div className="app-container">
-                    {view === 'login' && (
-                        <LoginForm
-                            onSwitchToRegister={() => setView('register')}
-                            onSwitchToReset={() => setView('reset')}
-                        />
-                    )}
-                    {view === 'register' && (
-                        <RegisterForm onSwitchToLogin={() => setView('login')} />
-                    )}
-                    {view === 'reset' && (
-                        <ResetPasswordForm onSwitchToLogin={() => setView('login')} />
-                    )}
-                </div>
-            );
-        }
-
-        // Render app
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
 </body>
 </html>
