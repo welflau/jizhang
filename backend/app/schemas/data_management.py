@@ -16,7 +16,7 @@ class VisitRecordExport(BaseModel):
     visit_time: datetime
     leave_time: Optional[datetime] = None
     status: str
-    notes: Optional[str] = None
+    remarks: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
@@ -27,20 +27,21 @@ class VisitRecordExport(BaseModel):
 class ExportData(BaseModel):
     """导出数据结构"""
     export_time: datetime = Field(default_factory=datetime.now, description="导出时间")
-    total_count: int = Field(description="总记录数")
+    total_records: int = Field(description="总记录数")
     records: List[VisitRecordExport] = Field(description="访问记录列表")
 
 
 class ImportResult(BaseModel):
     """导入结果"""
-    success_count: int = Field(default=0, description="成功导入数量")
-    failed_count: int = Field(default=0, description="失败导入数量")
+    success: bool = Field(description="是否成功")
+    total_records: int = Field(description="总记录数")
+    success_count: int = Field(description="成功导入数")
+    failed_count: int = Field(description="失败数")
     error_messages: List[str] = Field(default_factory=list, description="错误信息列表")
-    total_count: int = Field(default=0, description="总记录数")
 
 
-class ClearDataResponse(BaseModel):
-    """清空数据响应"""
+class ClearDataResult(BaseModel):
+    """清空数据结果"""
     success: bool = Field(description="是否成功")
     deleted_count: int = Field(description="删除的记录数")
-    message: str = Field(description="响应消息")
+    message: str = Field(description="结果消息")

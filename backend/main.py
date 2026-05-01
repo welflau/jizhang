@@ -1,13 +1,15 @@
 import os
 import logging
+import json
+import shutil
 from datetime import datetime, timedelta
 from typing import Optional
-from contextlib import asynccontextmanager
 
 import jwt
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, EmailStr
 import aiosqlite
 import bcrypt
@@ -22,9 +24,20 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
 DB_PATH = os.getenv("DB_PATH", "app.db")
 PORT = int(os.getenv("PORT", "8080"))
+BACKUP_DIR = os.getenv("BACKUP_DIR", "backups")
 
-# Database connection pool
-db_pool = None
+app = FastAPI(title="User Auth API")
+
+# CORS configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+security = HTTPBearer()
 
 
 # Pydantic models
@@ -66,56 +79,21 @@ class MessageResponse(BaseModel):
     message: str
 
 
-# Database connection pool management
-class DatabasePool:
-    def __init__(self, db_path: str, pool_size: int = 10):
-        self.db_path = db_path
-        self.pool_size = pool_size
-        self.connections = []
-        self.available = []
-        
-    async def initialize(self):
-        """Initialize connection pool"""
-        for _ in range(self.pool_size):
-            conn = await aiosqlite.connect(self.db_path)
-            conn.row_factory = aiosqlite.Row
-            self.connections.append(conn)
-            self.available.append(conn)
-        logger.info(f"Database connection pool initialized with {self.pool_size} connections")
-    
-    async def close(self):
-        """Close all connections in pool"""
-        for conn in self.connections:
-            await conn.close()
-        self.connections.clear()
-        self.available.clear()
-        logger.info("Database connection pool closed")
-    
-    async def acquire(self):
-        """Acquire a connection from pool"""
-        if not self.available:
-            # If no available connections, create a temporary one
-            conn = await aiosqlite.connect(self.db_path)
-            conn.row_factory = aiosqlite.Row
-            return conn
-        return self.available.pop()
-    
-    async def release(self, conn):
-        """Release connection back to pool"""
-        if conn in self.connections:
-            self.available.append(conn)
-        else:
-            # Close temporary connection
-            await conn.close()
+class BackupResponse(BaseModel):
+    filename: str
+    created_at: str
+    size: int
+
+
+class RestoreRequest(BaseModel):
+    filename: str
 
 
 # Database dependency
 async def get_db():
-    conn = await db_pool.acquire()
-    try:
-        yield conn
-    finally:
-        await db_pool.release(conn)
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        yield db
 
 
 # Initialize database
@@ -145,31 +123,11 @@ async def init_db():
     logger.info("Database initialized")
 
 
-# Lifespan context manager
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup
-    global db_pool
-    db_pool = DatabasePool(DB_PATH)
-    await db_pool.initialize()
+@app.on_event("startup")
+async def startup_event():
     await init_db()
-    yield
-    # Shutdown
-    await db_pool.close()
-
-
-app = FastAPI(title="User Auth API", lifespan=lifespan)
-
-# CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-security = HTTPBearer()
+    # Create backup directory if it doesn't exist
+    os.makedirs(BACKUP_DIR, exist_ok=True)
 
 
 # Utility functions
@@ -360,13 +318,142 @@ async def confirm_password_reset(req: ConfirmResetRequest, db = Depends(get_db))
     return {"message": "Password reset successfully"}
 
 
-# Global exception handler
-@app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
-    logger.exception(f"Unhandled exception: {exc}")
-    return {"error": "Internal server error"}, 500
+# Backup and Restore endpoints
+@app.post("/api/backup/create", response_model=BackupResponse)
+async def create_backup(current_user = Depends(get_current_user)):
+    """Create a backup of the database"""
+    try:
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        filename = f"backup_{timestamp}.db"
+        backup_path = os.path.join(BACKUP_DIR, filename)
+        
+        # Copy database file
+        shutil.copy2(DB_PATH, backup_path)
+        
+        # Get file size
+        file_size = os.path.getsize(backup_path)
+        
+        logger.info(f"Backup created by user {current_user['email']}: {filename}")
+        
+        return {
+            "filename": filename,
+            "created_at": datetime.utcnow().isoformat(),
+            "size": file_size
+        }
+    except Exception as e:
+        logger.error(f"Backup creation failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Backup creation failed")
+
+
+@app.get("/api/backup/list", response_model=list[BackupResponse])
+async def list_backups(current_user = Depends(get_current_user)):
+    """List all available backups"""
+    try:
+        backups = []
+        if os.path.exists(BACKUP_DIR):
+            for filename in os.listdir(BACKUP_DIR):
+                if filename.endswith('.db'):
+                    filepath = os.path.join(BACKUP_DIR, filename)
+                    stat = os.stat(filepath)
+                    backups.append({
+                        "filename": filename,
+                        "created_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                        "size": stat.st_size
+                    })
+        
+        # Sort by creation time, newest first
+        backups.sort(key=lambda x: x["created_at"], reverse=True)
+        
+        return backups
+    except Exception as e:
+        logger.error(f"Failed to list backups: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to list backups")
+
+
+@app.post("/api/backup/restore", response_model=MessageResponse)
+async def restore_backup(req: RestoreRequest, current_user = Depends(get_current_user)):
+    """Restore database from a backup"""
+    try:
+        backup_path = os.path.join(BACKUP_DIR, req.filename)
+        
+        # Validate backup file exists
+        if not os.path.exists(backup_path):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Backup file not found")
+        
+        # Validate filename to prevent path traversal
+        if ".." in req.filename or "/" in req.filename or "\\" in req.filename:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
+        
+        # Create a backup of current database before restoring
+        current_backup = f"pre_restore_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.db"
+        shutil.copy2(DB_PATH, os.path.join(BACKUP_DIR, current_backup))
+        
+        # Restore the backup
+        shutil.copy2(backup_path, DB_PATH)
+        
+        logger.info(f"Database restored by user {current_user['email']} from backup: {req.filename}")
+        
+        return {"message": "Database restored successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Restore failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Restore failed")
+
+
+@app.get("/api/backup/download/{filename}")
+async def download_backup(filename: str, current_user = Depends(get_current_user)):
+    """Download a backup file"""
+    try:
+        # Validate filename to prevent path traversal
+        if ".." in filename or "/" in filename or "\\" in filename:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
+        
+        backup_path = os.path.join(BACKUP_DIR, filename)
+        
+        if not os.path.exists(backup_path):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Backup file not found")
+        
+        logger.info(f"Backup downloaded by user {current_user['email']}: {filename}")
+        
+        return FileResponse(
+            path=backup_path,
+            filename=filename,
+            media_type="application/octet-stream"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Download failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Download failed")
+
+
+@app.delete("/api/backup/delete/{filename}", response_model=MessageResponse)
+async def delete_backup(filename: str, current_user = Depends(get_current_user)):
+    """Delete a backup file"""
+    try:
+        # Validate filename to prevent path traversal
+        if ".." in filename or "/" in filename or "\\" in filename:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
+        
+        backup_path = os.path.join(BACKUP_DIR, filename)
+        
+        if not os.path.exists(backup_path):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Backup file not found")
+        
+        # Delete the backup file
+        os.remove(backup_path)
+        
+        logger.info(f"Backup deleted by user {current_user['email']}: {filename}")
+        
+        return {"message": "Backup deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Delete failed")
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=PORT)

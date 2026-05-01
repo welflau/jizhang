@@ -223,6 +223,7 @@
             color: var(--text-primary);
             font-size: 18px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         .backup-buttons {
@@ -583,8 +584,6 @@
 
             return (
                 <form onSubmit={handleSubmit}>
-                    <h2 style={{marginBottom: '20px', color: 'var(--text-primary)'}}>Reset Password</h2>
-                    
                     {error && <div className="alert error">{error}</div>}
                     {success && <div className="alert success">{success}</div>}
                     
@@ -615,9 +614,9 @@
         }
 
         function BackupSection({ token }) {
-            const [loading, setLoading] = useState(false);
             const [error, setError] = useState('');
             const [success, setSuccess] = useState('');
+            const [loading, setLoading] = useState(false);
 
             const handleBackup = async () => {
                 setError('');
@@ -625,7 +624,7 @@
                 setLoading(true);
 
                 try {
-                    const response = await fetch(`${API_BASE}/api/backup`, {
+                    const response = await fetch(`${API_BASE}/api/backup/export`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -645,7 +644,7 @@
                         setSuccess('Backup downloaded successfully');
                     } else {
                         const data = await response.json();
-                        setError(data.detail || 'Backup failed');
+                        setError(data.detail || 'Failed to create backup');
                     }
                 } catch (err) {
                     setError('Network error. Please try again.');
@@ -666,7 +665,7 @@
                     const formData = new FormData();
                     formData.append('file', file);
 
-                    const response = await fetch(`${API_BASE}/api/restore`, {
+                    const response = await fetch(`${API_BASE}/api/backup/import`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -679,7 +678,7 @@
                     if (response.ok) {
                         setSuccess('Data restored successfully');
                     } else {
-                        setError(data.detail || 'Restore failed');
+                        setError(data.detail || 'Failed to restore data');
                     }
                 } catch (err) {
                     setError('Network error. Please try again.');
@@ -695,13 +694,13 @@
                     
                     {error && <div className="alert error">{error}</div>}
                     {success && <div className="alert success">{success}</div>}
-                    
+
                     <div className="backup-buttons">
                         <button onClick={handleBackup} disabled={loading}>
                             {loading ? 'Processing...' : 'Download Backup'}
                         </button>
                         
-                        <label style={{
+                        <label htmlFor="restore-file" style={{
                             width: '100%',
                             padding: '12px',
                             background: 'var(--primary)',
@@ -715,14 +714,15 @@
                             opacity: loading ? 0.6 : 1
                         }}>
                             {loading ? 'Processing...' : 'Restore from Backup'}
-                            <input
-                                type="file"
-                                accept=".json"
-                                onChange={handleRestore}
-                                disabled={loading}
-                                style={{ display: 'none' }}
-                            />
                         </label>
+                        <input
+                            type="file"
+                            id="restore-file"
+                            accept=".json"
+                            onChange={handleRestore}
+                            disabled={loading}
+                            style={{ display: 'none' }}
+                        />
                     </div>
                 </div>
             );

@@ -6,7 +6,7 @@ import json
 import io
 from datetime import datetime
 
-from app.api import deps
+from app.db.session import get_db
 from app.models.visit import Visit
 from app.schemas.visit import VisitCreate
 
@@ -14,13 +14,14 @@ router = APIRouter()
 
 
 @router.get("/export")
-def export_data(db: Session = deps.Depends(deps.get_db)):
+def export_data(db: Session = next(get_db())):
     """
     导出所有访问记录为 JSON 文件
     """
     try:
         visits = db.query(Visit).all()
         
+        # 转换为字典列表
         data = []
         for visit in visits:
             data.append({
@@ -33,16 +34,15 @@ def export_data(db: Session = deps.Depends(deps.get_db)):
                 "check_in_time": visit.check_in_time.isoformat() if visit.check_in_time else None,
                 "check_out_time": visit.check_out_time.isoformat() if visit.check_out_time else None,
                 "status": visit.status,
-                "notes": visit.notes,
-                "created_at": visit.created_at.isoformat() if visit.created_at else None,
-                "updated_at": visit.updated_at.isoformat() if visit.updated_at else None
+                "notes": visit.notes
             })
         
-        # 生成文件名
-        filename = f"visits_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        
-        # 创建 JSON 内容
+        # 生成 JSON 内容
         json_content = json.dumps(data, ensure_ascii=False, indent=2)
+        
+        # 生成文件名
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"visits_backup_{timestamp}.json"
         
         # 创建流式响应
         return StreamingResponse(
@@ -57,10 +57,7 @@ def export_data(db: Session = deps.Depends(deps.get_db)):
 
 
 @router.post("/import")
-async def import_data(
-    file: UploadFile = File(...),
-    db: Session = deps.Depends(deps.get_db)
-):
+async def import_data(file: UploadFile = File(...), db: Session = next(get_db())):
     """
     从 JSON 文件导入访问记录
     """
@@ -81,53 +78,38 @@ async def import_data(
         
         for item in data:
             try:
-                # 检查必填字段
-                if not item.get('visitor_name'):
+                # 检查是否已存在相同 ID 的记录
+                existing = db.query(Visit).filter(Visit.id == item.get("id")).first()
+                if existing:
                     fail_count += 1
-                    errors.append(f"记录缺少访客姓名: {item}")
+                    errors.append(f"ID {item.get('id')} 已存在")
                     continue
                 
-                # 检查是否已存在（根据 ID 或关键信息）
-                existing = None
-                if item.get('id'):
-                    existing = db.query(Visit).filter(Visit.id == item['id']).first()
-                
-                if existing:
-                    # 更新现有记录
-                    for key, value in item.items():
-                        if key not in ['id', 'created_at', 'updated_at'] and hasattr(existing, key):
-                            setattr(existing, key, value)
-                else:
-                    # 创建新记录
-                    visit_data = {
-                        "visitor_name": item.get('visitor_name'),
-                        "company": item.get('company'),
-                        "phone": item.get('phone'),
-                        "visit_purpose": item.get('visit_purpose'),
-                        "host_name": item.get('host_name'),
-                        "check_in_time": item.get('check_in_time'),
-                        "check_out_time": item.get('check_out_time'),
-                        "status": item.get('status', 'pending'),
-                        "notes": item.get('notes')
-                    }
-                    new_visit = Visit(**visit_data)
-                    db.add(new_visit)
-                
+                # 创建新记录
+                visit = Visit(
+                    visitor_name=item.get("visitor_name"),
+                    company=item.get("company"),
+                    phone=item.get("phone"),
+                    visit_purpose=item.get("visit_purpose"),
+                    host_name=item.get("host_name"),
+                    check_in_time=datetime.fromisoformat(item["check_in_time"]) if item.get("check_in_time") else None,
+                    check_out_time=datetime.fromisoformat(item["check_out_time"]) if item.get("check_out_time") else None,
+                    status=item.get("status", "checked_in"),
+                    notes=item.get("notes")
+                )
+                db.add(visit)
                 success_count += 1
             except Exception as e:
                 fail_count += 1
-                errors.append(f"导入记录失败: {str(e)}")
+                errors.append(f"记录导入失败: {str(e)}")
         
         db.commit()
         
         return {
-            "success": True,
-            "message": f"导入完成",
             "success_count": success_count,
             "fail_count": fail_count,
-            "errors": errors[:10]  # 只返回前10条错误信息
+            "errors": errors[:10]  # 只返回前 10 条错误信息
         }
-    
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="JSON 文件格式错误")
     except Exception as e:
@@ -136,7 +118,7 @@ async def import_data(
 
 
 @router.delete("/clear")
-def clear_all_data(db: Session = deps.Depends(deps.get_db)):
+def clear_all_data(db: Session = next(get_db())):
     """
     清空所有访问记录
     """
@@ -144,10 +126,8 @@ def clear_all_data(db: Session = deps.Depends(deps.get_db)):
         count = db.query(Visit).count()
         db.query(Visit).delete()
         db.commit()
-        
         return {
-            "success": True,
-            "message": f"已清空所有数据",
+            "message": "所有数据已清空",
             "deleted_count": count
         }
     except Exception as e:
